@@ -1,0 +1,384 @@
+{
+ "versao": "2026-10-10",
+ "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) — revisado toda semana",
+ "golpes": [
+  {
+   "id": "falso_banco",
+   "nome": "Falsa central do banco",
+   "sinais": [
+    [
+     "central (de )?(seguranca|atendimento)|setor de (fraude|seguranca)|gerente do banco|falamos do banco",
+     3
+    ],
+    [
+     "compra suspeita|movimentacao suspeita|transacao (nao reconhecida|suspeita)",
+     3
+    ],
+    [
+     "transferir para (uma )?conta segura|conta (de )?seguranca",
+     4
+    ],
+    [
+     "(sua )?conta (foi |sera |esta )?(bloqueada|suspensa|invadida)",
+     3
+    ]
+   ],
+   "explica": "Banco não liga pedindo senha, código, Pix ou transferência para 'conta segura'.",
+   "passos": [
+    "Desligue agora",
+    "Ligue você mesma para o número atrás do cartão",
+    "Não passe senha nem código"
+   ]
+  },
+  {
+   "id": "falso_parente",
+   "nome": "Falso parente com número novo",
+   "sinais": [
+    [
+     "troquei de (numero|celular)|numero novo|esse e meu (novo )?numero|perdi (o|meu) celular",
+     4
+    ],
+    [
+     "(mae|pai|vo|vovo|tia|tio),? (me )?(faz|manda|empresta|transfere)",
+     3
+    ],
+    [
+     "(pix|transferencia|deposito).{0,30}(urgente|agora|hoje|rapido)",
+     3
+    ]
+   ],
+   "explica": "Alguém se passa por filho ou neto com número novo e pede dinheiro com pressa.",
+   "passos": [
+    "Ligue para o número antigo da pessoa",
+    "Pergunte a palavra secreta da família",
+    "Não mande dinheiro antes de confirmar"
+   ]
+  },
+  {
+   "id": "clonagem_whatsapp",
+   "nome": "Clonagem do WhatsApp",
+   "sinais": [
+    [
+     "codigo de (6|seis) digitos|codigo (que|q) (chegou|foi enviado)|me (passa|manda|fala) o codigo",
+     5
+    ],
+    [
+     "codigo de (verificacao|confirmacao|seguranca)",
+     3
+    ]
+   ],
+   "explica": "Quem pede o código que chegou por SMS quer roubar o seu WhatsApp.",
+   "passos": [
+    "Nunca passe códigos",
+    "Ative a verificação em duas etapas",
+    "Avise a família"
+   ]
+  },
+  {
+   "id": "link_atualizacao",
+   "nome": "Link para atualizar dados",
+   "sinais": [
+    [
+     "bit\\.ly|tinyurl|encurtador|clique (aqui|no link)|acesse o link|https?://",
+     3
+    ],
+    [
+     "atualiz(e|ar) (seus )?(dados|cadastro)|regulariz(e|ar)|token (expir|venc)",
+     3
+    ],
+    [
+     "sera (bloqueado|cancelado|suspenso) (hoje|em 24|em ate)",
+     3
+    ]
+   ],
+   "explica": "Mensagem com link pedindo para atualizar dados é a forma mais comum de roubar senhas.",
+   "passos": [
+    "Não toque no link",
+    "Apague a mensagem",
+    "Se tiver dúvida, entre pelo app oficial"
+   ]
+  },
+  {
+   "id": "falso_motoboy",
+   "nome": "Falso motoboy do banco",
+   "sinais": [
+    [
+     "motoboy|portador|vamos (buscar|recolher) (o|seu) cartao|entregar o cartao|cartao (sera|vai ser) recolhido",
+     5
+    ]
+   ],
+   "explica": "Banco nunca busca cartão na sua casa.",
+   "passos": [
+    "Não entregue o cartão a ninguém",
+    "Corte o cartão se ele foi bloqueado",
+    "Ligue para o banco pelo número oficial"
+   ]
+  },
+  {
+   "id": "falso_emprestimo",
+   "nome": "Empréstimo ou consignado falso",
+   "sinais": [
+    [
+     "emprestimo (aprovado|liberado|pre.?aprovado)|consignado|margem (consignavel|disponivel)|credito (liberado|aprovado)",
+     3
+    ],
+    [
+     "(taxa|deposito|pagamento) (antecipad|de liberacao|para liberar)|pague .{0,20}para liberar",
+     4
+    ]
+   ],
+   "explica": "Ninguém sério cobra taxa antes de liberar empréstimo.",
+   "passos": [
+    "Não pague nada antecipado",
+    "Não envie documentos",
+    "Fale com a família antes"
+   ]
+  },
+  {
+   "id": "falso_inss",
+   "nome": "Falso INSS ou aposentadoria",
+   "sinais": [
+    [
+     "inss|aposentadoria|beneficio|prova de vida|revisao (da|de) (vida|aposentadoria)|meu inss",
+     2
+    ],
+    [
+     "(seu )?beneficio (sera |vai ser )?(cortado|suspenso|bloqueado)|valor a receber|atrasados",
+     3
+    ]
+   ],
+   "explica": "O INSS não liga nem manda link pedindo dados ou pagamento.",
+   "passos": [
+    "Não passe dados",
+    "Confira só pelo app Meu INSS ou pelo 135",
+    "Peça ajuda a alguém da família"
+   ]
+  },
+  {
+   "id": "falso_advogado",
+   "nome": "Falso advogado de processo ganho",
+   "sinais": [
+    [
+     "advogad|processo (ganho|judicial)|indenizacao|precatorio|acao (judicial|ganha)",
+     3
+    ],
+    [
+     "(custas|taxa|honorarios).{0,30}(liberar|receber|pagar)",
+     4
+    ]
+   ],
+   "explica": "Golpistas fingem ser advogados e cobram 'taxa' para liberar um dinheiro que não existe.",
+   "passos": [
+    "Ligue para o seu advogado pelo número que você já tem",
+    "Não pague taxa para receber",
+    "Desconfie de pressa"
+   ]
+  },
+  {
+   "id": "premio",
+   "nome": "Prêmio ou sorteio falso",
+   "sinais": [
+    [
+     "(voce )?(ganhou|foi sorteado|contemplad)|premio|sorteio|brinde|presente (de aniversario|surpresa)",
+     3
+    ],
+    [
+     "(taxa|frete|entrega).{0,25}(pagar|pague|cobrada)|pag\\w+ .{0,20}(taxa|frete)",
+     3
+    ]
+   ],
+   "explica": "Ninguém ganha prêmio sem participar, e prêmio de verdade não cobra taxa.",
+   "passos": [
+    "Não pague taxa",
+    "Não passe dados do cartão",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "entrega_taxa",
+   "nome": "Falsa entrega ou Correios",
+   "sinais": [
+    [
+     "correios|encomenda|entrega (pendente|retida|bloqueada)|objeto (retido|aguardando)|rastreio",
+     2
+    ],
+    [
+     "taxa (de )?(entrega|alfandega|liberacao)|pague .{0,15}(liberar|receber) (a )?(encomenda|entrega)",
+     4
+    ]
+   ],
+   "explica": "Os Correios não pedem taxa por mensagem com link.",
+   "passos": [
+    "Não pague por link",
+    "Confira no site oficial com o código",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "boleto_falso",
+   "nome": "Boleto falso",
+   "sinais": [
+    [
+     "boleto|segunda via|codigo de barras",
+     2
+    ],
+    [
+     "(desconto|quitar|negociar) (sua )?divida|limpe seu nome|serasa|spc",
+     3
+    ]
+   ],
+   "explica": "Boleto que chega por mensagem pode ter outro beneficiário.",
+   "passos": [
+    "Confira o nome de quem recebe antes de pagar",
+    "Pegue a segunda via só no site oficial",
+    "Peça para alguém conferir"
+   ]
+  },
+  {
+   "id": "mao_fantasma",
+   "nome": "Mão fantasma (acesso ao celular)",
+   "sinais": [
+    [
+     "(baix|instal)(e|ar) (o |um )?(aplicativo|app)|anydesk|teamviewer|acesso remoto|compartilh(e|ar) (a )?tela",
+     5
+    ],
+    [
+     "suporte tecnico|tecnico do banco",
+     2
+    ]
+   ],
+   "explica": "Pedem para instalar um app e controlam o seu celular por dentro.",
+   "passos": [
+    "Não instale nada a pedido de ninguém",
+    "Desligue a ligação",
+    "Se instalou, peça ajuda e ligue para o banco"
+   ]
+  },
+  {
+   "id": "sequestro_falso",
+   "nome": "Falso sequestro",
+   "sinais": [
+    [
+     "sequestr|esta (com|comigo) (seu|sua) (filh|net)|resgate|nao (chame|fale com) a policia",
+     5
+    ]
+   ],
+   "explica": "Ligação com gritos e ameaças para assustar e pedir dinheiro rápido.",
+   "passos": [
+    "Desligue",
+    "Ligue para a pessoa direto",
+    "Chame a polícia: 190"
+   ]
+  },
+  {
+   "id": "loja_falsa",
+   "nome": "Loja ou promoção falsa",
+   "sinais": [
+    [
+     "promocao (imperdivel|relampago)|ultimas unidades|desconto de (7|8|9)\\d%|preco (muito )?baixo|so hoje",
+     3
+    ]
+   ],
+   "explica": "Preço baixo demais e pressa são sinais de loja falsa.",
+   "passos": [
+    "Compre só em loja que você conhece",
+    "Não pague por Pix para desconhecidos",
+    "Pergunte a alguém da família"
+   ]
+  },
+  {
+   "id": "golpe_amor",
+   "nome": "Golpe do amor",
+   "sinais": [
+    [
+     "(meu|minha) (amor|querid)|nos conhecemos (pela|na) internet|estou (preso|retido) no (exterior|aeroporto)|militar (americano|no exterior)",
+     3
+    ],
+    [
+     "(me )?(manda|envia|empresta) dinheiro|preciso de ajuda (financeira|com dinheiro)",
+     3
+    ]
+   ],
+   "explica": "Alguém que você nunca viu pessoalmente e pede dinheiro é golpe.",
+   "passos": [
+    "Não mande dinheiro",
+    "Converse com a família",
+    "Bloqueie o contato"
+   ]
+  },
+  {
+   "id": "pix_errado",
+   "nome": "Pix enviado por engano",
+   "sinais": [
+    [
+     "(fiz|mandei|caiu) (um )?pix (errado|por engano)|devolv(a|e|er) o pix|transferi (errado|por engano)",
+     4
+    ]
+   ],
+   "explica": "Se alguém diz que mandou Pix errado, não devolva por conta própria: use a devolução pelo app do banco.",
+   "passos": [
+    "Confira o saldo no app do banco",
+    "Devolva só pelo botão 'devolver' do app",
+    "Não mande para outra chave"
+   ]
+  },
+  {
+   "id": "conta_luz_desconto",
+   "nome": "Desconto falso em conta de luz ou água",
+   "sinais": [
+    [
+     "(conta de )?(luz|energia|agua) com desconto|tarifa social|desconto na (luz|conta)",
+     3
+    ]
+   ],
+   "explica": "A companhia de luz não oferece desconto por mensagem com link.",
+   "passos": [
+    "Ligue para a companhia pelo número da conta",
+    "Não passe dados",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "receita_detran",
+   "nome": "Falsa Receita, Detran ou multa",
+   "sinais": [
+    [
+     "receita federal|restituicao|cpf (irregular|bloqueado|cancelado)|detran|multa (pendente|vencida)|ipva",
+     3
+    ],
+    [
+     "(pague|regularize) (hoje|agora|ate)",
+     2
+    ]
+   ],
+   "explica": "Órgãos do governo não cobram por mensagem com link nem Pix.",
+   "passos": [
+    "Confira só no site gov.br",
+    "Não pague por link",
+    "Peça ajuda a alguém"
+   ]
+  }
+ ],
+ "geral": [
+  [
+   "urgente|agora mesmo|ultima chance|imediatamente|em ate \\d+ (horas|minutos)",
+   2
+  ],
+  [
+   "senha|cvv|codigo de seguranca|numero do cartao",
+   3
+  ],
+  [
+   "nao conte (pra|para) ninguem|segredo|sigilo",
+   3
+  ],
+  [
+   "pix|transferencia|deposito",
+   1
+  ],
+  [
+   "desconhecido|numero estranho|nao conheco",
+   1
+  ]
+ ]
+}

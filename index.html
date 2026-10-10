@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Escudo Amigo</title><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Escudo Amigo</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icone.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@500;600;700;800&family=Lexend:wght@600;700;800&family=Unbounded:wght@700;800&display=swap" rel="stylesheet">
@@ -409,6 +409,16 @@ p{margin:0;line-height:1.38}
 .mbar{height:14px;border-radius:7px;background:#fff}.mbar i{display:block;height:100%;border-radius:7px;background:var(--fin)}
 .totbox{border-radius:22px;background:var(--fin);color:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:2px}.totbox span{font-size:17px;font-weight:800;color:#DDF7E8}.totbox b{font:800 34px var(--tfont),sans-serif}.totbox small{font-size:16px;font-weight:700;color:#DDF7E8}
 .plan .thumb{width:38px;height:38px;border-radius:8px;object-fit:cover;float:right;margin-left:6px}
+
+/* 2.3 · consulta gravada, envio para a família */
+.consbox{min-height:140px;max-height:240px;overflow:auto;border-radius:22px;background:var(--fam-l);padding:14px;font-size:19px;font-weight:600;line-height:1.4}
+.constx{border:2px solid var(--line);border-radius:20px;padding:12px;font:700 19px 'Atkinson Hyperlegible Next',sans-serif;resize:vertical}
+.card.resumo{background:var(--fam-l)}.card.resumo ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:19px;font-weight:700;line-height:1.3}
+.transc summary{font-size:18px;font-weight:800;color:var(--muted);padding:8px 0}.transc p{font-size:17px;color:#2A2F36}
+.partxt{background:var(--soft);border-radius:18px;padding:12px;font-size:17px;font-weight:600;max-height:220px;overflow:auto}
+a.btn{text-decoration:none}
+.btn.semana{min-height:58px;font-size:19px}
+.dose.nota{border:0;width:100%;text-align:left}
 </style></head><body>
 <div class="app" id="app"><div id="view"></div><div id="layer"></div></div>
 
@@ -563,7 +573,449 @@ p{margin:0;line-height:1.38}
 "br": "Me mostra o que chegou. Eu olho antes de você responder.",
 "pt": "Mostre-me o que chegou. Eu vejo antes de responder."
 }
-};</script>
+};window.GOLPES={
+ "versao": "2026-10-10",
+ "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) — revisado toda semana",
+ "golpes": [
+  {
+   "id": "falso_banco",
+   "nome": "Falsa central do banco",
+   "sinais": [
+    [
+     "central (de )?(seguranca|atendimento)|setor de (fraude|seguranca)|gerente do banco|falamos do banco",
+     3
+    ],
+    [
+     "compra suspeita|movimentacao suspeita|transacao (nao reconhecida|suspeita)",
+     3
+    ],
+    [
+     "transferir para (uma )?conta segura|conta (de )?seguranca",
+     4
+    ],
+    [
+     "(sua )?conta (foi |sera |esta )?(bloqueada|suspensa|invadida)",
+     3
+    ]
+   ],
+   "explica": "Banco não liga pedindo senha, código, Pix ou transferência para 'conta segura'.",
+   "passos": [
+    "Desligue agora",
+    "Ligue você mesma para o número atrás do cartão",
+    "Não passe senha nem código"
+   ]
+  },
+  {
+   "id": "falso_parente",
+   "nome": "Falso parente com número novo",
+   "sinais": [
+    [
+     "troquei de (numero|celular)|numero novo|esse e meu (novo )?numero|perdi (o|meu) celular",
+     4
+    ],
+    [
+     "(mae|pai|vo|vovo|tia|tio),? (me )?(faz|manda|empresta|transfere)",
+     3
+    ],
+    [
+     "(pix|transferencia|deposito).{0,30}(urgente|agora|hoje|rapido)",
+     3
+    ]
+   ],
+   "explica": "Alguém se passa por filho ou neto com número novo e pede dinheiro com pressa.",
+   "passos": [
+    "Ligue para o número antigo da pessoa",
+    "Pergunte a palavra secreta da família",
+    "Não mande dinheiro antes de confirmar"
+   ]
+  },
+  {
+   "id": "clonagem_whatsapp",
+   "nome": "Clonagem do WhatsApp",
+   "sinais": [
+    [
+     "codigo de (6|seis) digitos|codigo (que|q) (chegou|foi enviado)|me (passa|manda|fala) o codigo",
+     5
+    ],
+    [
+     "codigo de (verificacao|confirmacao|seguranca)",
+     3
+    ]
+   ],
+   "explica": "Quem pede o código que chegou por SMS quer roubar o seu WhatsApp.",
+   "passos": [
+    "Nunca passe códigos",
+    "Ative a verificação em duas etapas",
+    "Avise a família"
+   ]
+  },
+  {
+   "id": "link_atualizacao",
+   "nome": "Link para atualizar dados",
+   "sinais": [
+    [
+     "bit\\.ly|tinyurl|encurtador|clique (aqui|no link)|acesse o link|https?://",
+     3
+    ],
+    [
+     "atualiz(e|ar) (seus )?(dados|cadastro)|regulariz(e|ar)|token (expir|venc)",
+     3
+    ],
+    [
+     "sera (bloqueado|cancelado|suspenso) (hoje|em 24|em ate)",
+     3
+    ]
+   ],
+   "explica": "Mensagem com link pedindo para atualizar dados é a forma mais comum de roubar senhas.",
+   "passos": [
+    "Não toque no link",
+    "Apague a mensagem",
+    "Se tiver dúvida, entre pelo app oficial"
+   ]
+  },
+  {
+   "id": "falso_motoboy",
+   "nome": "Falso motoboy do banco",
+   "sinais": [
+    [
+     "motoboy|portador|vamos (buscar|recolher) (o|seu) cartao|entregar o cartao|cartao (sera|vai ser) recolhido",
+     5
+    ]
+   ],
+   "explica": "Banco nunca busca cartão na sua casa.",
+   "passos": [
+    "Não entregue o cartão a ninguém",
+    "Corte o cartão se ele foi bloqueado",
+    "Ligue para o banco pelo número oficial"
+   ]
+  },
+  {
+   "id": "falso_emprestimo",
+   "nome": "Empréstimo ou consignado falso",
+   "sinais": [
+    [
+     "emprestimo (aprovado|liberado|pre.?aprovado)|consignado|margem (consignavel|disponivel)|credito (liberado|aprovado)",
+     3
+    ],
+    [
+     "(taxa|deposito|pagamento) (antecipad|de liberacao|para liberar)|pague .{0,20}para liberar",
+     4
+    ]
+   ],
+   "explica": "Ninguém sério cobra taxa antes de liberar empréstimo.",
+   "passos": [
+    "Não pague nada antecipado",
+    "Não envie documentos",
+    "Fale com a família antes"
+   ]
+  },
+  {
+   "id": "falso_inss",
+   "nome": "Falso INSS ou aposentadoria",
+   "sinais": [
+    [
+     "inss|aposentadoria|beneficio|prova de vida|revisao (da|de) (vida|aposentadoria)|meu inss",
+     2
+    ],
+    [
+     "(seu )?beneficio (sera |vai ser )?(cortado|suspenso|bloqueado)|valor a receber|atrasados",
+     3
+    ]
+   ],
+   "explica": "O INSS não liga nem manda link pedindo dados ou pagamento.",
+   "passos": [
+    "Não passe dados",
+    "Confira só pelo app Meu INSS ou pelo 135",
+    "Peça ajuda a alguém da família"
+   ]
+  },
+  {
+   "id": "falso_advogado",
+   "nome": "Falso advogado de processo ganho",
+   "sinais": [
+    [
+     "advogad|processo (ganho|judicial)|indenizacao|precatorio|acao (judicial|ganha)",
+     3
+    ],
+    [
+     "(custas|taxa|honorarios).{0,30}(liberar|receber|pagar)",
+     4
+    ]
+   ],
+   "explica": "Golpistas fingem ser advogados e cobram 'taxa' para liberar um dinheiro que não existe.",
+   "passos": [
+    "Ligue para o seu advogado pelo número que você já tem",
+    "Não pague taxa para receber",
+    "Desconfie de pressa"
+   ]
+  },
+  {
+   "id": "premio",
+   "nome": "Prêmio ou sorteio falso",
+   "sinais": [
+    [
+     "(voce )?(ganhou|foi sorteado|contemplad)|premio|sorteio|brinde|presente (de aniversario|surpresa)",
+     3
+    ],
+    [
+     "(taxa|frete|entrega).{0,25}(pagar|pague|cobrada)|pag\\w+ .{0,20}(taxa|frete)",
+     3
+    ]
+   ],
+   "explica": "Ninguém ganha prêmio sem participar, e prêmio de verdade não cobra taxa.",
+   "passos": [
+    "Não pague taxa",
+    "Não passe dados do cartão",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "entrega_taxa",
+   "nome": "Falsa entrega ou Correios",
+   "sinais": [
+    [
+     "correios|encomenda|entrega (pendente|retida|bloqueada)|objeto (retido|aguardando)|rastreio",
+     2
+    ],
+    [
+     "taxa (de )?(entrega|alfandega|liberacao)|pague .{0,15}(liberar|receber) (a )?(encomenda|entrega)",
+     4
+    ]
+   ],
+   "explica": "Os Correios não pedem taxa por mensagem com link.",
+   "passos": [
+    "Não pague por link",
+    "Confira no site oficial com o código",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "boleto_falso",
+   "nome": "Boleto falso",
+   "sinais": [
+    [
+     "boleto|segunda via|codigo de barras",
+     2
+    ],
+    [
+     "(desconto|quitar|negociar) (sua )?divida|limpe seu nome|serasa|spc",
+     3
+    ]
+   ],
+   "explica": "Boleto que chega por mensagem pode ter outro beneficiário.",
+   "passos": [
+    "Confira o nome de quem recebe antes de pagar",
+    "Pegue a segunda via só no site oficial",
+    "Peça para alguém conferir"
+   ]
+  },
+  {
+   "id": "mao_fantasma",
+   "nome": "Mão fantasma (acesso ao celular)",
+   "sinais": [
+    [
+     "(baix|instal)(e|ar) (o |um )?(aplicativo|app)|anydesk|teamviewer|acesso remoto|compartilh(e|ar) (a )?tela",
+     5
+    ],
+    [
+     "suporte tecnico|tecnico do banco",
+     2
+    ]
+   ],
+   "explica": "Pedem para instalar um app e controlam o seu celular por dentro.",
+   "passos": [
+    "Não instale nada a pedido de ninguém",
+    "Desligue a ligação",
+    "Se instalou, peça ajuda e ligue para o banco"
+   ]
+  },
+  {
+   "id": "sequestro_falso",
+   "nome": "Falso sequestro",
+   "sinais": [
+    [
+     "sequestr|esta (com|comigo) (seu|sua) (filh|net)|resgate|nao (chame|fale com) a policia",
+     5
+    ]
+   ],
+   "explica": "Ligação com gritos e ameaças para assustar e pedir dinheiro rápido.",
+   "passos": [
+    "Desligue",
+    "Ligue para a pessoa direto",
+    "Chame a polícia: 190"
+   ]
+  },
+  {
+   "id": "loja_falsa",
+   "nome": "Loja ou promoção falsa",
+   "sinais": [
+    [
+     "promocao (imperdivel|relampago)|ultimas unidades|desconto de (7|8|9)\\d%|preco (muito )?baixo|so hoje",
+     3
+    ]
+   ],
+   "explica": "Preço baixo demais e pressa são sinais de loja falsa.",
+   "passos": [
+    "Compre só em loja que você conhece",
+    "Não pague por Pix para desconhecidos",
+    "Pergunte a alguém da família"
+   ]
+  },
+  {
+   "id": "golpe_amor",
+   "nome": "Golpe do amor",
+   "sinais": [
+    [
+     "(meu|minha) (amor|querid)|nos conhecemos (pela|na) internet|estou (preso|retido) no (exterior|aeroporto)|militar (americano|no exterior)",
+     3
+    ],
+    [
+     "(me )?(manda|envia|empresta) dinheiro|preciso de ajuda (financeira|com dinheiro)",
+     3
+    ]
+   ],
+   "explica": "Alguém que você nunca viu pessoalmente e pede dinheiro é golpe.",
+   "passos": [
+    "Não mande dinheiro",
+    "Converse com a família",
+    "Bloqueie o contato"
+   ]
+  },
+  {
+   "id": "pix_errado",
+   "nome": "Pix enviado por engano",
+   "sinais": [
+    [
+     "(fiz|mandei|caiu) (um )?pix (errado|por engano)|devolv(a|e|er) o pix|transferi (errado|por engano)",
+     4
+    ]
+   ],
+   "explica": "Se alguém diz que mandou Pix errado, não devolva por conta própria: use a devolução pelo app do banco.",
+   "passos": [
+    "Confira o saldo no app do banco",
+    "Devolva só pelo botão 'devolver' do app",
+    "Não mande para outra chave"
+   ]
+  },
+  {
+   "id": "conta_luz_desconto",
+   "nome": "Desconto falso em conta de luz ou água",
+   "sinais": [
+    [
+     "(conta de )?(luz|energia|agua) com desconto|tarifa social|desconto na (luz|conta)",
+     3
+    ]
+   ],
+   "explica": "A companhia de luz não oferece desconto por mensagem com link.",
+   "passos": [
+    "Ligue para a companhia pelo número da conta",
+    "Não passe dados",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "receita_detran",
+   "nome": "Falsa Receita, Detran ou multa",
+   "sinais": [
+    [
+     "receita federal|restituicao|cpf (irregular|bloqueado|cancelado)|detran|multa (pendente|vencida)|ipva",
+     3
+    ],
+    [
+     "(pague|regularize) (hoje|agora|ate)",
+     2
+    ]
+   ],
+   "explica": "Órgãos do governo não cobram por mensagem com link nem Pix.",
+   "passos": [
+    "Confira só no site gov.br",
+    "Não pague por link",
+    "Peça ajuda a alguém"
+   ]
+  }
+ ],
+ "geral": [
+  [
+   "urgente|agora mesmo|ultima chance|imediatamente|em ate \\d+ (horas|minutos)",
+   2
+  ],
+  [
+   "senha|cvv|codigo de seguranca|numero do cartao",
+   3
+  ],
+  [
+   "nao conte (pra|para) ninguem|segredo|sigilo",
+   3
+  ],
+  [
+   "pix|transferencia|deposito",
+   1
+  ],
+  [
+   "desconhecido|numero estranho|nao conheco",
+   1
+  ]
+ ]
+};window.RESPOSTAS={
+"_versao":"2026-10-10",
+"oi":["Oi, {nome}! Que bom ouvir você. Do que você precisa agora?","Oi! Tô aqui. Me fala o que você quer fazer.","Olá, {nome}! Tudo bem por aí? Pode falar.","Oi, oi! Pode contar comigo. O que vai ser?","Que bom que você chamou, {nome}. Em que eu ajudo?"],
+"agradece":["Imagina, {nome}! Tô sempre aqui.","De nada! Precisando, é só chamar.","Que isso, {nome}. É um prazer cuidar de você.","Por nada! Qualquer coisa, me chama."],
+"ajuda":["Eu te lembro dos remédios, anoto seus gastos, marco consultas, ligo pra família e confiro se uma mensagem pode ser golpe. É só falar do seu jeito.","Pode me pedir quase tudo do dia a dia: remédio, conta, gasto, consulta, ligação pra família. E se chegar mensagem estranha, me mostra.","Sou quatro amigos num só: Escudo pros golpes, Remédio pros horários, Finanças pras contas e Dia a dia pra agenda e família."],
+"nao_entendi":["Desculpa, {nome}, não entendi direitinho. Pode falar de outro jeito?","Hum, essa eu não peguei. Fala de novo, bem do seu jeito?","Não entendi bem. É sobre remédio, dinheiro, agenda ou alguma mensagem?","Me perdi um pouquinho. Pode repetir com outras palavras?"],
+"cancelado":["Tudo bem, deixa pra lá.","Combinado, não faço nada então.","Sem problema. Se mudar de ideia, é só falar."],
+"emergencia":["Calma, eu tô aqui. Liga agora pro 192 e eu aviso {fam}.","Fica calma. Primeiro, liga pro 192. Eu já deixo {fam} avisada.","Isso é sério. Toca em ligar 192 agora. E eu chamo {fam} pra você."],
+"golpe_golpe":["{nome}, para tudo. Isso tem muita cara de golpe. Não faça nada agora.","Cuidado! Isso tem muita cara de golpe, do tipo {tipo}. Não responde e não clica em nada.","Risco alto, {nome}. Parece golpe de {tipo}. Respira, não faz nada e me deixa te ajudar."],
+"golpe_cuidado":["Calma, sem pressa. Isso pode ser golpe. Antes de qualquer coisa, vamos confirmar.","Hum, isso pode ser golpe, {nome}. Não faz nada com pressa, tá?","Fica atenta: pode ser golpe de {tipo}. Vamos conferir antes."],
+"golpe_seguro":["Parece tranquilo. Mesmo assim, nunca passe senha nem código.","Pelo que eu vi, parece seguro. Mas senha e código, nunca, tá?","Não achei sinal de golpe. Se pedirem dinheiro ou código depois, me chama."],
+"golpe_seguro_motivo":["Não pede dinheiro, senha, código nem clique em link."],
+"golpe_geral_motivo":["Tem sinais de golpe: pressa, pedido de dinheiro ou de dados."],
+"golpe_pede_ver":["Hum, isso pode ser golpe. Me mostra a mensagem antes de fazer qualquer coisa?","Antes de responder, me mostra o que chegou. Eu olho com calma.","Faz assim: tira um print ou cola a mensagem aqui que eu confiro pra você."],
+"golpe_foto_sem_net":["Pra ler a foto eu preciso da internet. Me conta o que está escrito?"],
+"conta_foto_sem_net":["Pra ler a foto da conta eu preciso da internet. Me fala o nome, o valor e quando vence?"],
+"remedio_foto_sem_net":["Pra ler a caixa eu preciso da internet. Qual é o nome do remédio?"],
+"tomei":["Prontinho, anotei a {remedio}. Quer que eu avise {fam}?","Muito bem, {nome}! A {remedio} tá marcada. Aviso {fam}?","Anotado! {remedio} tomada. Quer que {fam} fique sabendo?","Que bom! Marquei a {remedio}. Mando um recado pra {fam}?"],
+"tomei_sem_dose":["Que bom, {nome}! Mas agora não tem nenhum remédio marcado pra essa hora.","Ótimo! Só que não achei remédio pra agora. Quer cadastrar um?"],
+"adiar":["Tá bom. Daqui a {min} minutinhos eu te chamo de novo.","Combinado, lembro de novo em {min} minutos.","Sem problema. Em {min} minutos eu volto a te avisar."],
+"estoque_ok":["Boa! Somei {qtd} comprimidos de {remedio} no estoque.","Anotei: mais {qtd} de {remedio}. Agora tá tranquilo."],
+"estoque_baixo":["Ah, e a {remedio} tá acabando: dá pra uns {dias} dias.","Lembrete: a {remedio} dura só mais {dias} dias. Bom comprar."],
+"proximo_remedio":["O próximo é a {remedio}, às {hora}. Eu te chamo na hora.","Às {hora} tem a {remedio}. Pode deixar que eu aviso."],
+"remedios_todos_ok":["Por hoje tá tudo tomado. Muito bem!","Nenhum remédio pendente agora. Parabéns!"],
+"remedio_pergunta_nome":["Claro! Qual é o nome do remédio?","Vamos lá. Como chama o remédio?","Me fala o nome do remédio, ou tira uma foto da caixa."],
+"remedio_pergunta_hora":["E que horas você toma a {remedio}?","Em que horário a {remedio}? Pode ser mais de um.","A {remedio} é de manhã, de tarde ou de noite? Me fala a hora."],
+"remedio_cadastrado":["Prontinho! {remedio} cadastrada às {horas}. Eu te chamo na hora certinha.","Anotei: {remedio}, às {horas}. Pode deixar comigo."],
+"medicao_pergunta":["Quanto deu a {tipo}?","Me fala o número da {tipo}."],
+"medicao_ok":["Anotei sua {tipo}: {valor}. Tá guardadinho aqui.","{tipo} {valor}, anotada. Quer que eu mostre pro médico depois?","Prontinho, guardei: {tipo} {valor}."],
+"medicao_alta":["Anotei: {tipo} {valor}. Tá um pouco alta. Se sentir dor de cabeça forte ou tontura, liga pro médico ou pro 192.","{tipo} {valor} anotada. Tá alta, viu? Descansa e, se não melhorar, avisa alguém da família."],
+"gasto_pergunta_valor":["Quanto foi?","E quanto você gastou?","Me fala o valor que eu anoto."],
+"gasto_ok":["Anotei {valor} em {cat}. No mês já foram {total}.","Prontinho: {valor} de {cat}. Total do mês: {total}.","Tá na planilha: {valor}, {cat}. O mês tá em {total}."],
+"conta_paga":["Que bom! Marquei a conta de {conta} como paga.","Conta de {conta} paga! Uma preocupação a menos.","Anotado: {conta} paga. Muito bem!"],
+"conta_nova":["Anotei a conta de {conta} {valor}. Te aviso antes de vencer {quando}.","Conta de {conta} guardada. Pode deixar que eu lembro {quando}."],
+"conta_lembra":["A conta de {conta} vence {quando}.","Lembra: {conta} vence {quando}."],
+"gastos_resumo":["Esse mês você gastou {total}, a maior parte em {cat}. Ainda dá {sobra} dentro da meta.","Até agora foram {total}. O que mais pesou foi {cat}. Sobram {sobra} da meta.","Você tá em {total} no mês. Tá dentro da meta, sobram {sobra}."],
+"gastos_passou":["Esse mês já foram {total}, passou um pouco da meta. O que mais pesou foi {cat}.","Atenção: {total} no mês, acima da meta. Vamos segurar um pouquinho?"],
+"planilha":["Tá aqui sua planilha, tudo organizadinho.","Abri sua planilha. Tem tudo por dia e por tipo."],
+"objetivo_pergunta_nome":["Que legal! Vai juntar pra quê?","Adoro! Qual é o objetivo?"],
+"objetivo_pergunta_valor":["E quanto você quer juntar pra {objetivo}?","Qual o valor que você precisa pra {objetivo}?"],
+"objetivo_criado":["Objetivo criado: {objetivo}, {valor}. Vamos juntos!","Anotei: {objetivo}, meta de {valor}. Cada pouquinho conta!"],
+"guardar_pergunta_valor":["Que bom! Quanto você guardou?","Muito bem! Quanto foi?"],
+"guardou":["Muito bem! Guardei {valor} {objetivo}.","Que orgulho! Mais {valor} guardados.","Anotado: {valor} a mais no seu objetivo."],
+"lembrete_pergunta_o_que":["Claro! Te lembro do quê?","Do que você quer que eu te lembre?"],
+"lembrete_pergunta_quando":["Combinado. E quando eu te lembro de {oque}?","Que dia e que horas eu te aviso de {oque}?"],
+"compromisso_pergunta_quando":["Que dia e que horas é {oque}?","Claro! {oque} vai ser quando?"],
+"compromisso_ok":["Prontinho: {oque}, {quando}, às {hora}. Te lembro na véspera e na hora.","Anotei {oque} pra {quando}, às {hora}. Pode deixar comigo.","Marcado! {quando}, às {hora}: {oque}."],
+"agenda_vazia":["Não tem nada marcado {quando}. Quer anotar alguma coisa?","Agenda livre {quando}! Quer marcar algo?"],
+"agenda_item":["{quando}, às {hora}: {oque}{onde}.","Tem {oque}{onde}, {quando} às {hora}."],
+"agenda_mais":["E mais {n} coisa na agenda.","Tem mais {n} depois disso."],
+"contato_pergunta_nome":["Claro! De quem é o número?","Qual o nome da pessoa?"],
+"contato_pergunta_tel":["E qual é o número da {pessoa}?","Me fala o telefone da {pessoa}, com DDD."],
+"contato_salvo":["Prontinho, salvei {pessoa} na sua lista.","{pessoa} tá salva. Agora é só pedir pra ligar."],
+"ligar":["Vou ligar pra {pessoa}. É só tocar no botão.","Claro! Toca aqui que eu ligo pra {pessoa}."],
+"avisar_pergunta":["Quer que eu mande essa mensagem pra {pessoa}?","Mando pra {pessoa}? Toca em mandar."],
+"avisado":["Combinado, avisei {pessoa}.","Prontinho, {pessoa} já sabe."],
+"acolhe":["Ah, {nome}, eu tô aqui com você. Quer que eu ligue pra {fam} pra vocês conversarem?","Entendo, {nome}. Às vezes bate mesmo. Quer falar com {fam}? Eu ligo agora.","Tô aqui, viu? Respira fundo comigo. Quer ouvir a voz de {fam}?","Que pena que você tá assim. Que tal uma ligação pra {fam}? Ou me conta o que houve."],
+"papo":["Adoro conversar! Me conta: o que você fez de bom hoje?","Vamos! Me fala de uma coisa que te deixou feliz essa semana.","Claro, {nome}. Do que você gosta mais: música, novela ou receita?"]
+}
+;</script>
 <script>
 /* ===== Protetores do Escudo Amigo — corpo 3D (Tripo) pintado por estado + olhos e bochechas vivos =====
    Escudo (azul) · Remédio (amarelo, cápsula inclinada) · Finanças (verde, triângulo) · Dia a dia (laranja, bola)
@@ -725,6 +1177,197 @@ function Protetor(host, kind, opt){
 }
 
 /* =====================================================================
+   CÉREBRO LOCAL do Escudo Amigo — grátis, instantâneo e sem internet.
+   Entende o português falado (números por extenso, datas, horas, nomes),
+   faz as ações sozinho, pergunta o que faltar e confere golpes.
+   Biblioteca de frases e catálogo de golpes atualizados toda semana.
+   ===================================================================== */
+var CerebroLocal = (function(){
+  /* ---------- texto ---------- */
+  function norm(t){ return ' '+String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/r\$\s?/g,' reais ').replace(/[“”"'!?;]/g,' ').replace(/\s+/g,' ').trim()+' '; }
+  var UN={zero:0,um:1,uma:1,dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12,treze:13,catorze:14,quatorze:14,quinze:15,dezesseis:16,dezasseis:16,dezessete:17,dezassete:17,dezoito:18,dezenove:19,dezanove:19,vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90,cem:100,cento:100,duzentos:200,duzentas:200,trezentos:300,quatrocentos:400,quinhentos:500,seiscentos:600,setecentos:700,oitocentos:800,novecentos:900};
+  // troca números por extenso por algarismos: "duzentos e trinta reais" -> "230 reais"
+  function numeros(t){ var w=t.trim().split(' '), out=[], i=0;
+    while(i<w.length){ if(UN[w[i]]!=null||w[i]==='mil'){ var tot=0,cur=0,j=i,used=false;
+        while(j<w.length){ var x=w[j]; if(UN[x]!=null){ cur+=UN[x]; used=true; j++; } else if(x==='mil'){ tot+=(cur||1)*1000; cur=0; used=true; j++; } else if(x==='e'&&j+1<w.length&&(UN[w[j+1]]!=null)&&used&&!(cur%10!==0&&UN[w[j+1]]>=10&&UN[w[j+1]]<100)){ j++; } else break; }
+        if(used){ out.push(String(tot+cur)); i=j; continue; } }
+      out.push(w[i]); i++; }
+    return ' '+out.join(' ')+' '; }
+  function prep(t){ return numeros(norm(t)).replace(/(\d+) e meia (?!hora)/g,'$1:30 ').replace(/(\d+) e (\d{2}) (?=reais|real|centavos)/g,'$1.$2 '); }
+
+  /* ---------- datas e horas ---------- */
+  var pad=function(n){ return ('0'+n).slice(-2); };
+  function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  var DS=['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
+  function data(n){ var d=new Date(); d.setHours(12,0,0,0);
+    if(/ depois de amanha /.test(n)){ d.setDate(d.getDate()+2); return iso(d); }
+    if(/ amanha /.test(n)){ d.setDate(d.getDate()+1); return iso(d); }
+    if(/ hoje | hj /.test(n)) return iso(d);
+    var m=n.match(/ (\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))? /); if(m){ var y=m[3]?(+m[3]<100?2000+(+m[3]):+m[3]):d.getFullYear(); var r=new Date(y,+m[2]-1,+m[1],12); if(!m[3]&&r<d) r.setFullYear(y+1); return iso(r); }
+    m=n.match(/ dia (\d{1,2}) /); if(m){ var r2=new Date(d.getFullYear(),d.getMonth(),+m[1],12); if(r2<d) r2.setMonth(r2.getMonth()+1); return iso(r2); }
+    for(var i=0;i<7;i++){ var re=new RegExp(' (n?[ao] )?(proxim[ao] )?'+DS[i]+'( feira)?( que vem)? '); if(re.test(n)){ var add=(i-d.getDay()+7)%7; if(add===0||/ que vem | proxim/.test(n)) add+=add===0?7:0; d.setDate(d.getDate()+add); return iso(d); } }
+    m=n.match(/ (daqui a|em) (\d+) dias? /); if(m){ d.setDate(d.getDate()+(+m[2])); return iso(d); }
+    if(/ semana que vem | proxima semana /.test(n)){ d.setDate(d.getDate()+7); return iso(d); }
+    return null; }
+  function hora(n){ var m;
+    if(/ meio ?dia /.test(n)) return /meio ?dia e meia|meio ?dia:30/.test(n)?'12:30':'12:00';
+    if(/ meia ?noite /.test(n)) return '00:00';
+    m=n.match(/ (?:as|a|pras|para as|pelas|umas) (\d{1,2})(?:[:h](\d{2}))?(?: ?h(?:oras?)?)? /)||n.match(/ (\d{1,2})[:h](\d{2}) /)||n.match(/ (\d{1,2}) ?h(?:oras?)? /);
+    if(!m) return null; var h=+m[1], mi=m[2]?+m[2]:0; if(h>23||mi>59) return null;
+    if(/ da tarde | de tarde | da noite | de noite /.test(n)&&h<12) h+=12;
+    return pad(h)+':'+pad(mi); }
+  function minutos(n){ var m=n.match(/ (?:daqui a|em|mais) (\d+) ?(min|minutos?|horas?|h) /); if(!m) return /meia hora/.test(n)?30:null; return /h/.test(m[2])?(+m[1])*60:+m[1]; }
+  function valor(n){ var m=n.match(/ (\d+(?:[.,]\d{1,2})?) ?(reais|real|conto|contos|pila|paus|euros?) /)||n.match(/ reais (\d+(?:[.,]\d{1,2})?) /);
+    if(m) return parseFloat(m[1].replace(',','.'));
+    m=n.match(/ (?:gastei|paguei|custou|deu|foi|comprei .{1,30}? por|de) (\d+(?:[.,]\d{1,2})?) /); return m?parseFloat(m[1].replace(',','.')):null; }
+  function tel(t){ var m=String(t).replace(/[^\d+]/g,' ').match(/(\+?\d[\d ]{7,16}\d)/); return m?m[1].replace(/\s+/g,''):null; }
+  var CAT=[['Mercado',/mercado|feira|padaria|pao|acougue|supermercado|hortifruti|sacolao|quitanda|verdura|fruta|leite/],['Farmácia',/farmacia|drogaria|remedio|medicamento|pomada|vitamina/],['Transporte',/uber|onibus|taxi|gasolina|combustivel|metro|passagem|99|corrida/],['Família',/neta|neto|filh|presente|aniversario|mesada/],['Saúde',/medico|consulta|exame|dentista|plano de saude|fisioterap/],['Casa',/aluguel|condominio|gas|botijao|conserto|faxina|diarista|material/],['Contas',/conta de|luz|agua|telefone|internet|celular|boleto|fatura/]];
+  function categoria(n){ for(var i=0;i<CAT.length;i++) if(CAT[i][1].test(n)) return CAT[i][0]; return 'Outros'; }
+  function cap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
+  var ORIG={};
+  function lembraOrig(t){ ORIG={}; String(t||'').toLowerCase().replace(/[“”"'!?;.,]/g,' ').split(/\s+/).forEach(function(w){ if(w) ORIG[w.normalize('NFD').replace(/[\u0300-\u036f]/g,'')]=w; }); }
+  function acentos(s){ return String(s||'').split(' ').map(function(w){ return ORIG[w]||w; }).join(' '); }
+
+  /* ---------- catálogo de golpes (atualizado toda semana) ---------- */
+  function Gd(){ return window.GOLPES||{golpes:[],geral:[]}; }
+  function analisaGolpe(texto){ var G=Gd(), n=norm(texto), hits=[], score=0;
+    G.golpes.forEach(function(g){ var s=0; g.sinais.forEach(function(si){ try{ if(new RegExp(si[0]).test(n)) s+=si[1]; }catch(e){} }); if(s>0) hits.push({g:g,s:s}); });
+    G.geral.forEach(function(si){ try{ if(new RegExp(si[0]).test(n)) score+=si[1]; }catch(e){} });
+    hits.sort(function(a,b){ return b.s-a.s; }); var top=hits[0]; score+=top?top.s:0;
+    var nivel=score>=5?'golpe':score>=3?'cuidado':'seguro';
+    return {nivel:nivel,score:score,tipo:top?top.g:null}; }
+
+  /* ---------- biblioteca de respostas (várias formas de dizer) ---------- */
+  function diz(k,v){ var RESP=window.RESPOSTAS||{}, arr=RESP[k]||[k]; var t=arr[Math.floor(Math.random()*arr.length)]; return t.replace(/\{(\w+)\}/g,function(m,x){ return v&&v[x]!=null?v[x]:''; }).replace(/\s+([,.!?])/g,'$1').replace(/\s{2,}/g,' ').trim().replace(/^./,function(c){ return c.toUpperCase(); }); }
+
+  /* ---------- conversa com memória curta ---------- */
+  var pend=null;   // pergunta em aberto: {intencao, slots, falta}
+  var R=function(p,h,f,ac,bt){ return {protetor:p,humor:h,fala:f,acoes:ac||[],botoes:bt||[],local:true}; };
+
+  function responder(texto,o,M){ o=o||{}; lembraOrig(texto); var S=M.S, n=prep(texto), nome=S.nome, fam=M.fam1(), money=M.money;
+    var slots={valor:valor(n),data:data(n),hora:hora(n),min:minutos(n)};
+    var achaDose=function(){ var ds=M.doses(); var c=ds.filter(function(d){ var nn=norm(d.n).trim().split(' ')[0], pp=norm(d.para||'').trim(); return n.indexOf(' '+nn)>=0||(pp&&n.indexOf(' '+pp)>=0); });
+      return c.filter(function(d){ return d.s==='agora'; })[0]||c.filter(function(d){ return d.s==='esquecido'; })[0]||c[0]||M.doseAgora()||M.doseEsquecida(); };
+    var achaPessoa=function(){ var c=S.contatos.filter(function(p){ return n.indexOf(' '+p.n.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')+' ')>=0; })[0]; return c?c.n:null; };
+
+    /* análise de mensagem (vinda da tela do Escudo) */
+    if(o.modo==='analisar'){ if(o.img&&!String(texto).trim()) return R('escudo','pensando',diz('golpe_foto_sem_net'),[],[{texto:'Vou contar',acao:{tipo:'abrir',tela:'enviar'}}]);
+      var a=analisaGolpe(texto), tp=a.tipo;
+      var mot=tp?tp.explica:(a.nivel==='seguro'?diz('golpe_seguro_motivo'):diz('golpe_geral_motivo'));
+      var ps=tp?tp.passos.slice(0,3):(a.nivel==='seguro'?['Mesmo assim: nunca passe senha nem código']:['Não faça nada com pressa','Pergunte para alguém da família']);
+      return R('escudo',a.nivel==='golpe'?'perigo':a.nivel==='cuidado'?'atencao':'feliz',diz('golpe_'+a.nivel,{nome:nome,tipo:tp?tp.nome.toLowerCase():''}),[{tipo:'veredito',nivel:a.nivel,motivo:mot,passos:ps,mensagem:texto}]); }
+    if(o.modo==='conta'&&o.img) return R('financas','pensando',diz('conta_foto_sem_net'));
+    if(o.modo==='remedio'&&o.img){ pend={i:'remedio_novo',falta:'nome'}; return R('remedio','pensando',diz('remedio_foto_sem_net')); }
+
+    /* resposta a uma pergunta em aberto */
+    if(pend){ var p=pend; pend=null;
+      if(/^ (nao|deixa|esquece|cancela|agora nao|nao precisa) /.test(n)) return R('familia','calmo',diz('cancelado'));
+      if(p.i==='gasto'&&p.falta==='valor'){ var pv=slots.valor; if(pv==null){ var mm=n.match(/ (\d+)(?:[.,](\d{1,2})| e (\d{2}))? /); if(mm) pv=parseFloat(mm[1]+'.'+(mm[2]||mm[3]||'0')); } if(pv) return gasto(pv,p.cat||categoria(n),p.desc||p.cat); }
+      if(p.i==='compromisso'&&p.falta==='quando'&&(slots.data||slots.hora)) return compromisso(p.titulo,slots.data||p.data,slots.hora||p.hora);
+      if(p.i==='compromisso'&&p.falta==='titulo'){ var tt=cap(texto.trim().replace(/[.!?]$/,'')); return compromisso(tt,p.data,p.hora); }
+      if(p.i==='remedio_novo'&&p.falta==='nome'){ var nm=cap(texto.trim().split(/[ ,.]/)[0]); pend={i:'remedio_novo',falta:'horas',nome:nm}; return R('remedio','feliz',diz('remedio_pergunta_hora',{remedio:nm})); }
+      if(p.i==='remedio_novo'&&p.falta==='horas'){ var hs=(n.match(/\d{1,2}(?:[:h]\d{2})?/g)||[]).map(function(x){ var q=x.split(/[:h]/); return pad(+q[0])+':'+pad(+(q[1]||0)); }).filter(function(x){ return +x.slice(0,2)<24; });
+        if(/ manha /.test(n)&&!hs.length) hs=['08:00']; if(/ noite /.test(n)&&!hs.length) hs=['20:00']; if(!hs.length){ pend=p; return R('remedio','pensando',diz('remedio_pergunta_hora',{remedio:p.nome})); }
+        return R('remedio','feliz',diz('remedio_cadastrado',{remedio:p.nome,horas:hs.join(' e ')}),[{tipo:'novo_remedio',nome:p.nome,horarios:hs}]); }
+      if(p.i==='medicao'&&p.falta==='valor'){ var mv=n.match(/(\d{1,3})\s*(?:por|x|\/)\s*(\d{1,3})/)||n.match(/(\d{2,3})/); if(mv) return R('remedio','feliz',diz('medicao_ok',{tipo:p.tipo.toLowerCase(),valor:mv[2]?mv[1]+' por '+mv[2]:mv[1]}),[{tipo:'anotar_medicao',medida:p.tipo,valor:mv[2]?mv[1]+' por '+mv[2]:mv[1]}]); }
+      if(p.i==='objetivo'&&p.falta==='nome'){ var on0=cap(texto.trim().replace(/[.!?]$/,'')); if(slots.valor) return R('financas','feliz',diz('objetivo_criado',{objetivo:on0,valor:money(slots.valor)}),[{tipo:'nova_meta',nome:on0,alvo:slots.valor}]); pend={i:'objetivo',falta:'alvo',nome:on0}; return R('financas','feliz',diz('objetivo_pergunta_valor',{objetivo:on0})); }
+      if(p.i==='contato'&&p.falta==='nome'){ var cn0=cap(texto.trim().split(' ')[0].replace(/[.,!?]/g,'')); var tf0=tel(texto); if(tf0) return R('familia','feliz',diz('contato_salvo',{pessoa:cn0}),[{tipo:'novo_contato',nome:cn0,telefone:tf0}]); pend={i:'contato',falta:'tel',nome:cn0}; return R('familia','feliz',diz('contato_pergunta_tel',{pessoa:cn0})); }
+      if(p.i==='objetivo'&&p.falta==='alvo'&&!slots.valor){ var ov=n.match(/ (\d+) /); if(ov) slots.valor=+ov[1]; }
+      if(p.i==='objetivo'&&p.falta==='alvo'&&slots.valor) return R('financas','feliz',diz('objetivo_criado',{objetivo:p.nome,valor:money(slots.valor)}),[{tipo:'nova_meta',nome:p.nome,alvo:slots.valor}]);
+      if(p.i==='guardar'&&p.falta==='valor'&&slots.valor) return R('financas','feliz',diz('guardou',{valor:money(slots.valor),objetivo:p.nome||''}),[{tipo:'guardar_meta',nome:p.nome,valor:slots.valor}]);
+      if(p.i==='contato'&&p.falta==='tel'){ var tf=tel(texto); if(tf) return R('familia','feliz',diz('contato_salvo',{pessoa:p.nome}),[{tipo:'novo_contato',nome:p.nome,telefone:tf}]); }
+      if(p.i==='avisar_familia'&&/^ (sim|pode|isso|claro|quero|avisa|manda|ok|beleza|por favor) /.test(n)) return R('familia','feliz',diz('avisado',{pessoa:p.pessoa||fam}),[],[]);
+    }
+
+    /* 1. emergência sempre primeiro */
+    if(/ (dor no peito|falta de ar|nao consigo respirar|cai | caiu | levei um tombo|desmai|socorro|infarto|avc|derrame|passando muito mal|sangrando|me ajuda rapido) /.test(n))
+      return R('familia','perigo',diz('emergencia',{fam:fam}),[],[{texto:'Ligar 192',acao:{tipo:'ligar',pessoa:'192'}},{texto:'Avisar '+fam,acao:{tipo:'avisar',pessoa:fam,mensagem:'Preciso de ajuda agora.'}}]);
+    /* 2. golpe: mensagem colada ou contada */
+    var ag=analisaGolpe(texto);
+    if(ag.score>=4||/ (e golpe|sera que e golpe|isso e golpe|recebi (uma )?mensagem|me ligaram|ligacao estranha|mensagem estranha|me mandaram|pediram (meu|o) codigo|pediram (um )?pix) /.test(n)){
+      if(ag.score>=3) return R('escudo',ag.nivel==='golpe'?'perigo':'atencao',diz('golpe_'+ag.nivel,{nome:nome,tipo:ag.tipo?ag.tipo.nome.toLowerCase():''}),[{tipo:'veredito',nivel:ag.nivel,motivo:ag.tipo?ag.tipo.explica:diz('golpe_geral_motivo'),passos:ag.tipo?ag.tipo.passos:['Não faça nada com pressa','Pergunte para alguém da família'],mensagem:texto}]);
+      return R('escudo','atencao',diz('golpe_pede_ver'),[],[{texto:'Mostrar agora',acao:{tipo:'abrir',tela:'enviar'}}]); }
+    /* 3. remédios */
+    if(/ (ja )?(tomei|tomado|engoli|ja foi o remedio|acabei de tomar) /.test(n)){ var d=achaDose(); if(!d) return R('remedio','feliz',diz('tomei_sem_dose',{nome:nome}));
+      pend={i:'avisar_familia',pessoa:fam}; return R('remedio','feliz',diz('tomei',{remedio:d.n,nome:nome,fam:fam}),[{tipo:'marcar_dose',id:d.id}],[{texto:'Sim, avisar',acao:{tipo:'avisar',pessoa:fam,mensagem:'Tomei a '+d.n+' agora.'}},{texto:'Não precisa',diga:'não precisa'}]); }
+    if(/ (depois eu tomo|vou tomar depois|me lembra (de novo|daqui)|adia|mais tarde eu tomo|agora nao posso tomar) /.test(n)){ var d2=achaDose(); var mn=slots.min||10; if(d2) return R('remedio','calmo',diz('adiar',{min:mn}),[{tipo:'adiar_dose',id:d2.id,minutos:mn}]); }
+    if(/ comprei (mais )?(o |a )?(remedio|comprimido|caixa|losartana|metformina|\w+ina) /.test(n)||/ (comprei|chegou) (mais )?(remedio|caixa)/.test(n)){ var rem=M.remInfo().filter(function(r){ return n.indexOf(r.n.toLowerCase())>=0; })[0]||M.remInfo().filter(function(r){ return r.dias!=null&&r.dias<=7; })[0];
+      var q=(n.match(/ (\d+) (comprimidos|capsulas|unidades) /)||[])[1]||30; if(rem) return R('remedio','feliz',diz('estoque_ok',{remedio:rem.n,qtd:q}),[{tipo:'repor_estoque',nome:rem.n,quantidade:q}]); }
+    var md=n.match(/ (pressao|glicose|glicemia|acucar|diabetes|peso) /);
+    if(md&&/ (deu|ta|esta|mediu|medi|minha|foi|anota|marcou) /.test(n)){ var tipo=/pressao/.test(md[1])?'Pressão':/peso/.test(md[1])?'Peso':'Glicose'; var mv2=n.match(/(\d{1,3})\s*(?:por|x|\/)\s*(\d{1,3})/)||n.match(/ (\d{2,3}) /);
+      if(!mv2){ pend={i:'medicao',falta:'valor',tipo:tipo}; return R('remedio','calmo',diz('medicao_pergunta',{tipo:tipo.toLowerCase()})); }
+      var vv=mv2[2]?mv2[1]+' por '+mv2[2]:mv2[1]; var alto=tipo==='Pressão'&&mv2[2]&&(+mv2[1]>=16&&+mv2[1]<30||+mv2[1]>=160); return R('remedio',alto?'atencao':'feliz',diz(alto?'medicao_alta':'medicao_ok',{tipo:tipo.toLowerCase(),valor:vv}),[{tipo:'anotar_medicao',medida:tipo,valor:vv}]); }
+    if(/ (cadastr|registr|anot|coloc|bota|adiciona)\w* (um |o )?remedio( novo)? |remedio novo /.test(n)){ pend={i:'remedio_novo',falta:'nome'}; return R('remedio','feliz',diz('remedio_pergunta_nome')); }
+    /* 4. dinheiro */
+    if(/ (paguei|ja paguei|quitei) (a |o )?(conta|luz|agua|telefone|internet|gas|aluguel|condominio|boleto|fatura) /.test(n)||/ conta (de|da) \w+ (ta |esta )?paga /.test(n)){ var cc=M.contasAbertas().filter(function(c){ return n.indexOf(c.n.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''))>=0; })[0]||M.contasAbertas()[0];
+      if(cc) return R('financas','feliz',diz('conta_paga',{conta:cc.n.toLowerCase()}),[{tipo:'pagar_conta',id:cc.id}]); }
+    var nc=n.match(/ (conta|boleto|fatura) d[aeo] (\w+)/);
+    if(nc&&/ vence| vencimento| chegou| tenho que pagar| pra pagar/.test(n)){ var nomeC=cap(acentos(nc[2])); return R('financas','feliz',diz('conta_nova',{conta:nomeC.toLowerCase(),valor:slots.valor?money(slots.valor):'',quando:slots.data?M.quando(slots.data):''}),[{tipo:'nova_conta',nome:nomeC,valor:slots.valor||0,vencimento:slots.data||''}]); }
+    if(/ quanto (eu )?(ja )?(gastei|gastou|to gastando|estou gastando)|meus gastos|gastos do mes /.test(n)){ var top0=M.porCategoria()[0], g0=M.gastoMes(), lim0=S.limite||0; return R('financas',g0>lim0?'atencao':'calmo',diz(g0>lim0?'gastos_passou':'gastos_resumo',{total:money(g0),cat:top0?top0[0].toLowerCase():'mercado',sobra:money(Math.max(0,lim0-g0))}),[],[{texto:'Ver planilha',acao:{tipo:'abrir',tela:'planilha'}}]); }
+    if(/ (gastei|paguei|comprei|custou|torrei|dei \d+) /.test(n)){ var cat=categoria(n); var desc=cap(acentos(((n.match(/ (?:na|no|em|de|com) (?:o |a )?([a-z ]{3,25}?) (?:\d|$|hoje|ontem|agora|por|e )/)||[])[1]||cat).trim()));
+      if(!slots.valor){ pend={i:'gasto',falta:'valor',cat:cat,desc:desc}; return R('financas','calmo',diz('gasto_pergunta_valor')); }
+      return gasto(slots.valor,cat,desc); }
+    if(/ (quero|vou) (juntar|guardar|economizar) /.test(n)||/ (novo )?objetivo /.test(n)&&/ (criar|novo|quero) /.test(n)){ var on=cap(acentos(((n.match(/ (?:pra|para|pro) (?:a |o )?(.+?)(?: de \d| \d|$)/)||[])[1]||'').trim()));
+      if(!on){ pend={i:'objetivo',falta:'nome'}; return R('financas','feliz',diz('objetivo_pergunta_nome')); }
+      if(!slots.valor){ pend={i:'objetivo',falta:'alvo',nome:on}; return R('financas','feliz',diz('objetivo_pergunta_valor',{objetivo:on})); }
+      return R('financas','feliz',diz('objetivo_criado',{objetivo:on,valor:money(slots.valor)}),[{tipo:'nova_meta',nome:on,alvo:slots.valor}]); }
+    if(/ (guardei|juntei|economizei|separei|poupei) /.test(n)){ var gn=((n.match(/ (?:pra|para|pro) (?:a |o )?(.+?)(?: \d|$)/)||[])[1]||'').trim();
+      if(!slots.valor){ pend={i:'guardar',falta:'valor',nome:gn}; return R('financas','feliz',diz('guardar_pergunta_valor')); }
+      return R('financas','feliz',diz('guardou',{valor:money(slots.valor),objetivo:gn}),[{tipo:'guardar_meta',nome:gn,valor:slots.valor}]); }
+    if(/ (planilha|tabela|folha de gastos|extrato) /.test(n)) return R('financas','feliz',diz('planilha'),[],[{texto:'Abrir planilha',acao:{tipo:'abrir',tela:'planilha'}}]);
+    if(/ (quanto|gastos|gastei|sobrou|falta|meta do mes|to gastando|estou gastando|dinheiro) /.test(n)&&!/ (gastei \d|paguei \d)/.test(n)){ var top=M.porCategoria()[0], g=M.gastoMes(), lim=S.limite||0, ab=M.contasAbertas()[0];
+      return R('financas',g>lim?'atencao':'calmo',diz(g>lim?'gastos_passou':'gastos_resumo',{total:money(g),cat:top?top[0].toLowerCase():'mercado',sobra:money(Math.max(0,lim-g))})+(ab?' '+diz('conta_lembra',{conta:ab.n.toLowerCase(),quando:M.quando(ab.venc)}):''),[],[{texto:'Ver planilha',acao:{tipo:'abrir',tela:'planilha'}}]); }
+    /* 5. agenda e lembretes */
+    if(/ (me lembr|lembrar de|lembra de|lembrete|nao me deixa esquecer|avisa(r)? (me|eu)) /.test(n)){ var tit=cap(acentos(((n.match(/ (?:lembr\w*|lembrete|esquecer)(?: de| que| pra| para)? (?:eu )?(.+?)(?: (?:amanha|hoje|depois|as|a|na|no|dia|daqui|semana|segunda|terca|quarta|quinta|sexta|sabado|domingo)\b|$)/)||[])[1]||'').trim()));
+      if(!tit){ pend={i:'compromisso',falta:'titulo',data:slots.data,hora:slots.hora}; return R('familia','feliz',diz('lembrete_pergunta_o_que')); }
+      if(!slots.data&&!slots.hora&&!slots.min){ pend={i:'compromisso',falta:'quando',titulo:tit}; return R('familia','feliz',diz('lembrete_pergunta_quando',{oque:tit.toLowerCase()})); }
+      if(slots.min&&!slots.hora){ var dd=new Date(Date.now()+slots.min*6e4); return compromisso(tit,iso(dd),pad(dd.getHours())+':'+pad(dd.getMinutes())); }
+      return compromisso(tit,slots.data,slots.hora); }
+    if(/ (marca|marcar|agenda|agendar|anota|tenho|vou ter|coloca) /.test(n)&&/ (consulta|medico|medica|dentista|exame|fisio|cardiologista|oftalmo|ortopedista|reuniao|almoco|jantar|aniversario|missa|culto|visita|cabeleireiro|manicure|banco|cartorio) /.test(n)){
+      var tt2=cap(acentos((n.match(/ (consulta(?: (?:com|no|na|de) (?:o |a )?[a-z]+)?|medic[oa]|dentista|exame(?: de [a-z]+)?|fisio\w*|cardiologista|oftalmo\w*|ortopedista|reuniao|almoco(?: de familia)?|jantar|aniversario(?: d[aeo] [a-z]+)?|missa|culto|visita(?: d[aeo] [a-z]+)?|cabeleireiro|manicure|banco|cartorio) /)||[])[1]||'Compromisso'));
+      if(!slots.data&&!slots.hora){ pend={i:'compromisso',falta:'quando',titulo:tt2}; return R('familia','feliz',diz('compromisso_pergunta_quando',{oque:tt2.toLowerCase()})); }
+      return compromisso(tt2,slots.data,slots.hora); }
+    if(/ (o que (eu )?tenho|minha agenda|compromisso|agenda de|tem alguma coisa|o que tem) /.test(n)){ var al=M.agenda(); var dia=slots.data; var lst=dia?al.filter(function(x){ return x.dia===dia; }):al.slice(0,1);
+      if(!lst.length) return R('familia','calmo',diz('agenda_vazia',{quando:dia?M.quando(dia):''}),[],[{texto:'Marcar algo',diga:'quero marcar um compromisso'}]);
+      var a1=lst[0]; return R('familia','feliz',diz('agenda_item',{quando:M.quando(a1.dia),hora:a1.h,oque:a1.t.toLowerCase(),onde:a1.onde?', '+a1.onde.toLowerCase():''})+(lst.length>1?' '+diz('agenda_mais',{n:lst.length-1}):''),[],[{texto:'Ver agenda',acao:{tipo:'abrir',tela:'diaadia'}}]); }
+    if(/ (que horas|qual remedio|proximo remedio|tenho remedio|estoque|quantos comprimidos) /.test(n)){ var pr=M.doseAgora()||M.proximaDose(); var baixo=M.remInfo().filter(function(r){ return r.dias!=null&&r.dias<=7; })[0];
+      return R('remedio','calmo',(pr?diz('proximo_remedio',{remedio:pr.n,hora:pr.t}):diz('remedios_todos_ok'))+(baixo?' '+diz('estoque_baixo',{remedio:baixo.n,dias:baixo.dias}):''),[],[{texto:'Ver remédios',acao:{tipo:'abrir',tela:'remedios'}}]); }
+    /* 6. família e contatos */
+    var tf2=tel(texto);
+    if(/ (salva|salvar|anota|guarda|adiciona|cadastra)\w* (o )?(numero|telefone|contato) /.test(n)||(tf2&&/ (numero|telefone) d[aeo] /.test(n))){ var cn=cap(acentos(((n.match(/ (?:numero|telefone|contato) d[aeo] ([a-z]+)/)||[])[1]||'').trim()));
+      if(!cn){ pend={i:'contato',falta:'nome'}; return R('familia','feliz',diz('contato_pergunta_nome')); }
+      if(!tf2){ pend={i:'contato',falta:'tel',nome:cn}; return R('familia','feliz',diz('contato_pergunta_tel',{pessoa:cn})); }
+      return R('familia','feliz',diz('contato_salvo',{pessoa:cn}),[{tipo:'novo_contato',nome:cn,telefone:tf2}]); }
+    if(/ (liga|ligar|chama|telefona)\w* (pra|para|pro|a|o) /.test(n)){ var lp=achaPessoa()||cap(((n.match(/ (?:pra|para|pro) (?:a |o )?([a-z]+)/)||[])[1]||'')); return R('familia','feliz',diz('ligar',{pessoa:lp||fam}),[],[{texto:'Ligar pra '+(lp||fam),acao:{tipo:'ligar',pessoa:lp||fam}}]); }
+    if(/ (avisa|manda (uma )?mensagem|fala) (pra|para|pro|a|o) /.test(n)){ var ap=achaPessoa()||fam; return R('familia','feliz',diz('avisar_pergunta',{pessoa:ap}),[],[{texto:'Mandar',acao:{tipo:'avisar',pessoa:ap,mensagem:texto}}]); }
+    /* 7. sentimentos e companhia */
+    if(/ (sozinh\w*|solidao|trist\w*|saudade\w*|com medo|ansios\w*|nervos\w*|preocupad\w*|nao dormi|sem sono|chatead\w*|desanimad\w*|abatid\w*|deprimid\w*)/.test(n)) return R('familia','calmo',diz('acolhe',{nome:nome,fam:fam}),[],[{texto:'Ligar pra '+fam,acao:{tipo:'ligar',pessoa:fam}},{texto:'Conversar aqui',diga:'quero conversar um pouco'}]);
+    if(/ (conversar|bater papo|conta uma historia|me distrai) /.test(n)) return R('familia','feliz',diz('papo',{nome:nome}));
+    if(/ (obrigad\w*|valeu|brigad\w*|deus te abencoe|agradec\w*) /.test(n)) return R('familia','feliz',diz('agradece',{nome:nome}));
+    if(/ (o que voce faz|como funciona|me ajuda|ajuda|para que serve|o que eu posso) /.test(n)) return R('familia','feliz',diz('ajuda'),[],[{texto:'Ver remédios',acao:{tipo:'abrir',tela:'remedios'}},{texto:'Conferir golpe',acao:{tipo:'abrir',tela:'enviar'}}]);
+    if(/^ (oi|ola|bom dia|boa tarde|boa noite|e ai|tudo bem) /.test(n)) return R('familia','feliz',diz('oi',{nome:nome}));
+    return R('escudo','pensando',diz('nao_entendi',{nome:nome}),[],[{texto:'Remédios',acao:{tipo:'abrir',tela:'remedios'}},{texto:'Gastos',acao:{tipo:'abrir',tela:'financas'}},{texto:'Golpe?',acao:{tipo:'abrir',tela:'enviar'}}]);
+
+    function gasto(v,cat,desc){ var tot=M.gastoMes()+v; return R('financas','feliz',diz('gasto_ok',{valor:money(v),cat:cat.toLowerCase(),total:money(tot)}),[{tipo:'registrar_gasto',valor:v,categoria:cat,descricao:desc||cat}],[{texto:'Ver planilha',acao:{tipo:'abrir',tela:'planilha'}}]); }
+    function compromisso(t,d,h){ d=d||M.hoje(h&&h<M.hm()?1:0); h=h||'09:00'; return R('familia','feliz',diz('compromisso_ok',{oque:t.toLowerCase(),quando:M.quando(d),hora:h}),[{tipo:'novo_compromisso',titulo:t,data:d,hora:h}],[{texto:'Ver agenda',acao:{tipo:'abrir',tela:'diaadia'}}]); }
+  }
+  /* quão confiante o cérebro local está (para decidir se chama a IA da nuvem) */
+  function confiante(r){ return r&&(r.acoes.length>0||/^(golpe_|emergencia)/.test(r._k||'')||r.protetor!=='escudo'||r.humor!=='pensando'); }
+  /* resumo de consulta sem internet: frases importantes, remédios, retorno e exames */
+  function resumirConsulta(tx){ var frases=String(tx).replace(/\s+/g,' ').split(/(?<=[.!?])\s+/).map(function(f){ return f.trim(); }).filter(function(f){ return f.length>6; });
+    var imp=/(tom(e|ar)|mg|miligrama|comprimido|gota|vez(es)? ao dia|de manha|a noite|à noite|evit|dieta|exame|volt|retorn|melhor|piorou|pressao|pressão|colesterol|glicose|caminh|repous|beba|agua|água)/i;
+    var pontos=frases.filter(function(f){ return imp.test(f); }).slice(0,5); if(!pontos.length) pontos=frases.slice(0,3);
+    var rem=[], seen={}; String(tx).replace(/\b([A-Z][a-zçãéíóú]{3,}(?:ina|ol|ona|pril|sartana|statina|mida|pina|zol|cilina|tina|lol|xina))\b(?:[^.]{0,40}?(\d+)\s*(?:mg|miligramas?))?/g,function(m0,nome,mg){ if(seen[nome]) return; seen[nome]=1; var ctx=String(tx).slice(String(tx).indexOf(nome),String(tx).indexOf(nome)+120); var n2=prep(ctx); var h=hora(n2)||(/ noite /.test(n2)?'20:00':/ manha /.test(n2)?'08:00':null); rem.push({nome:nome,dose:mg?mg+' mg':'',horarios:h?[h]:[]}); });
+    var n3=prep(String(tx).replace(/[.,;](?!\d)/g,' ')), ret=null, m=n3.match(/ (?:volt\w+|retorn\w+)(?: aqui)?(?: em| daqui a| depois de)? (\d+) (dias?|semanas?|mes(?:es)?) /);
+    if(m){ var d=new Date(); var k=+m[1]*(/semana/.test(m[2])?7:/mes/.test(m[2])?30:1); d.setDate(d.getDate()+k); ret={data:d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),hora:''}; }
+    else { var dd=data(n3); if(dd&&/ (volt|retorn)/.test(n3)) ret={data:dd,hora:hora(n3)||''}; }
+    var ex=frases.filter(function(f){ return /(exame|evit|dieta|jejum|caminh|beba|repous)/i.test(f); }).slice(0,4);
+    var esp=(String(tx).match(/\b(cardiologista|geriatra|clinico|clínico|endocrinologista|oftalmologista|ortopedista|dermatologista|neurologista)\b/i)||[])[1];
+    return {titulo:'Consulta'+(esp?' com '+esp.toLowerCase():'')+' · '+new Date().toLocaleDateString('pt-BR'),pontos:pontos,remedios:rem,retorno:ret,exames:ex}; }
+  return {resumirConsulta:resumirConsulta,temPendente:function(){ return !!pend; },responder:responder,analisaGolpe:analisaGolpe,confiante:confiante,prep:prep,data:data,hora:hora,valor:valor,get versao(){ return Gd().versao||''; }};
+})();
+
+/* =====================================================================
    MOTOR do Escudo Amigo — dados, cérebro (IA), ações e voz.
    Funciona igual no protótipo e no app: só muda o "provedor" de IA e de voz.
    ===================================================================== */
@@ -776,6 +1419,10 @@ var Motor = (function(){
   function flush(){ if(!STORE.ref) return; if(STORE.busy){ STORE.again=true; return; } STORE.busy=true;
     STORE.ref.set({v:SV,s:JSON.parse(JSON.stringify(S)),em:Date.now()}).catch(function(){}).then(function(){ STORE.busy=false; if(STORE.again){ STORE.again=false; flush(); } }); }
   function reset(){ S=seed(); save(); changed(); }
+  /* catálogo de golpes e frases: atualizados toda semana no repositório; o app baixa a versão nova sozinho */
+  (function atualizaBiblioteca(){ try{ if(!/github\.io$/.test(location.hostname)) return; var v=Math.floor(Date.now()/6048e5);
+    fetch('golpes.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.golpes&&(!window.GOLPES||j.versao>=window.GOLPES.versao)) window.GOLPES=j; }).catch(function(){});
+    fetch('respostas.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.oi) window.RESPOSTAS=j; }).catch(function(){}); }catch(e){} })();
   async function initStore(){ try{ if(!window.claude||!claude.use) return; var db=await claude.use('db'), u=await claude.use('user'); if(!db||!u) return;
       var id=await u.id(); if(!id) return; var ref=db.doc('data/users/'+id+'/casa'); var snap=await ref.get();
       if(snap.exists){ var d=snap.data(); if(d&&d.v===SV&&d.s){ S=JSON.parse(JSON.stringify(d.s)); try{ localStorage.setItem('ea-casa',JSON.stringify({v:SV,s:S})); }catch(e){} changed(); } }
@@ -822,10 +1469,10 @@ var Motor = (function(){
       else if(t==='novo_remedio'){ var hs=(Array.isArray(a.horarios)?a.horarios:[a.horarios||'08:00']).filter(function(x){ return /^\d\d?:\d\d$/.test(x); }).slice(0,6); if(!hs.length) hs=['08:00'];
         hs.forEach(function(h){ S.doses.push({id:uid('d'),t:(h.length===4?'0'+h:h),n:cap(String(a.nome||'Remédio').slice(0,30)),d:String(a.dose||'').slice(0,40)}); }); S.remedios=S.remedios||{}; var nr=S.remedios[cap(String(a.nome||'Remédio').slice(0,30))]||(S.remedios[cap(String(a.nome||'Remédio').slice(0,30))]={}); if(foto){ nr.foto=foto; window.__fotoPend=null; } if(a.estoque) nr.estoque=parseInt(a.estoque,10)||nr.estoque; feitos.push(L('Remédio novo: ','Remédio novo: ')+cap(String(a.nome||''))+' · '+hs.join(', ')); extra.tomei=1; }
       else if(t==='repor_estoque'){ var rn=String(a.nome||'').trim(), q=Math.max(1,Math.min(500,parseInt(a.quantidade,10)||30)); var key=Object.keys(S.remedios||{}).filter(function(k){ return k.toLowerCase()===rn.toLowerCase(); })[0]||rn; if(!key) return; S.remedios=S.remedios||{}; var rr=S.remedios[key]||(S.remedios[key]={}); rr.estoque=(rr.estoque||0)+q; feitos.push(L('Estoque de ','Stock de ')+key+': '+rr.estoque+L(' comprimidos',' comprimidos')); extra.tomei=1; }
-      else if(t==='anotar_medicao'){ var tp=String(a.tipo||'Pressão'), vv2=String(a.valor||'').slice(0,20); if(!vv2) return; S.medicoes=S.medicoes||[]; S.medicoes.unshift({tipo:cap(tp),v:vv2,dia:hoje(),h:hm()}); S.medicoes=S.medicoes.slice(0,30); feitos.push(cap(tp)+': '+vv2+L(' anotada',' apontada')); }
+      else if(t==='anotar_medicao'){ var tp=String(a.medida||'Pressão'), vv2=String(a.valor||'').slice(0,20); if(!vv2) return; S.medicoes=S.medicoes||[]; S.medicoes.unshift({tipo:cap(tp),v:vv2,dia:hoje(),h:hm()}); S.medicoes=S.medicoes.slice(0,30); feitos.push(cap(tp)+': '+vv2+L(' anotada',' apontada')); }
       else if(t==='nova_meta'){ var al=Math.abs(parseFloat(String(a.alvo).replace(',','.')))||0; if(!a.nome) return; S.metas=S.metas||[]; S.metas.push({id:uid('m'),n:cap(String(a.nome).slice(0,40)),alvo:al,guardado:0}); feitos.push(L('Objetivo novo: ','Objetivo novo: ')+cap(String(a.nome))+(al?' · '+money(al):'')); extra.moeda=1; }
-      else if(t==='guardar_meta'){ var gv=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(!gv) return; var mt=(S.metas||[]).filter(function(x){ return x.id===a.id||(a.nome&&x.n.toLowerCase().indexOf(String(a.nome).toLowerCase())>=0); })[0]||(S.metas||[])[0]; if(!mt) return; mt.guardado=Math.round((mt.guardado+gv)*100)/100; feitos.push(L('Guardado ','Guardado ')+money(gv)+' · '+mt.n+' ('+Math.min(100,Math.round(mt.guardado/Math.max(1,mt.alvo)*100))+'%)'); extra.moeda=1; }
-      else if(t==='novo_contato'){ var nn=cap(String(a.nome||'').trim().slice(0,30)); if(!nn) return; var cores=['#F07A2A','#2F6FED','#8B5CF6','#1FA463','#D92D27']; S.contatos.push({n:nn,rel:String(a.relacao||'').slice(0,20),tel:String(a.telefone||'').slice(0,20),cor:cores[S.contatos.length%cores.length]}); feitos.push(L('Contato salvo: ','Contacto guardado: ')+nn); extra.coracao=1; }
+      else if(t==='guardar_meta'){ var gv=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(!gv) return; var nmM=String(a.nome||'').toLowerCase(), cands=(S.metas||[]).filter(function(x){ return x.id===a.id||(nmM&&(x.n.toLowerCase().indexOf(nmM)>=0||nmM.indexOf(x.n.toLowerCase())>=0||nmM.split(' ').some(function(w){ return w.length>3&&x.n.toLowerCase().indexOf(w)>=0; }))); }); var mt=cands[cands.length-1]||(S.metas||[])[(S.metas||[]).length-1]; if(!mt) return; mt.guardado=Math.round((mt.guardado+gv)*100)/100; feitos.push(L('Guardado ','Guardado ')+money(gv)+' · '+mt.n+' ('+Math.min(100,Math.round(mt.guardado/Math.max(1,mt.alvo)*100))+'%)'); extra.moeda=1; }
+      else if(t==='novo_contato'){ var nn=cap(String(a.nome||'').trim().slice(0,30)); if(!nn) return; var cores=['#F07A2A','#2F6FED','#8B5CF6','#1FA463','#D92D27']; S.contatos.push({n:nn,rel:String(a.relacao||'').slice(0,20),tel:String(a.telefone||'').slice(0,20),email:String(a.email||'').slice(0,60),cor:cores[S.contatos.length%cores.length]}); feitos.push(L('Contato salvo: ','Contacto guardado: ')+nn); extra.coracao=1; }
       else if(t==='veredito'){ var nv=['golpe','cuidado','seguro'].indexOf(a.nivel)>=0?a.nivel:'cuidado';
         extra.veredito={nivel:nv,motivo:String(a.motivo||'').slice(0,220),passos:(Array.isArray(a.passos)?a.passos:[]).slice(0,3).map(function(p){ return String(p).slice(0,70); }),quote:String(a.mensagem||'').slice(0,200)};
         S.historico.unshift({dia:hoje(),h:hm(),nivel:nv,motivo:extra.veredito.motivo}); S.historico=S.historico.slice(0,12); }
@@ -845,7 +1492,7 @@ var Motor = (function(){
        :'PAÍS: Brasil. Escreva em português do Brasil, natural e coloquial: "tá", "pra", "a gente". Trate por "você". Moeda: reais (R$). Emergência: 190 (polícia), 192 (SAMU). Pagamentos: Pix.\n')+
     '\nCOMO FALAR (o mais importante):\n- Como um neto carinhoso ou um vizinho de confiança. Nunca como robô, atendente ou assistente virtual.\n- No máximo 2 frases curtas, até 28 palavras no total. Palavras simples do dia a dia. Sem termos técnicos, sem listas, sem emojis, sem aspas.\n- Uma pergunta por vez. Nunca diga "Como posso ajudar", "Entendi sua solicitação", "Claro!", "Certamente", "Com certeza", "Ótima pergunta", "Estou aqui para".\n- Use o nome dela às vezes, não sempre.\n- Fale números como se fala: "trezentos e catorze '+(pt?'euros':'reais')+'", "às oito".\n- Se ela estiver confusa, sozinha ou triste: primeiro acolha com carinho, depois ofereça algo concreto (ligar para alguém da família).\n- Perigo (pedido de senha, código, '+(pt?'MB WAY':'Pix')+' com pressa, link, "troquei de número"): firme e claro, sem assustar. Ex.: "Não faça nada agora."\n- Golpe: nunca afirme com certeza. Fale em chance: "pode ser '+(pt?'burla':'golpe')+'" (atenção, nível cuidado) ou "tem muita cara de '+(pt?'burla':'golpe')+'" (risco alto, nível golpe). Seguro: "parece seguro".\n- Saúde: nunca mude dose nem receite. Dor no peito, falta de ar, queda, confusão súbita: mande ligar já para '+(pt?'o 112':'o 192')+' e ofereça avisar a família.\n- Dinheiro: não dê conselho de investimento.\n- Se faltar informação para agir, pergunte só o que falta.\n- Nunca invente dados: use só os DADOS abaixo.\n'+
     '\nVOCÊ PODE AGIR. Em "acoes" coloque o que o app deve fazer AGORA (ele executa e mostra a confirmação, com opção de desfazer):\n'+
-    '{"tipo":"marcar_dose","id":"..."} quando ela disser que tomou um remédio.\n{"tipo":"adiar_dose","id":"...","minutos":10}\n{"tipo":"registrar_gasto","valor":40,"categoria":"Mercado|Farmácia|Família|Contas|Transporte|Saúde|Casa|Outros","descricao":"..."}\n{"tipo":"pagar_conta","id":"..."}\n{"tipo":"nova_conta","nome":"...","valor":0,"vencimento":"AAAA-MM-DD"}\n{"tipo":"novo_compromisso","titulo":"...","data":"AAAA-MM-DD","hora":"HH:MM","onde":"..."}\n{"tipo":"novo_remedio","nome":"...","dose":"...","horarios":["HH:MM"]}\n{"tipo":"repor_estoque","nome":"...","quantidade":30} quando ela comprar mais remédio.\n{"tipo":"anotar_medicao","tipo":"Pressão|Glicose|Peso","valor":"12 por 8"}\n{"tipo":"nova_meta","nome":"...","alvo":1000} objetivo de guardar dinheiro.\n{"tipo":"guardar_meta","id":"...","valor":50} quando ela guardar dinheiro para um objetivo.\n{"tipo":"novo_contato","nome":"...","telefone":"...","relacao":"filha"}\n{"tipo":"veredito","nivel":"golpe (risco alto) | cuidado (pode ser, confira) | seguro (parece seguro) — escreva só a palavra","motivo":"uma frase simples","passos":["até 3 passos curtos"],"mensagem":"trecho da mensagem analisada"} quando ela mostrar ou contar uma mensagem, ligação ou pedido suspeito.\n'+
+    '{"tipo":"marcar_dose","id":"..."} quando ela disser que tomou um remédio.\n{"tipo":"adiar_dose","id":"...","minutos":10}\n{"tipo":"registrar_gasto","valor":40,"categoria":"Mercado|Farmácia|Família|Contas|Transporte|Saúde|Casa|Outros","descricao":"..."}\n{"tipo":"pagar_conta","id":"..."}\n{"tipo":"nova_conta","nome":"...","valor":0,"vencimento":"AAAA-MM-DD"}\n{"tipo":"novo_compromisso","titulo":"...","data":"AAAA-MM-DD","hora":"HH:MM","onde":"..."}\n{"tipo":"novo_remedio","nome":"...","dose":"...","horarios":["HH:MM"]}\n{"tipo":"repor_estoque","nome":"...","quantidade":30} quando ela comprar mais remédio.\n{"tipo":"anotar_medicao","medida":"Pressão|Glicose|Peso","valor":"12 por 8"}\n{"tipo":"nova_meta","nome":"...","alvo":1000} objetivo de guardar dinheiro.\n{"tipo":"guardar_meta","id":"...","valor":50} quando ela guardar dinheiro para um objetivo.\n{"tipo":"novo_contato","nome":"...","telefone":"...","relacao":"filha"}\n{"tipo":"veredito","nivel":"golpe (risco alto) | cuidado (pode ser, confira) | seguro (parece seguro) — escreva só a palavra","motivo":"uma frase simples","passos":["até 3 passos curtos"],"mensagem":"trecho da mensagem analisada"} quando ela mostrar ou contar uma mensagem, ligação ou pedido suspeito.\n'+
     'Só coloque ação quando ela pediu ou confirmou. Se não tiver certeza, pergunte primeiro.\n'+
     'Ações que falam com outras pessoas NUNCA vão em "acoes": ofereça como botão.\n'+
     '"botoes": 1 a 3 botões grandes, texto de até 3 palavras, com o próximo passo mais útil. Cada botão é {"texto":"...","diga":"frase que ela diria"} OU {"texto":"...","acao":{"tipo":"ligar|avisar","pessoa":"nome","mensagem":"..."}} OU {"texto":"...","acao":{"tipo":"abrir","tela":"remedios|financas|planilha|diaadia|contatos|avisos|enviar|sos"}}.\n'+
@@ -872,6 +1519,10 @@ var Motor = (function(){
     (Array.isArray(o.botoes)?o.botoes:[]).slice(0,3).forEach(function(b){ if(!b||!b.texto) return; var x={texto:String(b.texto).slice(0,28)}; if(b.diga) x.diga=String(b.diga).slice(0,120); else if(b.acao&&typeof b.acao==='object') x.acao={tipo:String(b.acao.tipo||''),pessoa:b.acao.pessoa?String(b.acao.pessoa):'',mensagem:b.acao.mensagem?String(b.acao.mensagem).slice(0,200):'',tela:b.acao.tela?String(b.acao.tela):''}; else x.diga=x.texto; r.botoes.push(x); });
     if(!r.fala) r.fala=L('Não entendi direitinho. Pode falar de novo?','Não percebi bem. Pode repetir?'); return r; }
   async function pensar(texto,o){ o=o||{};
+    // camada 1 (no aparelho, grátis): resolve na hora o que for ação clara, conversa em andamento ou emergência
+    var CL=window.CerebroLocal, dialogo=CL&&CL.temPendente(), loc=null;
+    if(CL&&!o.img&&o.modo!=='analisar'){ try{ loc=CL.responder(texto,o,Motor); }catch(e){ loc=null; } }
+    if(loc&&(dialogo||loc.acoes.length||loc.humor==='perigo'||!(SAMPLE||CEREBRO_API))){ IA.ultima='local'; return loc; }
     if(SAMPLE){ try{ var res=await SAMPLE.json(prompt(texto,o.hist,o.modo),{modelTier:(o.img||o.modo==='analisar')?'default':'quick',cache:false,images:o.img||undefined,signal:o.signal});
         return normal(res); }
       catch(e){ var c=e&&e.code; if(c==='cancelled') throw e; if(['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].indexOf(c)>=0){ SAMPLE=null; IA.estado='simples'; changed(); } IA.ultimoErro=c; } }
@@ -880,13 +1531,18 @@ var Motor = (function(){
         var jj=await rr.json(); var tx=String(jj.texto||''); var a=tx.indexOf('{'), z=tx.lastIndexOf('}'); if(a>=0&&z>a) return normal(JSON.parse(tx.slice(a,z+1))); }
       catch(e){ if(e&&e.name==='AbortError') throw {code:'cancelled'}; } }
     return local(texto,o); }
-  var CEREBRO_API=window.ESCUDO_CEREBRO_API||null;   // no app: 'https://<servidor>/cerebro'
+  var CEREBRO_API=window.ESCUDO_CEREBRO_API||null;
+  /* resumo de consulta: IA quando houver, senão o cérebro local */
+  async function resumirConsulta(tx){ var base=window.CerebroLocal?CerebroLocal.resumirConsulta(tx):{titulo:'Consulta',pontos:[tx.slice(0,200)],remedios:[],retorno:null,exames:[]};
+    if(SAMPLE){ try{ var j=await SAMPLE.json('Você ajuda uma pessoa idosa a entender a consulta médica que ela gravou. Hoje é '+hoje()+'. Leia a transcrição e responda SÓ com JSON: {"titulo":"Consulta com ... (curto)","pontos":["3 a 5 frases muito simples do que o médico disse"],"remedios":[{"nome":"","dose":"","horarios":["HH:MM"]}],"retorno":{"data":"AAAA-MM-DD","hora":"HH:MM"} ou null,"exames":["exames e cuidados pedidos"]}. Não invente nada que não foi dito.\n\nTRANSCRIÇÃO:\n'+tx.slice(0,12000),{modelTier:'default',cache:false});
+        if(j&&j.pontos) return {titulo:String(j.titulo||base.titulo).slice(0,60),pontos:(j.pontos||[]).slice(0,6).map(String),remedios:Array.isArray(j.remedios)?j.remedios.slice(0,6):[],retorno:j.retorno&&/^\d{4}-\d\d-\d\d$/.test(j.retorno.data)?j.retorno:base.retorno,exames:(j.exames||[]).slice(0,6).map(String)}; }catch(e){} }
+    return base; }   // no app: 'https://<servidor>/cerebro'
 
   /* --------- cérebro simples (sem internet / sem IA): entende o básico --------- */
   function palavrasNum(n){ var U={um:1,uma:1,dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12,treze:13,catorze:14,quatorze:14,quinze:15,dezesseis:16,dezasseis:16,dezessete:17,dezassete:17,dezoito:18,dezenove:19,dezanove:19,vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90,cem:100,cento:100,duzentos:200,trezentos:300,quatrocentos:400,quinhentos:500,seiscentos:600,setecentos:700,oitocentos:800,novecentos:900};
     var m=n.match(/((?:(?:um|uma|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|catorze|quatorze|quinze|dezesseis|dezasseis|dezessete|dezassete|dezoito|dezenove|dezanove|vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa|cem|cento|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos|mil)(?:\s+e\s+|\s+)?)+)\s*(reais|real|euros|euro|conto|contos)/);
     if(!m) return 0; var tot=0,cur=0; m[1].trim().split(/\s+/).forEach(function(w){ if(w==='e') return; if(w==='mil'){ tot+=(cur||1)*1000; cur=0; } else if(U[w]) cur+=U[w]; }); return tot+cur; }
-  function local(texto,o){ var n=String(texto||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''), nome=S.nome;
+  function local(texto,o){ if(window.CerebroLocal){ try{ return CerebroLocal.responder(texto,o,Motor); }catch(e){} } var n=String(texto||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''), nome=S.nome;
     var R=function(p,h,f,ac,bt){ return {protetor:p,humor:h,fala:f,acoes:ac||[],botoes:bt||[]}; };
     if(o&&o.modo==='analisar'){ var g=/(link|clique|bit\.ly|http|senha|codigo|token|bloquead|atualiz|premio|ganhou|urgente|multa|sorteio)/.test(n), c=/(troquei de numero|numero novo|pix|mb ?way|transferencia|empresta|deposit|me manda|faz um)/.test(n);
       if(o.img&&!n) return R('escudo','pensando',L('Pra ler a foto eu preciso da internet ligada. Pode me contar o que está escrito?','Para ler a foto preciso da internet. Pode dizer-me o que está escrito?'),[],[{texto:L('Vou contar','Vou contar'),acao:{tipo:'abrir',tela:'enviar'}}]);
@@ -945,7 +1601,7 @@ var Motor = (function(){
   return {CFG:CFG,saveCfg:saveCfg,L:L,money:money,hoje:hoje,hm:hm,mins:mins,quando:quando,cap:cap,DSEM:DSEM,
     get S(){ return S; },save:save,reset:reset,initStore:initStore,onChange:onChange,changed:changed,
     doses:doses,doseAgora:doseAgora,doseEsquecida:doseEsquecida,proximaDose:proximaDose,gastoMes:gastoMes,porCategoria:porCategoria,contasAbertas:contasAbertas,agenda:agenda,
-    aplicar:aplicar,fam1:fam1,remInfo:remInfo,adesao:adesao,desfazer:desfazer,pensar:pensar,local:local,IA:IA,
+    aplicar:aplicar,resumirConsulta:resumirConsulta,fam1:fam1,remInfo:remInfo,adesao:adesao,desfazer:desfazer,pensar:pensar,local:local,IA:IA,
     falar:falar,parar:parar,nomeVoz:nomeVoz,set onTalk(f){ onTalk=f; },temGravada:function(k){ return !!REC[k]&&CFG.pais!=='pt'&&CFG.voz!=='masculina'; }};
 })();
 
@@ -1110,9 +1766,9 @@ var Motor = (function(){
   /* ---------- contatos: começa vazio, puxa da agenda do celular ou digita ---------- */
   function contatosUI(){ var cs=S().contatos;
     return '<button class="btn b-fam agenda" data-a="agenda">'+I.phone+L('Escolher da agenda','Escolher dos contactos')+'</button>'+
-      '<div class="cadlist">'+(cs.length?cs.map(function(c,j){ return '<div class="cadrow"><span class="av2" style="background:'+c.cor+'">'+esc((c.n||'?')[0])+'</span><span class="grow"><b>'+esc(c.n)+'</b><br><small>'+esc(c.tel||L('sem número','sem número'))+(c.rel?' · '+esc(c.rel):'')+'</small></span><button class="round sm" data-a="contrm" data-j="'+j+'" aria-label="Tirar '+esc(c.n)+'">'+I.x+'</button></div>'; }).join('')
+      '<div class="cadlist">'+(cs.length?cs.map(function(c,j){ return '<div class="cadrow"><span class="av2" style="background:'+c.cor+'">'+esc((c.n||'?')[0])+'</span><span class="grow"><b>'+esc(c.n)+'</b><br><small>'+esc(c.tel||L('sem número','sem número'))+(c.email?' · '+esc(c.email):'')+(c.rel?' · '+esc(c.rel):'')+'</small></span><button class="round sm" data-a="contrm" data-j="'+j+'" aria-label="Tirar '+esc(c.n)+'">'+I.x+'</button></div>'; }).join('')
         :'<p class="vazio">'+L('Ninguém ainda. Escolha da agenda ou digite abaixo.','Ninguém ainda. Escolha dos contactos ou escreva abaixo.')+'</p>')+'</div>'+
-      '<div class="addc"><input id="ct_n" placeholder="Nome" aria-label="Nome" autocomplete="name"><input id="ct_t" placeholder="'+L('Telefone com DDD','Número de telemóvel')+'" inputmode="tel" aria-label="Telefone" autocomplete="tel"><button class="btn b-soft sm" data-a="contadd">+ '+L('Adicionar','Adicionar')+'</button></div>'; }
+      '<div class="addc"><input id="ct_n" placeholder="Nome" aria-label="Nome" autocomplete="name"><input id="ct_t" placeholder="'+L('Telefone com DDD','Número de telemóvel')+'" inputmode="tel" aria-label="Telefone" autocomplete="tel"><input id="ct_e" placeholder="'+L('E-mail (se tiver)','E-mail (se tiver)')+'" inputmode="email" aria-label="E-mail" autocomplete="email"><button class="btn b-soft sm" data-a="contadd">+ '+L('Adicionar','Adicionar')+'</button></div>'; }
   SCR.contatos=function(){ return '<div class="scr">'+top(L('Minha gente','A minha gente'),pt('familia','feliz','','1').replace('class="ptw "','class="ptw" style="width:56px;height:56px;flex:none"'))+'<p class="muted" style="font-size:19px">'+L('Quem a gente avisa e chama se precisar.','Quem avisamos e chamamos se for preciso.')+'</p>'+contatosUI()+'</div>'+dock(); };
   async function pegarAgenda(){ var nat=window.ESCUDO_NATIVO, lista=null;
     try{ if(nat&&nat.contatos) lista=await nat.contatos();
@@ -1120,6 +1776,51 @@ var Motor = (function(){
     if(!lista){ toast(L('Neste link a agenda do celular não abre. No app Android ela abre direto. Digite abaixo.','Neste link os contactos não abrem. Na app Android abrem direto. Escreva abaixo.')); var n=$('#ct_n'); if(n) n.focus(); return; }
     M.aplicar(lista.filter(function(c){ return c.nome; }).map(function(c){ return {tipo:'novo_contato',nome:c.nome,telefone:c.telefone}; })); render(false); }
 
+  /* ---------- enviar para a família: WhatsApp, e-mail ou copiar ---------- */
+  function compartilhar(texto,assunto){ var mails=S().contatos.filter(function(c){ return c.email; }).map(function(c){ return c.email; }).join(',');
+    var wa='https://wa.me/?text='+encodeURIComponent(texto), ml='mailto:'+encodeURIComponent(mails)+'?subject='+encodeURIComponent(assunto||'Escudo Amigo')+'&body='+encodeURIComponent(texto);
+    openLayer('<span class="tt h2">'+L('Mandar para a família','Enviar à família')+'</span><div class="partxt">'+esc(texto).replace(/\n/g,'<br>')+'</div>'+
+      '<a class="btn b-fin" href="'+wa+'" target="_blank" rel="noopener">'+I.send+'WhatsApp</a>'+
+      '<a class="btn b-esc" href="'+ml+'">'+I.bell+L('E-mail','E-mail')+(mails?'':' ('+L('sem e-mail salvo','sem e-mail guardado')+')')+'</a>'+
+      '<button class="btn b-soft" data-a="copiar">'+I.clip+L('Copiar texto','Copiar texto')+'</button>'); compartilhar.ult=texto; }
+  function resumoSemana(){ var ad=M.adesao(), tom=ad.reduce(function(a,x){ return a+x.tomadas; },0), tot=ad.reduce(function(a,x){ return a+(x.hoje?x.devidas:x.total); },0);
+    var sete=M.hoje(-6), gs=S().gastos.filter(function(g){ return g.dia>=sete; }).reduce(function(a,g){ return a+(+g.v||0); },0), alert=S().historico.filter(function(h){ return h.dia>=sete&&h.nivel!=='seguro'; }).length, ag=M.agenda().slice(0,3);
+    return L('Resumo da semana de ','Resumo da semana de ')+S().nome+' (Escudo Amigo)\n\n'+
+      '💊 '+L('Remédios: ','Remédios: ')+tom+L(' de ',' de ')+tot+L(' doses tomadas',' doses tomadas')+'\n'+
+      '💰 '+L('Gastos na semana: ','Gastos na semana: ')+money(gs)+' · '+L('no mês: ','no mês: ')+money(M.gastoMes())+'\n'+
+      '🛡️ '+(alert?alert+L(' alerta(s) de golpe barrado(s)',' alerta(s) de burla travado(s)'):L('Nenhum golpe na semana','Nenhuma burla na semana'))+'\n'+
+      (ag.length?'📅 '+L('Próximos: ','Próximos: ')+ag.map(function(a){ return M.cap(quando(a.dia))+' '+a.h+' '+a.t; }).join('; ')+'\n':''); }
+  /* ---------- gravar a consulta (estilo Otter): transcreve, resume e organiza ---------- */
+  var CONS={on:false,rec:null,txt:'',fin:''};
+  SCR.consulta=function(){ var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    return '<div class="scr">'+top(L('Gravar consulta','Gravar consulta'),pt('familia','ouvindo','cons','1').replace('class="ptw cons"','class="ptw cons" style="width:58px;height:58px;flex:none"'))+
+      '<p style="font-size:20px;font-weight:700">'+L('Deixe o celular na mesa durante a consulta. Eu escuto, escrevo e no fim faço um resumo fácil, com remédios e retorno.','Deixe o telemóvel na mesa durante a consulta. Eu ouço, escrevo e no fim faço um resumo fácil, com remédios e retorno.')+'</p>'+
+      '<div class="consbox" id="consbox">'+(CONS.fin||CONS.txt?esc(CONS.fin+' '+CONS.txt):'<span class="muted">'+L('O que for dito aparece aqui…','O que for dito aparece aqui…')+'</span>')+'</div>'+
+      (SR?'<button class="btn '+(CONS.on?'b-red':'b-fam')+'" data-a="consrec" id="consbtn">'+I.mic+(CONS.on?L('Parar de gravar','Parar de gravar'):L('Começar a gravar','Começar a gravar'))+'</button>'
+        :'<p class="muted" style="font-size:17px">'+L('Neste link o microfone é bloqueado. Escreva ou cole o que o médico disse:','Neste link o microfone é bloqueado. Escreva ou cole o que o médico disse:')+'</p><textarea id="constx" class="constx" rows="5" placeholder="'+L('Ex.: tomar Sinvastatina 20 mg à noite, voltar em 30 dias com exame de sangue','Ex.: tomar Sinvastatina 20 mg à noite, voltar em 30 dias com análises')+'"></textarea><button class="btn b-soft sm" data-a="consex">'+L('Usar um exemplo','Usar um exemplo')+'</button>')+
+      '<button class="btn b-esc" data-a="consfim">'+I.check+L('Fazer o resumo','Fazer o resumo')+'</button>'+
+      ((S().notas||[]).length?'<h2 class="tt h2">'+L('Consultas anteriores','Consultas anteriores')+'</h2>'+S().notas.slice(0,5).map(function(nt,j){ return '<button class="dose nota" data-a="consver" data-j="'+j+'"><span class="tx"><b>'+esc(nt.titulo)+'</b><span class="muted" style="font-size:17px">'+M.cap(quando(nt.dia))+'</span></span><span class="chev">'+I.chev+'</span></button>'; }).join(''):'')+
+      '</div>'+dock(); };
+  function consRec(){ var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return;
+    if(CONS.on){ CONS.on=false; try{ CONS.rec.stop(); }catch(e){} render(false); return; }
+    try{ var r=new SR(); CONS.rec=r; r.lang='pt-BR'; r.continuous=true; r.interimResults=true;
+      r.onresult=function(e){ var it=''; for(var i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) CONS.fin+=' '+e.results[i][0].transcript; else it+=e.results[i][0].transcript; } CONS.txt=it; var bx=$('#consbox'); if(bx){ bx.textContent=(CONS.fin+' '+it).trim(); bx.scrollTop=bx.scrollHeight; } };
+      r.onerror=function(e){ if(e.error==='not-allowed'||e.error==='service-not-allowed'){ CONS.on=false; toast(L('Microfone bloqueado aqui. Escreva o que o médico disse.','Microfone bloqueado aqui.')); render(false); } };
+      r.onend=function(){ if(CONS.on){ try{ r.start(); }catch(e){} } };   // continua gravando a consulta inteira
+      M.parar(); r.start(); CONS.on=true; render(false); }catch(e){ toast(L('Não consegui gravar aqui.','Não consegui gravar aqui.')); } }
+  async function consFim(){ if(CONS.on){ CONS.on=false; try{ CONS.rec.stop(); }catch(e){} }
+    var tx=((CONS.fin+' '+CONS.txt).trim())||(($('#constx')||{}).value||'').trim(); if(!tx){ toast(L('Ainda não tem nada gravado ou escrito.','Ainda não há nada gravado ou escrito.')); return; }
+    openLayer('<div class="thinking">'+pt('familia','pensando','big','')+'<span class="tt h2">'+L('Organizando a consulta…','A organizar a consulta…')+'</span></div>');
+    var rs=await M.resumirConsulta(tx); closeLayer(true); CONS.fin=''; CONS.txt='';
+    S().notas=S().notas||[]; S().notas.unshift({dia:M.hoje(),titulo:rs.titulo,transcricao:tx.slice(0,4000),resumo:rs}); S().notas=S().notas.slice(0,20); M.save(); st.nota=0; go('consres'); }
+  SCR.consres=function(){ var nt=(S().notas||[])[st.nota||0]; if(!nt) return SCR.consulta(); var r=nt.resumo, txt=r.titulo+'\n\n'+r.pontos.map(function(p){ return '• '+p; }).join('\n')+(r.remedios.length?'\n\n💊 '+r.remedios.map(function(x){ return x.nome+(x.horarios&&x.horarios.length?' ('+x.horarios.join(', ')+')':''); }).join('; '):'')+(r.retorno?'\n📅 Retorno: '+M.cap(quando(r.retorno.data))+(r.retorno.hora?' às '+r.retorno.hora:''):'')+(r.exames.length?'\n🧪 '+r.exames.join('; '):'');
+    return '<div class="scr">'+top(L('Resumo da consulta','Resumo da consulta'))+
+      '<div class="card resumo"><b class="tt h2" style="text-transform:none">'+esc(r.titulo)+'</b><ul>'+r.pontos.map(function(p){ return '<li>'+esc(p)+'</li>'; }).join('')+'</ul></div>'+
+      (r.remedios.length?'<h2 class="tt h2">'+L('Remédios','Remédios')+'</h2>'+r.remedios.map(function(x,j){ return '<div class="dose"><span class="tx"><b>'+esc(x.nome)+'</b><span class="muted" style="font-size:17px">'+esc((x.dose||'')+(x.horarios&&x.horarios.length?' · '+x.horarios.join(', '):''))+'</span></span><button class="btn b-rem sm" data-a="consrem" data-j="'+j+'">'+L('Cadastrar','Registar')+'</button></div>'; }).join(''):'')+
+      (r.retorno?'<div class="dose" style="background:var(--fam-l)"><span class="tx"><b>'+L('Retorno','Retorno')+'</b><span class="muted" style="font-size:17px">'+M.cap(quando(r.retorno.data))+(r.retorno.hora?' às '+r.retorno.hora:'')+'</span></span><button class="btn b-fam sm" data-a="consret">'+L('Marcar','Marcar')+'</button></div>':'')+
+      (r.exames.length?'<h2 class="tt h2">'+L('Exames e cuidados','Exames e cuidados')+'</h2>'+r.exames.map(function(e){ return '<div class="dose"><span class="tx"><b style="font-size:19px">'+esc(e)+'</b></span></div>'; }).join(''):'')+
+      '<button class="btn b-fin" data-a="share" data-t="'+esc(txt)+'">'+I.send+L('Mandar resumo pra família','Enviar resumo à família')+'</button>'+
+      '<details class="transc"><summary>'+L('Ver tudo o que foi dito','Ver tudo o que foi dito')+'</summary><p>'+esc(nt.transcricao)+'</p></details></div>'+dock(); };
   /* ---------- remédios ---------- */
   SCR.remedios=function(){ var ds=M.doses(), n=ds.filter(function(d){ return d.s==='tomado'; }).length, due=ds.some(function(d){ return d.s==='agora'; }), ad=M.adesao(), med=(S().medicoes||[])[0];
     var SEM=['D','S','T','Q','Q','S','S'];
@@ -1158,7 +1859,7 @@ var Motor = (function(){
   function nAvisos(){ return avisos().filter(function(a){ return a.st!=='calmo'; }).length; }
   SCR.avisos=function(f){ f=f||'todos'; var list=avisos().filter(function(a){ return f==='todos'||a.k===f; });
     var chip=function(k,l,bg,fg){ return '<button class="chip" data-a="filtro" data-f="'+k+'" style="background:'+(f===k?'var(--ink)':bg)+';color:'+(f===k?'#fff':fg)+'">'+l+'</button>'; };
-    return '<div class="scr">'+top('Avisos')+'<div class="chips">'+chip('todos','Todos','var(--soft)','var(--ink)')+chip('remedio','Remédio','var(--rem-l)','var(--rem-d)')+chip('escudo','Escudo','var(--esc-l)','var(--esc-d)')+chip('financas','Finanças','var(--fin-l)','var(--fin-d)')+chip('familia','Dia a dia','var(--fam-l)','var(--fam-d)')+'</div>'+
+    return '<div class="scr">'+top('Avisos')+'<button class="btn b-soft semana" data-a="semana">'+I.send+L('Mandar resumo da semana pra família','Enviar resumo da semana à família')+'</button>'+'<div class="chips">'+chip('todos','Todos','var(--soft)','var(--ink)')+chip('remedio','Remédio','var(--rem-l)','var(--rem-d)')+chip('escudo','Escudo','var(--esc-l)','var(--esc-d)')+chip('financas','Finanças','var(--fin-l)','var(--fin-d)')+chip('familia','Dia a dia','var(--fam-l)','var(--fam-d)')+'</div>'+
       (list.length?'<div style="display:flex;flex-direction:column;gap:2px;margin:0 -6px">'+list.map(function(a){ var bg=a.st==='perigo'?'#FFE3E1':a.st==='esquecido'?'var(--soft)':a.st==='atencao'?'#FFF1D9':KC[a.k][1];
         return '<button class="av'+(a.hot?' hot':'')+'" data-a="go" data-to="'+a.go+'"><span class="ava" style="background:'+bg+'">'+pt(a.k,a.st)+'</span><span class="tx"><span class="hd">'+a.h+'<span style="'+(a.hot?'color:#B45309;font-weight:800':'')+'">'+esc(a.w)+'</span></span><span class="msg">'+esc(a.m)+'</span></span></button>'; }).join('')+'</div>'
        :'<p style="font-size:21px;font-weight:700;padding:20px 4px">'+L('Nada por aqui. Tudo tranquilo!','Nada por aqui. Tudo tranquilo!')+'</p>')+'</div>'+dock();
@@ -1192,7 +1893,7 @@ var Motor = (function(){
       '<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px">'+days.map(function(d){ return '<div style="border-radius:22px;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:2px;background:'+(d[2]?'var(--fam)':d[3]?'var(--fam-l)':'var(--soft)')+';color:'+(d[2]?'#fff':d[3]?'var(--fam-d)':'var(--muted)')+'"><span style="font-size:16px;font-weight:800">'+d[0]+'</span><span class="tt" style="font-size:24px;text-transform:none">'+d[1]+'</span></div>'; }).join('')+'</div>'+
       (ag.length?ag.slice(0,6).map(function(e){ var hj=e.dia===M.hoje(); return '<div class="dose" style="'+(hj?'background:var(--fam-l)':'')+'"><span class="tm" style="color:'+(hj?'var(--fam-d)':'var(--muted)')+'">'+e.h+'</span><span class="tx"><b>'+esc(e.t)+'</b><span class="muted" style="font-size:18px">'+esc(M.cap(quando(e.dia))+(e.onde?' · '+e.onde:''))+'</span></span></div>'; }).join('')
         :'<p style="font-size:21px;font-weight:700">'+L('Nada marcado. Quer anotar algo?','Nada marcado. Quer apontar algo?')+'</p>')+
-      '<button class="btn b-fam" data-a="voz" data-t="'+esc(L('Quero marcar um compromisso','Quero marcar um compromisso'))+'">'+I.mic+L('Marcar compromisso','Marcar compromisso')+'</button>'+
+      '<div class="row2 finbtns"><button class="btn b-fam" data-a="voz" data-t="'+esc(L('Quero marcar um compromisso','Quero marcar um compromisso'))+'">'+I.mic+L('Marcar','Marcar')+'</button><button class="btn b-soft" data-a="go" data-to="consulta">'+I.talk+L('Gravar consulta','Gravar consulta')+'</button></div>'+
       '<h2 class="tt h2">'+L('Minha gente','A minha gente')+'</h2><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">'+S().contatos.map(function(p){ return '<button data-a="ligar" data-n="'+esc(p.n)+'" class="pess"><span style="background:'+p.cor+'">'+esc(p.n[0])+'</span><b>'+esc(p.n)+'</b><i>Ligar</i></button>'; }).join('')+'<button data-a="go" data-to="contatos" class="pess add"><span>+</span><b>'+L('Pessoa','Pessoa')+'</b><i>'+L('Adicionar','Adicionar')+'</i></button></div></div>'+dock();
   };
   /* ---------- resultado do Escudo ---------- */
@@ -1398,7 +2099,7 @@ var Motor = (function(){
     else if(a==='ouvirx'){ OUV.txt=''; OUV.auto=false; ouvirFim(false); }
     else if(a==='bot'){ var m=conv[+b.dataset.ci], bt=m&&m.btn&&m.btn[+b.dataset.bi]; if(!bt) return;
       if(bt.diga) ask(bt.diga);
-      else if(bt.acao){ var ac=bt.acao; if(ac.tipo==='ligar') ligar(ac.pessoa||M.fam1()); else if(ac.tipo==='avisar'){ avisar(ac.pessoa||M.fam1(),ac.mensagem); conv.push({k:'familia',st:'feliz',t:L('Pronto, deixei a mensagem pronta pra ','Pronto, deixei a mensagem pronta para a ')+(ac.pessoa||M.fam1())+'.'}); renderConv(); }
+      else if(bt.acao){ var ac=bt.acao; if(ac.tipo==='fazer'){ var rf=M.aplicar(ac.acoes||[]); toast(rf.feitos.join(' · ')||'Pronto.'); Sfx.play('ding'); b.disabled=true; } else if(ac.tipo==='compartilhar') compartilhar(ac.mensagem||'',ac.assunto||'Escudo Amigo'); else if(ac.tipo==='ligar') ligar(ac.pessoa||M.fam1()); else if(ac.tipo==='avisar'){ avisar(ac.pessoa||M.fam1(),ac.mensagem); conv.push({k:'familia',st:'feliz',t:L('Pronto, deixei a mensagem pronta pra ','Pronto, deixei a mensagem pronta para a ')+(ac.pessoa||M.fam1())+'.'}); renderConv(); }
         else if(ac.tipo==='abrir'){ var tl=ac.tela; if(tl==='enviar') sheetEnviar(); else if(tl==='sos') sheetSos(); else if(SCR[tl]) go(tl); } } }
     else if(a==='desfazer'){ var mm=conv[+b.dataset.ci]; if(mm&&mm.snap&&M.desfazer(mm.snap)){ mm.desfeito=1; renderConv(); toast(L('Desfeito.','Desfeito.')); } }
     else if(a==='testavoz'){ diz(resumo(),null,null); }
@@ -1408,7 +2109,16 @@ var Motor = (function(){
     else if(a==='intro'){ st.scr='intro'; st.arg=+b.dataset.i; render(true); }
     else if(a==='introfim'){ M.parar(); try{ localStorage.setItem('ea-intro','1'); }catch(x){} st.hist=[]; var feito=false; try{ feito=!!localStorage.getItem('ea-cadastro'); }catch(x){} if(MODO_TESTE||!feito) cadIr(0); else { st.scr='inicio'; st.arg=null; render(true); } }
     else if(a==='agenda'){ pegarAgenda(); }
-    else if(a==='contadd'){ var cn=(($('#ct_n')||{}).value||'').trim(), ctel=(($('#ct_t')||{}).value||'').trim(); if(!cn){ toast(L('Escreva o nome.','Escreva o nome.')); return; } M.aplicar([{tipo:'novo_contato',nome:cn,telefone:ctel}]); Sfx.play('coracao'); render(false); }
+    else if(a==='share'){ compartilhar(b.dataset.t,L('Escudo Amigo','Escudo Amigo')); }
+    else if(a==='semana'){ compartilhar(resumoSemana(),L('Resumo da semana','Resumo da semana')); }
+    else if(a==='copiar'){ var ct=compartilhar.ult||''; try{ navigator.clipboard.writeText(ct).then(function(){ toast('Copiado!'); },function(){ toast(L('Segure o texto para copiar.','Mantenha o dedo no texto para copiar.')); }); }catch(x){ toast(L('Segure o texto para copiar.','Mantenha o dedo no texto para copiar.')); } }
+    else if(a==='consrec'){ consRec(); }
+    else if(a==='consfim'){ consFim(); }
+    else if(a==='consex'){ var cx=$('#constx'); if(cx) cx.value=L('Dona Lúcia, a pressão melhorou. Vamos manter a Losartana. Vou passar Sinvastatina 20 miligramas, uma vez à noite, às 22 horas, para o colesterol. Evite fritura e sal. Faça exame de sangue em jejum e volte em 30 dias.','Dona Lúcia, a tensão melhorou. Vamos manter a Losartana. Vou receitar Sinvastatina 20 miligramas, uma vez à noite, às 22 horas, para o colesterol. Evite fritos e sal. Faça análises ao sangue em jejum e volte daqui a 30 dias.'); }
+    else if(a==='consver'){ st.nota=+b.dataset.j; go('consres'); }
+    else if(a==='consrem'){ var nr=(S().notas[st.nota||0]||{}).resumo.remedios[+b.dataset.j]; if(nr){ var rf2=M.aplicar([{tipo:'novo_remedio',nome:nr.nome,dose:nr.dose||'',horarios:nr.horarios&&nr.horarios.length?nr.horarios:['08:00']}]); toast(rf2.feitos[0]||'Pronto'); Sfx.play('ding'); b.disabled=true; b.textContent='✓'; } }
+    else if(a==='consret'){ var rr=(S().notas[st.nota||0]||{}).resumo.retorno; if(rr){ var rf3=M.aplicar([{tipo:'novo_compromisso',titulo:L('Retorno no médico','Retorno ao médico'),data:rr.data,hora:rr.hora||'09:00'}]); toast(rf3.feitos[0]||'Pronto'); Sfx.play('coracao'); b.disabled=true; b.textContent='✓'; } }
+    else if(a==='contadd'){ var cn=(($('#ct_n')||{}).value||'').trim(), ctel=(($('#ct_t')||{}).value||'').trim(), cmail=(($('#ct_e')||{}).value||'').trim(); if(!cn){ toast(L('Escreva o nome.','Escreva o nome.')); return; } M.aplicar([{tipo:'novo_contato',nome:cn,telefone:ctel,email:cmail}]); Sfx.play('coracao'); render(false); }
     else if(a==='contrm'){ S().contatos.splice(+b.dataset.j,1); M.save(); render(false); }
     else if(a==='cad'){ var ci=+b.dataset.i; cadSalvar(ci); if(b.dataset.nao){ var S1=S(); S1.permissoes=S1.permissoes||{}; S1.permissoes[b.dataset.nao]='nao'; M.save(); } cadIr(ci+1); }
     else if(a==='cadfim'){ cadSalvar(+st.arg||0); cadFim(); }
