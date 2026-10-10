@@ -1985,7 +1985,7 @@ var Motor = (function(){
   /* ---------- início ---------- */
   SCR.inicio=function(){
     var due=M.doseAgora(), esq=M.doseEsquecida(), prox=M.proximaDose(), conta=M.contasAbertas()[0], ag=M.agenda()[0], alerta=S().historico[0];
-    var head='<div class="top"><div class="brand">'+LOGO+'<b>Escudo Amigo</b></div><button class="round" data-a="avisos" aria-label="Avisos" style="position:relative">'+I.bell+(nAvisos()?'<span class="badge-n">'+nAvisos()+'</span>':'')+'</button><button class="round" data-a="cfg" aria-label="Ajustes">'+I.gear+'</button></div>';
+    var head='<div class="top"><div class="brand"></div><button class="round" data-a="avisos" aria-label="Avisos" style="position:relative">'+I.bell+(nAvisos()?'<span class="badge-n">'+nAvisos()+'</span>':'')+'</button><button class="round" data-a="cfg" aria-label="Ajustes">'+I.gear+'</button></div>';
     var news=due?'<button class="news" data-a="go" data-to="alarme"><span class="dot"></span><span class="grow">'+L('Agora: hora da ','Agora: hora da ')+esc(due.n)+'</span><span class="chev">'+I.chev+'</span></button>'
       :esq?'<button class="news grey" data-a="go" data-to="remedios"><span class="dot"></span><span class="grow">'+esc(esq.n)+L(' das ',' das ')+esq.t+L(' não foi marcada',' não foi marcada')+'</span><span class="chev">'+I.chev+'</span></button>':'';
     var spot=function(k,label,stx,act,to,state,hot){ return '<button class="spot sp-'+k+(hot?' hot':'')+'" data-a="'+act+'" data-to="'+(to||'')+'"><span class="sp-stage"><span class="sp-glow"></span>'+pt(k,state||'calmo')+(hot?'<span class="sp-badge">1</span>':'')+'</span><span class="tt">'+label+'</span><span class="st">'+esc(stx)+'</span></button>'; };
