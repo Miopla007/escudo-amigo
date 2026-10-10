@@ -646,6 +646,36 @@ a.btn{text-decoration:none}
 .dkhome .logoh{display:block;height:auto;width:196px;max-width:60vw}
 .introlg{display:flex;justify-content:center;padding:4px 0 10px}.introlg .logoh{width:min(230px,62vw);height:auto}
 .intro .stagewrap:has(.introlg){flex-direction:column}
+/* 3.1 · telas cheias organizadas, sem cortes e sem nada por cima */
+.cad:not(.perm){overflow:hidden}
+.cadscroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:16px;margin:0 -16px;padding:4px 16px 12px}
+.cadscroll>*{flex-shrink:0}
+.cad:not(.perm)>.btn:last-child{position:static;box-shadow:0 10px 22px -10px var(--sh)}
+.intro .stagewrap:not(.tw){align-items:center;justify-content:center}
+.intro .crew4{max-height:none;align-content:center}
+.intro .cq{min-height:0;justify-content:center;box-sizing:border-box;overflow:hidden}
+.intro .cq b{line-height:1.1}
+.intro .cl{box-sizing:border-box}
+/* dentro do visualizador do Claude a área segura já vem descontada: não somar duas vezes */
+html.rootpad .app .scr{padding-top:12px!important}
+html.rootpad .app .scr.full{padding-top:8px!important}
+html.rootpad .app .scr.full,html.rootpad .app.dockat .scr.full{padding-bottom:14px}
+html.rootpad .app .dock.com{padding-bottom:6px}
+html.rootpad .app .sheet{padding-bottom:18px}
+.cadscroll{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(180deg,#000 calc(100% - 26px),transparent);padding-bottom:26px}
+@media (max-height:760px){ .cad:not(.perm) .cadhead .ptw{width:74px!important;height:84px!important} .cad:not(.perm) .cadhead h1{font-size:28px} }
+@media (max-height:620px){ .cad:not(.perm) .cadhead .ptw{width:56px!important;height:64px!important} .cad:not(.perm) .cadhead h1{font-size:25px} }
+@media (max-height:760px){ .perm .pdisc{width:170px!important;height:170px!important} .perm .cadhead.big .pdisc .ptw{width:118px;height:132px} .perm .cadhead.big .tt{font-size:30px} .perm .cadhead.big p{font-size:19px} .perm .cadhead.big{gap:8px} }
+@media (max-height:620px){ .perm .pdisc{width:128px!important;height:128px!important} .perm .cadhead.big .pdisc .ptw{width:88px;height:100px} .perm .cadhead.big .tt{font-size:26px} }
+.cad.perm{overflow:hidden}
+.cad.perm .cadscroll{justify-content:center}
+.cad.perm .cadscroll .cadhead.big{flex:0 0 auto}
+.perm .pdisc{width:min(230px,27vh)!important;height:min(230px,27vh)!important}
+.perm .cadhead.big .pdisc .ptw{width:70%;height:78%}
+.cad>.btn{flex:none}
+.cad.perm .cadhead.big{min-height:0;overflow-y:auto;justify-content:safe center}
+.cad.perm .cadbtns{flex:none}
+@media (max-height:600px){ .perm .cadhead.big p{font-size:17px} .perm .cadhead.big .tt{font-size:24px} }
 </style></head><body>
 <div class="app" id="app"><div id="view"></div><div id="layer"></div></div>
 
@@ -2080,7 +2110,7 @@ var Motor = (function(){
     return '<div class="mk mk-fam"><div class="mkr"><b>12:30</b><span>'+L('Amanhã · Almoço de família','Amanhã · Almoço de família')+'</span></div><div class="mkr"><b>10:00</b><span>'+L('Quarta · Cardiologista','Quarta · Cardiologista')+'</span></div><div class="mkg"><i style="background:#A84508">M</i><i style="background:#1B4DB3">P</i><i style="background:#6236C9">R</i></div>'+pt('familia','feliz','mkp')+'</div>'; }
 
   SCR.intro=function(i){ i=+i||0; var s=INTRO[i], stage='', light=s.bg==='#FFFFFF';
-    if(s.k==='todos') stage='<div class="introlg">'+logoH(230)+'</div><div class="crew4">'+[['escudo','Escudo','#1B4DB3','#fff'],['remedio','Remédio','#FFD23F','#3D2A00'],['financas','Finanças','#3CC883','#14171C'],['familia',L('Dia a dia','Dia a Dia'),'#FF8A3D','#14171C']].map(function(c){ return '<div class="cq" style="background:'+c[2]+';color:'+c[3]+'">'+pt(c[0],'calmo','','1')+'<b>'+c[1]+'</b></div>'; }).join('')+'</div>';
+    if(s.k==='todos') stage='<div class="crew4">'+[['escudo','Escudo','#1B4DB3','#fff'],['remedio','Remédio','#FFD23F','#3D2A00'],['financas','Finanças','#3CC883','#14171C'],['familia',L('Dia a dia','Dia a Dia'),'#FF8A3D','#14171C']].map(function(c){ return '<div class="cq" style="background:'+c[2]+';color:'+c[3]+'">'+pt(c[0],'calmo','','1')+'<b>'+c[1]+'</b></div>'; }).join('')+'</div>';
     else if(s.k==='cores') stage='<div class="clist">'+[['atencao','#FFB627','#3A2400','Amarelo',L('é atenção','é atenção')],['perigo','#A51A16','#fff','Vermelho',L('é risco alto','é risco alto')],['esquecido','#9AA1AB','#14171C',L('Cinza','Cinzento'),L('é algo esquecido','é algo esquecido')]].map(function(c){ return '<div class="cl'+(c[0]==='perigo'?' pulsa':'')+'" style="background:'+c[1]+';color:'+c[2]+'">'+pt('escudo',c[0],'','1')+'<span><b>'+c[3]+'</b> '+c[4]+'</span></div>'; }).join('')+'</div>';
     else stage='<div class="halo3"><i style="background:'+s.halo2+'"></i><i style="background:'+s.halo+'"></i>'+pt(s.pk||(s.k==='voz'?'escudo':s.k),s.k==='voz'?'ouvindo':'calmo','solo','1')+(s.k==='voz'?'<div class="vbars on light hb">'+'<i></i>'.repeat(7)+'</div>':'')+'</div>';
     var lbl=s.last?L('Vamos começar','Vamos começar'):'Continuar';
@@ -2486,9 +2516,19 @@ var Motor = (function(){
     var tl=quem&&telLink(quem.tel); if(tl) setTimeout(function(){ try{ location.href=tl; }catch(e){} },600); }
   function avisar(n,msg){ Sfx.play('ding'); toast(L('Mensagem pronta no WhatsApp para ','Mensagem pronta no WhatsApp para ')+n+'.'); }
   /* ---------- render ---------- */
+  /* telas cheias: nada cortado nem por cima — o conteúdo rola numa área própria e o botão fica sempre no fim */
+  function cadWrap(){ var sc=$('#view .scr.cad'); if(!sc||$('.cadscroll',sc)) return; var kids=[].slice.call(sc.children), n=kids.length; while(n>1&&kids[n-1].classList.contains('btn')) n--; if(n===kids.length) return;
+    var w=document.createElement('div'); w.className='cadscroll'; kids.slice(1,n).forEach(function(k){ w.appendChild(k); }); sc.insertBefore(w,kids[n]); }
+  /* personagens da apresentação cabem na altura que sobra (antes de desenhar) */
+  function ajustaTela(){ var cw=$('#view .intro .crew4'); if(cw){ var hh=cw.parentElement.clientHeight, ww=cw.clientWidth, rowH=Math.max(90,(hh-10)/2), colW=(ww-10)/2; var ph=Math.max(48,Math.min(132,rowH-44,colW*0.9));
+      cw.style.height=Math.min(hh,rowH*2+10)+'px'; $$('.cq',cw).forEach(function(c){ c.style.height=rowH+'px'; var p=$('.ptw',c); if(p){ p.style.height=ph+'px'; p.style.width=Math.round(ph*0.9)+'px'; } }); }
+    var cl=$('#view .intro .clist'); if(cl){ var h2=cl.parentElement.clientHeight, r2=Math.max(64,Math.min(110,(h2-20)/3)), p2=Math.max(44,Math.min(104,r2-12));
+      $$('.cl',cl).forEach(function(c){ c.style.minHeight=r2+'px'; var p=$('.ptw',c); if(p){ p.style.height=p2+'px'; p.style.width=Math.round(p2*0.92)+'px'; } }); } }
+  window.addEventListener('resize',function(){ if(st.scr==='intro'&&!$('.intro.tutslide')) render(false); });
+  try{ if(parseFloat(getComputedStyle(document.documentElement).paddingTop)>0) document.documentElement.classList.add('rootpad'); }catch(e){}
   function render(anim){ var arg=st.arg, s=st.scr;
     if(s.indexOf('res:')===0){ arg=s.slice(4); s='res'; }
-    view.innerHTML=(SCR[s]||SCR.inicio)(arg); mount(view);
+    view.innerHTML=(SCR[s]||SCR.inicio)(arg); cadWrap(); ajustaTela(); mount(view);
     if(anim&&HAS&&!reduced) gsap.fromTo(view.firstChild,{opacity:0,y:14},{opacity:1,y:0,duration:.32,ease:'power2.out'});
     onShow(s,arg); }
   /* ---------- demonstrações animadas na apresentação (como funciona de verdade) ---------- */
