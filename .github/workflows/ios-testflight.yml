@@ -88,6 +88,27 @@ jobs:
           "NSContactsUsageDescription" = "Para escolher, nos seus contactos, as pessoas da família que a app deve chamar em caso de ajuda.";
           ST
           ruby -e 'require "xcodeproj"; p=Xcodeproj::Project.open("App.xcodeproj"); t=p.targets.find{|x| x.name=="App"}; g=p.main_group.find_subpath("App",false); unless g.children.any?{|f| f.display_name=="InfoPlist.strings"}; v=g.new_variant_group("InfoPlist.strings"); v.new_reference("pt-PT.lproj/InfoPlist.strings").name="pt-PT"; t.resources_build_phase.add_file_reference(v); end; p.root_object.known_regions|=["pt-BR","pt-PT"]; p.save'
+      - name: Conferir segredos da Apple
+        id: seg
+        env:
+          A: ${{ secrets.ASC_KEY_ID }}
+          B: ${{ secrets.ASC_ISSUER_ID }}
+          C: ${{ secrets.ASC_KEY_P8 }}
+          D: ${{ secrets.APPLE_TEAM_ID }}
+          E: ${{ vars.SERVIDOR_URL }}
+        run: |
+          falta=""
+          [ -n "$A" ] || falta="$falta ASC_KEY_ID"; [ -n "$B" ] || falta="$falta ASC_ISSUER_ID"; [ -n "$C" ] || falta="$falta ASC_KEY_P8"; [ -n "$D" ] || falta="$falta APPLE_TEAM_ID"
+          [ -n "$E" ] || echo "::warning::Falta a variável SERVIDOR_URL: o app vai sem a IA na nuvem (a assinatura não entregaria nada)."
+          echo "falta=$falta" >> $GITHUB_OUTPUT
+          [ -z "$falta" ] || echo "::warning::Faltam os segredos:$falta. Vou só testar se o app compila (sem enviar para a Apple)."
+      - name: Teste de compilação (sem assinatura)
+        if: steps.seg.outputs.falta != ''
+        working-directory: app-nativo/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO | tail -40
+          echo "::error::O app compila. Para enviar ao TestFlight, cadastre os segredos:${{ steps.seg.outputs.falta }} (veja PUBLICAR.md, Parte C)."
+          exit 1
       - name: Chave do App Store Connect
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
