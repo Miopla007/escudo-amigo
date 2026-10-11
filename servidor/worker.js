@@ -7,7 +7,7 @@
 //   POST /fala     -> voz natural (ElevenLabs, opcional; sem chave o app usa a voz do celular + falas gravadas)
 // Configurar no painel da Cloudflare: Settings > Bindings > Workers AI (nome: AI)
 // Segredos opcionais: RESEND_API_KEY, e PELO MENOS UMA voz neural:
-//   ELEVENLABS_API_KEY + VOZ_BR_F  (mais humana; modelo flash = resposta mais rápida)
+//   ELEVENLABS_API_KEY + VOZ_BR_F (voz do Brasil) + VOZ_PT_F (voz de Portugal)  (mais humana; modelo flash = resposta mais rápida)
 //   AZURE_TTS_KEY + AZURE_TTS_REGION (Azure Speech, plano gratuito F0; vozes pt-BR Thalita/Francisca)
 //   GOOGLE_TTS_KEY (Google Cloud Text-to-Speech, cota gratuita mensal; voz pt-BR Neural2/Chirp HD)
 // A ordem é: ElevenLabs -> Azure -> Google. Se uma falhar ou acabar a cota, passa para a próxima.
@@ -73,8 +73,9 @@ export default {
 // ---- vozes neurais em cadeia (a primeira que responder) ----
 async function falaNeural(t,o,env){
   const devagar=o.ritmo==='devagar', pt=o.pais==='pt', masc=o.voz==='masculina';
-  if(env.ELEVENLABS_API_KEY&&env.VOZ_BR_F&&!pt&&!masc){ try{
-    const r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+env.VOZ_BR_F+'?output_format=mp3_22050_32&optimize_streaming_latency=3',{method:'POST',headers:{'xi-api-key':env.ELEVENLABS_API_KEY,'content-type':'application/json'},
+  const vozEL=pt?env.VOZ_PT_F:env.VOZ_BR_F;   // uma voz para cada país (Portugal soa diferente do Brasil)
+  if(env.ELEVENLABS_API_KEY&&vozEL&&!masc){ try{
+    const r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vozEL+'?output_format=mp3_22050_32&optimize_streaming_latency=3',{method:'POST',headers:{'xi-api-key':env.ELEVENLABS_API_KEY,'content-type':'application/json'},
       body:JSON.stringify({text:t,model_id:'eleven_flash_v2_5',language_code:'pt',voice_settings:{stability:.42,similarity_boost:.8,style:.3,speed:devagar?.9:1}})});
     if(r.ok) return await r.arrayBuffer(); }catch(e){} }
   if(env.AZURE_TTS_KEY&&env.AZURE_TTS_REGION){ try{
