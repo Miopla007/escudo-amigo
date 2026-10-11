@@ -99,7 +99,7 @@ REMÉDIO · NA HORA CERTA
 • Aviso quando o remédio está a acabar e histórico da semana.
 
 FINANÇAS · CONTAS EM DIA
-• Diga "gastei 25 euros na farmácia" e o gasto vai para a folha.
+• Diga "gastei 25 euros na farmácia" e o gasto vai para a folha de gastos.
 • Total do mês, meta e aviso antes de a conta vencer.
 
 DIA A DIA · AGENDA E FAMÍLIA
