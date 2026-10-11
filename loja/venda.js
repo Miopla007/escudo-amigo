@@ -21,7 +21,7 @@ const TX={br:[['Mensagem estranha no celular?','Me mostre antes de clicar. Eu di
 (async()=>{ const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium'}); const pg=await b.newPage({viewport:{width:1320,height:2868},deviceScaleFactor:1});
  const css="@font-face{font-family:L;font-weight:800;src:url(data:font/woff2;base64,"+f64('lexend',800)+")}@font-face{font-family:A;font-weight:700;src:url(data:font/woff2;base64,"+f64('atkinson-hyperlegible-next',700)+")}";
  for(const pais of ['br','pt']) for(let i=0;i<6;i++){ const [f,tela,yy,cor,dy]=CENA[i]; const y0=typeof yy==='object'?yy[pais]:yy; const [h,s]=TX[pais][i];
-  const foto=fs.readFileSync(FOT+f+'.jpg').toString('base64'); const sb=y0===0, SB=JSON.parse(fs.readFileSync(RAW+'sb.json')); const scr=fs.readFileSync(RAW+pais+'_'+tela+(sb?'_sb':'')+'.png').toString('base64');
+  const foto=fs.readFileSync(FOT.replace('/fotos/','/f'+pais+'/')+f+'.jpg').toString('base64'); const sb=y0===0, SB=JSON.parse(fs.readFileSync(RAW+'sb.json')); const scr=fs.readFileSync(RAW+pais+'_'+tela+(sb?'_sb':'')+'.png').toString('base64');
   const ang=[-13,12,-12,13,-12,12][i], PW=780, SW=PW-60, esc=SW/1320;
   await pg.setContent(`<style>${css}*{margin:0;box-sizing:border-box}body{width:1320px;height:2868px;position:relative;overflow:hidden;background:${cor}}
   .ft{position:absolute;left:0;top:${-dy}px;width:1320px;height:auto}
