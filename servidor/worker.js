@@ -11,6 +11,8 @@
 //   AZURE_TTS_KEY + AZURE_TTS_REGION (Azure Speech, plano gratuito F0; vozes pt-BR Thalita/Francisca)
 //   GOOGLE_TTS_KEY (Google Cloud Text-to-Speech, cota gratuita mensal; voz pt-BR Neural2/Chirp HD)
 // A ordem é: ElevenLabs -> Azure -> Google. Se uma falhar ou acabar a cota, passa para a próxima.
+// Opcional: BRAVE_API_KEY (busca na web mais completa). Sem ela, a busca usa Wikipedia e DuckDuckGo (grátis).
+//   POST /busca {pergunta}  -> resposta curta + fontes      POST /tempo {cidade | lat,lon} -> previsão do tempo (Open-Meteo)
 const CORS={'access-control-allow-origin':'*','access-control-allow-methods':'POST,OPTIONS','access-control-allow-headers':'content-type'};
 const J=(o,s=200)=>new Response(JSON.stringify(o),{status:s,headers:{...CORS,'content-type':'application/json'}});
 const LLM='@cf/meta/llama-3.3-70b-instruct-fp8-fast', VISAO='@cf/meta/llama-3.2-11b-vision-instruct', OUVIDO='@cf/openai/whisper-large-v3-turbo';
@@ -39,6 +41,21 @@ export default {
         const audio=await falaNeural(t,{ritmo,pais,voz},env); if(!audio) return new Response('sem voz',{status:501,headers:CORS});
         const out=new Response(audio,{headers:{'content-type':'audio/mpeg','cache-control':'public, max-age=2592000'}}); await cache.put(ck,out.clone());
         return new Response(out.body,{headers:{...CORS,'content-type':'audio/mpeg','x-cache':'miss'}}); }
+      // pesquisa na internet com resumo simples e fontes (grátis: Wikipedia + DuckDuckGo; Brave se tiver chave)
+      if(url.pathname==='/busca'){ const {pergunta='',pais='br'}=await req.json(); const q=String(pergunta).slice(0,200).trim(); if(!q) return J({erro:'vazio'},400);
+        const ck=new Request('https://cache.escudo/busca/'+pais+'/'+encodeURIComponent(q.toLowerCase())); const hit=await caches.default.match(ck); if(hit) return new Response(hit.body,{headers:{...CORS,'content-type':'application/json'}});
+        const fontes=await pesquisar(q,pais,env); let resposta='';
+        if(fontes.length&&env.AI){ const ctx=fontes.map((f,i)=>'['+(i+1)+'] '+f.titulo+': '+f.trecho).join('\n').slice(0,6000);
+          const r=await env.AI.run(LLM,{messages:[{role:'system',content:'Você responde a uma pessoa idosa, em português '+(pais==='pt'?'de Portugal':'do Brasil')+', com no máximo 3 frases curtas e simples, só com base nas fontes. Se as fontes não respondem, diga que não achou com certeza. Nunca invente. Não dê conselho médico ou financeiro definitivo: sugira confirmar com o médico ou o banco.'},{role:'user',content:'Pergunta: '+q+'\n\nFontes:\n'+ctx}],max_tokens:220,temperature:.2});
+          resposta=(r.response||'').trim(); }
+        const out=J({resposta:resposta||(fontes[0]?fontes[0].trecho:''),fontes:fontes.slice(0,3).map(f=>({titulo:f.titulo,url:f.url}))});
+        await caches.default.put(ck,new Response(out.clone().body,{headers:{'content-type':'application/json','cache-control':'public, max-age=21600'}})); return out; }
+      // previsão do tempo (Open-Meteo, grátis e sem chave)
+      if(url.pathname==='/tempo'){ const {lat,lon,cidade}=await req.json(); let la=lat,lo=lon,nome=cidade||'';
+        if((la==null||lo==null)&&cidade){ const g=await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=pt&name='+encodeURIComponent(cidade))).json(); const p=g.results&&g.results[0]; if(p){ la=p.latitude; lo=p.longitude; nome=p.name; } }
+        if(la==null||lo==null) return J({erro:'sem local'},400);
+        const w=await (await fetch('https://api.open-meteo.com/v1/forecast?latitude='+la+'&longitude='+lo+'&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=2')).json();
+        return J({cidade:nome,agora:w.current,hoje:{max:w.daily.temperature_2m_max[0],min:w.daily.temperature_2m_min[0],chuva:w.daily.precipitation_probability_max[0]},amanha:{max:w.daily.temperature_2m_max[1],min:w.daily.temperature_2m_min[1],chuva:w.daily.precipitation_probability_max[1]}}); }
       return new Response('Escudo Amigo',{headers:CORS});
     }catch(e){ return J({erro:String(e).slice(0,200)},500); }
   }
@@ -63,3 +80,12 @@ async function falaNeural(t,o,env){
     if(r.ok){ const j=await r.json(); return Uint8Array.from(atob(j.audioContent),c=>c.charCodeAt(0)).buffer; } }catch(e){} }
   return null;
 }
+
+// ---- busca: junta resultados de fontes gratuitas ----
+async function pesquisar(q,pais,env){ const out=[]; const lang=pais==='pt'?'pt':'pt';
+  try{ if(env.BRAVE_API_KEY){ const r=await fetch('https://api.search.brave.com/res/v1/web/search?count=5&search_lang=pt&country='+(pais==='pt'?'PT':'BR')+'&q='+encodeURIComponent(q),{headers:{'X-Subscription-Token':env.BRAVE_API_KEY,accept:'application/json'}});
+      if(r.ok){ const j=await r.json(); (j.web&&j.web.results||[]).slice(0,5).forEach(x=>out.push({titulo:x.title,url:x.url,trecho:String(x.description||'').replace(/<[^>]+>/g,'')})); } } }catch(e){}
+  try{ const r=await fetch('https://api.duckduckgo.com/?format=json&no_html=1&skip_disambig=1&kl='+(pais==='pt'?'pt-pt':'br-pt')+'&q='+encodeURIComponent(q)); if(r.ok){ const j=await r.json(); if(j.AbstractText) out.push({titulo:j.Heading||q,url:j.AbstractURL,trecho:j.AbstractText}); } }catch(e){}
+  try{ const s=await (await fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=2&origin=*&srsearch='+encodeURIComponent(q))).json();
+    for(const h of (s.query&&s.query.search||[])){ const t=await (await fetch('https://'+lang+'.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(h.title))).json(); if(t.extract) out.push({titulo:t.title+' (Wikipédia)',url:t.content_urls&&t.content_urls.mobile&&t.content_urls.mobile.page,trecho:t.extract}); } }catch(e){}
+  return out; }

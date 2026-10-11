@@ -1,0 +1,27 @@
+{
+  "name": "escudo-amigo-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Escudo Amigo – app nativo (iOS/Android) via Capacitor, empacotando o app web do repositório.",
+  "scripts": {
+    "www": "node scripts/prepara-www.js",
+    "sync": "npm run www && npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/local-notifications": "^8.0.0",
+    "@capacitor/haptics": "^8.0.0",
+    "@capacitor/camera": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
+    "@capacitor-community/contacts": "^8.0.0",
+    "@capacitor-community/speech-recognition": "^7.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/assets": "^3.0.5"
+  }
+}

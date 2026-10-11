@@ -1,0 +1,20 @@
+{
+  "appId": "com.miopla.escudoamigo",
+  "appName": "Escudo Amigo",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "scheme": "Escudo Amigo",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "backgroundColor": "#FFFFFF",
+      "showSpinner": false
+    },
+    "LocalNotifications": {
+      "iconColor": "#2F6FED"
+    }
+  }
+}

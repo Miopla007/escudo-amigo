@@ -1,0 +1,73 @@
+# Gera o app iOS na nuvem (Mac do GitHub, grátis em repositório público) e envia para o TestFlight.
+# Antes de usar, cadastre estes "Secrets" no repositório (Settings > Secrets and variables > Actions):
+#   ASC_KEY_ID        – ID da chave da API do App Store Connect
+#   ASC_ISSUER_ID     – Issuer ID (aparece na mesma página da chave)
+#   ASC_KEY_P8        – conteúdo do arquivo AuthKey_XXXX.p8 (copie e cole o texto inteiro)
+#   APPLE_TEAM_ID     – Team ID da conta de desenvolvedor (Membership details)
+# Depois: aba Actions > "iOS · TestFlight" > Run workflow > escreva a versão (1.0, 1.1, 1.2…).
+name: iOS · TestFlight
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: 'Versão da loja (1.0, 1.1, 1.2 …)'
+        required: true
+        default: '1.0'
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with: { xcode-version: latest-stable }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Instalar Capacitor e preparar o app
+        working-directory: app-nativo
+        run: |
+          npm install
+          npm run www
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+          npx @capacitor/assets generate --ios --iconBackgroundColor '#FFFFFF' --splashBackgroundColor '#FFFFFF' --assetPath recursos || true
+      - name: Textos de permissão, versão e número do build
+        working-directory: app-nativo/ios/App/App
+        run: |
+          P=Info.plist
+          set_() { /usr/libexec/PlistBuddy -c "Set :$1 $2" $P 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :$1 string $2" $P; }
+          set_ NSMicrophoneUsageDescription "Para você falar com o Escudo Amigo em vez de digitar e para gravar a sua consulta médica, quando você pedir."
+          set_ NSSpeechRecognitionUsageDescription "Para transformar a sua fala em texto e entender o que você pediu."
+          set_ NSCameraUsageDescription "Para tirar foto da caixa do remédio, da conta ou de uma mensagem suspeita, quando você tocar em Foto."
+          set_ NSPhotoLibraryUsageDescription "Para escolher um print ou foto que você quer que o Escudo Amigo confira."
+          set_ NSContactsUsageDescription "Para você escolher, na sua agenda, as pessoas da família que o app deve chamar em caso de ajuda."
+          set_ CFBundleShortVersionString "${{ github.event.inputs.versao }}"
+          set_ CFBundleVersion "${{ github.run_number }}"
+          /usr/libexec/PlistBuddy -c "Delete :UIRequiredDeviceCapabilities" $P || true
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P || /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" $P
+          /usr/libexec/PlistBuddy -c "Add :CFBundleDevelopmentRegion string pt-BR" $P || /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion pt-BR" $P
+      - name: Chave do App Store Connect
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          printf '%s' "${{ secrets.ASC_KEY_P8 }}" > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8
+      - name: Compilar (archive) com assinatura automática
+        working-directory: app-nativo/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
+            -archivePath $RUNNER_TEMP/App.xcarchive archive \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} CODE_SIGN_STYLE=Automatic \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }}
+      - name: Exportar e enviar para o TestFlight
+        run: |
+          cat > $RUNNER_TEMP/export.plist <<PL
+          <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>destination</key><string>upload</string>
+          <key>teamID</key><string>${{ secrets.APPLE_TEAM_ID }}</string><key>signingStyle</key><string>automatic</string></dict></plist>
+          PL
+          xcodebuild -exportArchive -archivePath $RUNNER_TEMP/App.xcarchive -exportOptionsPlist $RUNNER_TEMP/export.plist \
+            -exportPath $RUNNER_TEMP/export -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.ASC_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.ASC_KEY_ID }} -authenticationKeyIssuerID ${{ secrets.ASC_ISSUER_ID }}
+          echo "Enviado. Em 10–30 minutos o build aparece no App Store Connect > TestFlight."
