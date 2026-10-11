@@ -787,6 +787,33 @@ html.zg .alarm .stage{display:none} html.zg .alarm .alhora{font-size:52px}
 .tab span{white-space:nowrap;overflow:visible;text-overflow:clip}
 @container app (max-width:340px){ .tab span{font-size:12.5px;letter-spacing:-.01em} .tab{padding:4px 0} }
 @container app (max-width:340px){ .toast{font-size:18px;padding:12px 14px} }
+
+/* 3.5 · textos longos quebram dentro do cartão */
+.medh b,.medh small,.dose .tx,.dose .tx b,.dose .tx span,.sheet .tt.h2,.cont small,.cont b,.amigo b,.amigo small,.alitem b,.agi b,.conta b,.meta b,.feitos span,.toast{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.dose .tx,.medh>span,.medh .grow{min-width:0}.medit{flex:none}
+/* aviso de remédio quando a pessoa está escrevendo: não apaga nada */
+.albanner{position:absolute;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:60;display:flex;align-items:center;gap:12px;border:0;border-radius:20px;background:#FFB21F;color:#3A2400;padding:14px 16px;min-height:64px;font:700 19px 'Atkinson Hyperlegible Next',sans-serif;text-align:left;box-shadow:0 14px 30px -10px rgba(0,0,0,.45)}
+.albanner svg{width:28px;height:28px;flex:none}.albanner span{flex:1;min-width:0}.albanner em{font-style:normal;font-weight:800;background:#3A2400;color:#fff;border-radius:999px;padding:8px 14px}
+.lignum{font:800 30px var(--tfont),sans-serif;text-align:center;letter-spacing:.04em;margin:0}
+.amigo .am-foto{cursor:pointer}
+/* letra grande: a logo continua lá (menor) para voltar ao início */
+@container app (max-width:340px){ .dkhome{display:flex!important;padding:0 8px!important} .dkhome svg{width:128px!important;height:auto!important} }
+.toast:not(.undo){pointer-events:none}
+.cadrow .grow{min-width:0}.cadrow small,.cadrow b{overflow-wrap:anywhere;word-break:break-word}
+html.zg .sheet.voice{height:92%;display:flex;flex-direction:column}
+html.zg .sheet.voice .conv{max-height:none;flex:1 1 auto;min-height:160px}
+html.zg .sheet.voice .say{flex-wrap:nowrap;overflow-x:auto;max-height:none}
+html.zg .sheet.voice .say button{flex:none}
+html.zg .sheet.voice .vbars{display:none}
+
+/* 3.5 · assinatura e consentimento da IA */
+.iacons{margin-top:10px;display:flex;flex-direction:column;gap:8px}.iacons p{font-size:17px;font-weight:600;line-height:1.35;margin:0}
+.fontes{margin-top:8px;display:flex;flex-direction:column;gap:4px}.fontes small{font-size:15px;font-weight:700;opacity:.8}.fontes a{font-size:16px;font-weight:700;color:var(--esc-d);overflow-wrap:anywhere}
+.planok{display:flex;gap:8px;align-items:center;font-size:20px;font-weight:800;color:#0A5230;background:#E9F8EF;border-radius:18px;padding:14px}.planok svg{width:26px;height:26px;flex:none}
+.cfgbox.gratis{display:flex;flex-direction:column;gap:4px}.cfgbox.gratis span{font-size:18px;font-weight:600}
+.preco{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0}.preco b{font:800 30px var(--tfont),sans-serif;color:var(--esc-d)}.preco span{font-size:20px;font-weight:700}
+.letrinha{font-size:15px;line-height:1.4;color:var(--muted);margin:0}
+.leg{display:flex;justify-content:center;gap:22px}.leg a{font-size:17px;font-weight:700;color:var(--ink);min-height:44px;display:inline-flex;align-items:center}
 </style></head><body>
 <div class="app" id="app"><div id="view"></div><div id="layer"></div></div>
 
@@ -2547,38 +2574,51 @@ var Motor = (function(){
     remedios:{Losartana:{estoque:18,obs:'Pode tomar com ou sem comida',cor:'#F5B700'},Metformina:{estoque:5,obs:'Tomar junto com a refeição',cor:'#2F6FED'}},
     hist:(function(){ var h={}; for(var i=1;i<=6;i++) h[hoje(-i)]=i===2?['d1','d2']:['d1','d2','d3']; return h; })(),
     medicoes:[{tipo:'Pressão',v:'12 por 8',dia:hoje(-1),h:'09:10'}],
-    metas:[{id:'m1',n:'Viagem pra Aparecida',alvo:1500,guardado:400},{id:'m2',n:'Presente de Natal dos netos',alvo:600,guardado:150}],
+    metas:[{id:'m1',n:L('Viagem pra Aparecida','Viagem a Fátima'),alvo:1500,guardado:400},{id:'m2',n:'Presente de Natal dos netos',alvo:600,guardado:150}],
     permissoes:{},
     palavra:'girassol',
     historico:[]
   }; }
+  function completa(o){ var b=vazio(); for(var k in o) if(o[k]!=null) b[k]=o[k]; ['doses','gastos','contas','agenda','contatos','historico'].forEach(function(k){ if(!Array.isArray(b[k])) b[k]=[]; }); ['tomadas','adiadas','remedios','permissoes','hist'].forEach(function(k){ if(!b[k]||typeof b[k]!=='object') b[k]={}; }); return b; }
+  /* corta por letras, sem partir emoji ao meio */
+  function corta(v,n){ return Array.from(String(v==null?'':v)).slice(0,n).join(''); }
+  /* número escrito do jeito brasileiro ou português: 1.234,56 · R$ 800 · 12,5 · 1,234.56 */
+  function num(v){ if(typeof v==='number') return v; v=String(v==null?'':v).replace(/[^\d.,-]/g,''); if(!v) return NaN; if(/,\d{1,2}$/.test(v)) v=v.replace(/\./g,'').replace(',','.'); else if(/\.\d{1,2}$/.test(v)&&v.indexOf(',')>=0) v=v.replace(/,/g,''); else v=v.replace(/[.,](?=\d{3}(\D|$))/g,'').replace(',','.'); return parseFloat(v); }
   var S=vazio();
-  try{ var ls=JSON.parse(localStorage.getItem('ea-casa')||'null'); if(ls&&ls.v===SV&&ls.s) S=ls.s; }catch(e){}
+  try{ var ls=JSON.parse(localStorage.getItem('ea-casa')||'null'); if(ls&&ls.v===SV&&ls.s) S=completa(ls.s); }catch(e){}
   var STORE={ref:null,busy:false,again:false,t:null}, listeners=[];
   function onChange(fn){ listeners.push(fn); }
   function changed(){ listeners.forEach(function(f){ try{ f(); }catch(e){} }); }
   function save(){ try{ localStorage.setItem('ea-casa',JSON.stringify({v:SV,s:S})); }catch(e){}
-    if(!STORE.ref) return; clearTimeout(STORE.t); STORE.t=setTimeout(flush,700); }
-  function flush(){ if(!STORE.ref) return; if(STORE.busy){ STORE.again=true; return; } STORE.busy=true;
+    if(!STORE.ref||S.demo) return; clearTimeout(STORE.t); STORE.t=setTimeout(flush,700); }
+  function flush(){ if(!STORE.ref||S.demo) return; if(STORE.busy){ STORE.again=true; return; } STORE.busy=true;
     STORE.ref.set({v:SV,s:JSON.parse(JSON.stringify(S)),em:Date.now()}).catch(function(){}).then(function(){ STORE.busy=false; if(STORE.again){ STORE.again=false; flush(); } }); }
   /* demonstração nunca apaga os dados reais: guarda uma cópia e devolve ao sair */
   function reset(demo){ if(demo){ try{ if(!S.demo) localStorage.setItem('ea-casa-real',JSON.stringify(S)); }catch(e){} S=seed(); }
     else if(S.demo){ var bk=null; try{ bk=JSON.parse(localStorage.getItem('ea-casa-real')||'null'); localStorage.removeItem('ea-casa-real'); }catch(e){} S=bk||vazio(); }
     else S=vazio(); save(); changed(); }
+  function apagarTudo(){ try{ localStorage.removeItem('ea-casa-real'); }catch(e){} S=vazio(); save(); if(STORE.ref){ clearTimeout(STORE.t); flush(); } changed(); }
   /* catálogo de golpes e frases: atualizados toda semana no repositório; o app baixa a versão nova sozinho */
   (function atualizaBiblioteca(){ try{ if(!/github\.io$/.test(location.hostname)) return; var v=Math.floor(Date.now()/6048e5);
     fetch('golpes.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.golpes&&(!window.GOLPES||j.versao>=window.GOLPES.versao)) window.GOLPES=j; }).catch(function(){});
     fetch('respostas.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.oi) window.RESPOSTAS=j; }).catch(function(){}); }catch(e){} })();
   async function initStore(){ try{ if(!window.claude||!claude.use) return; var db=await claude.use('db'), u=await claude.use('user'); if(!db||!u) return;
       var id=await u.id(); if(!id) return; var ref=db.doc('data/users/'+id+'/casa'); var snap=await ref.get();
-      if(snap.exists){ var d=snap.data(); if(d&&d.v===SV&&d.s){ S=JSON.parse(JSON.stringify(d.s)); try{ localStorage.setItem('ea-casa',JSON.stringify({v:SV,s:S})); }catch(e){} changed(); } }
+      if(snap.exists){ var d=snap.data(); if(d&&d.v===SV&&d.s&&!S.demo){ S=completa(JSON.parse(JSON.stringify(d.s))); try{ localStorage.setItem('ea-casa',JSON.stringify({v:SV,s:S})); }catch(e){} changed(); } }
       STORE.ref=ref; if(!snap.exists) flush(); }catch(e){} }
 
   /* ---------------- leitura dos dados ---------------- */
+  /* hora em que a dose vence hoje (ms); adiada = hora absoluta, vale até depois da meia-noite */
+  function doseVence(d){ var ad=S.adiadas[d.id], z=new Date(); if(ad&&ad.ate&&ad.ate>Date.now()-6*36e5) return ad.ate;
+    if(ad&&ad.dia===hoje()&&ad.h) { var p0=ad.h.split(':'); z.setHours(+p0[0],+p0[1],0,0); return z.getTime(); }
+    var p=String(d.t).split(':'); z.setHours(+p[0],+p[1],0,0); return z.getTime(); }
   function doseEstado(d){ var td=hoje(); if(S.tomadas[d.id]&&S.tomadas[d.id].dia===td) return 'tomado';
-    var ad=S.adiadas[d.id]; var now=mins(hm()), t=mins(d.t); if(ad&&ad.dia===td) t=mins(ad.h);
-    if(now<t-15) return 'depois'; if(now<=t+180) return 'agora'; return 'esquecido'; }
-  function doses(){ return S.doses.slice().sort(function(a,b){ return mins(a.t)-mins(b.t); }).map(function(d){ var o={}; for(var k in d) o[k]=d[k]; o.s=doseEstado(d); o.at=o.s==='tomado'?S.tomadas[d.id].h:''; return o; }); }
+    var ad=S.adiadas[d.id], now=Date.now(), t=doseVence(d);
+    if(ad&&ad.ate&&now<ad.ate) return 'depois';
+    if(now<t-15*6e4) return 'depois'; if(now<=t+180*6e4) return 'agora'; return 'esquecido'; }
+  /* o alarme toca só na hora certa (não 15 minutos antes) e no máximo 3 horas depois */
+  function alarmes(){ var now=Date.now(); return S.doses.filter(function(d){ var s=doseEstado(d); if(s==='tomado') return false; var t=doseVence(d); return now>=t&&now<=t+180*6e4; }).map(function(d){ return {id:d.id,n:d.n,t:d.t,k:hoje()+d.id+'@'+doseVence(d)}; }); }
+  function doses(){ return S.doses.slice().sort(function(a,b){ return mins(a.t)-mins(b.t); }).map(function(d){ var o={}; for(var k in d) o[k]=d[k]; o.s=doseEstado(d); o.v=doseVence(d); o.at=o.s==='tomado'?S.tomadas[d.id].h:''; return o; }); }
   function doseAgora(){ return doses().filter(function(d){ return d.s==='agora'; })[0]; }
   function doseEsquecida(){ return doses().filter(function(d){ return d.s==='esquecido'; })[0]; }
   function proximaDose(){ return doses().filter(function(d){ return d.s==='depois'; })[0]; }
@@ -2603,36 +2643,43 @@ var Motor = (function(){
     var n=String(a.nome||a.id||'').toLowerCase(); var ds=doses(); var c=ds.filter(function(x){ return n&&x.n.toLowerCase().indexOf(n)>=0; });
     var pick=c.filter(function(x){ return x.s==='agora'; })[0]||c.filter(function(x){ return x.s==='esquecido'; })[0]||c[0]||doseAgora()||doseEsquecida();
     return pick?S.doses.filter(function(x){ return x.id===pick.id; })[0]:null; }
-  function aplicar(acoes){ var feitos=[], snap=JSON.stringify(S), extra={}, foto=window.__fotoPend||null;
+  function aplicar(acoes){ var feitos=[], snap=JSON.stringify(S), extra={}, foto=window.__fotoPend||null, inv=[];
     (acoes||[]).forEach(function(a){ if(!a||typeof a!=='object') return; var t=String(a.tipo||'');
       try{
-      if(t==='marcar_dose'){ var d=acharDose(a); if(!d) return; S.tomadas[d.id]={dia:hoje(),h:hm()}; S.hist=S.hist||{}; var hh=S.hist[hoje()]||(S.hist[hoje()]=[]); if(hh.indexOf(d.id)<0) hh.push(d.id); var rm=(S.remedios=S.remedios||{})[d.n]||(S.remedios[d.n]={}); if(rm.estoque!=null&&rm.estoque>0) rm.estoque--; feitos.push(L('Marquei ','Marquei ')+d.n+L(' às ',' às ')+hm()); extra.tomei=1; }
-      else if(t==='adiar_dose'){ var d2=acharDose(a); if(!d2) return; var m=Math.max(5,Math.min(120,+a.minutos||10)); var dt=new Date(Date.now()+m*6e4); S.adiadas[d2.id]={dia:hoje(),h:hm(dt)}; feitos.push(L('Lembro de novo às ','Lembro outra vez às ')+hm(dt)); }
-      else if(t==='registrar_gasto'){ var v=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(!v||v>1e6) return; var cats=['Mercado','Farmácia','Família','Contas','Transporte','Saúde','Casa','Outros']; var c=cats.indexOf(a.categoria)>=0?a.categoria:'Outros';
-        S.gastos.push({id:uid('g'),v:Math.round(v*100)/100,cat:c,desc:String(a.descricao||c).slice(0,60),dia:(/^\d{4}-\d\d-\d\d$/.test(a.dia||'')&&a.dia<=hoje()?a.dia:hoje()),foto:foto||undefined}); if(foto) window.__fotoPend=null; feitos.push(L('Anotei ','Apontei ')+money(v)+' · '+c); extra.moeda=1; }
-      else if(t==='definir_limite'){ var lv=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(!lv||lv>1e7) return; S.limite=Math.round(lv); feitos.push(L('Meta do mês: ','Meta do mês: ')+money(S.limite)); extra.moeda=1; }
-      else if(t==='apagar_gasto'){ var gi=a.id==='ultimo'?S.gastos.length-1:S.gastos.map(function(g){ return g.id; }).indexOf(a.id); if(gi<0||!S.gastos[gi]) return; var gx=S.gastos.splice(gi,1)[0]; feitos.push(L('Apaguei ','Apaguei ')+money(gx.v)+' · '+gx.cat); }
+      if(t==='marcar_dose'){ var d=acharDose(a); if(!d) return; if(S.tomadas[d.id]&&S.tomadas[d.id].dia===hoje()){ feitos.push(L('Já estava marcado: ','Já estava marcado: ')+d.n); extra.erro=1; return; } var adV=S.adiadas[d.id]; S.tomadas[d.id]={dia:(adV&&adV.ate&&adV.dia&&adV.dia!==hoje()&&Date.now()-adV.ate<6*36e5)?adV.dia:hoje(),h:hm()}; S.hist=S.hist||{}; var hh=S.hist[hoje()]||(S.hist[hoje()]=[]); if(hh.indexOf(d.id)<0) hh.push(d.id); var rm=(S.remedios=S.remedios||{})[d.n]||(S.remedios[d.n]={}); var baixou=false; if(rm.estoque!=null&&rm.estoque>0){ rm.estoque--; baixou=true; } var adA=S.adiadas[d.id]; delete S.adiadas[d.id]; (function(id,nm,bx,ad0){ inv.push(function(){ desmarca(id,bx); if(ad0) S.adiadas[id]=ad0; }); })(d.id,d.n,baixou,adA); feitos.push(L('Marquei ','Marquei ')+d.n+L(' às ',' às ')+hm()); extra.tomei=1; }
+      else if(t==='adiar_dose'){ var d2=acharDose(a); if(!d2) return; var m=Math.max(5,Math.min(120,+a.minutos||10)); var dt=new Date(Date.now()+m*6e4); var ant2=S.adiadas[d2.id]; S.adiadas[d2.id]={dia:hoje(),h:hm(dt),ate:dt.getTime()}; inv.push(function(){ if(ant2) S.adiadas[d2.id]=ant2; else delete S.adiadas[d2.id]; }); feitos.push(L('Lembro de novo às ','Lembro outra vez às ')+hm(dt)); }
+      else if(t==='registrar_gasto'){ var v=Math.abs(num(a.valor)); if(!v||v>1e6) return; var cats=['Mercado','Farmácia','Família','Contas','Transporte','Saúde','Casa','Outros']; var c=cats.indexOf(a.categoria)>=0?a.categoria:'Outros';
+        var gid=uid('g'); inv.push(function(){ S.gastos=S.gastos.filter(function(g){ return g.id!==gid; }); }); S.gastos.push({id:gid,v:Math.round(v*100)/100,cat:c,desc:String(a.descricao||c).slice(0,60),dia:(/^\d{4}-\d\d-\d\d$/.test(a.dia||'')&&a.dia<=hoje()?a.dia:hoje()),foto:foto||undefined}); if(foto) window.__fotoPend=null; feitos.push(L('Anotei ','Apontei ')+money(v)+' · '+c); extra.moeda=1; }
+      else if(t==='definir_limite'){ var lv=Math.abs(num(a.valor)); if(isNaN(lv)||lv>1e7) return; var limA=S.limite; inv.push(function(){ S.limite=limA; }); S.limite=Math.round(lv*100)/100; feitos.push(lv?L('Meta do mês: ','Meta do mês: ')+money(S.limite):L('Meta do mês tirada','Meta do mês retirada')); extra.moeda=1; }
+      else if(t==='apagar_gasto'){ var gi=a.id==='ultimo'?S.gastos.length-1:S.gastos.map(function(g){ return g.id; }).indexOf(a.id); if(gi<0||!S.gastos[gi]) return; var gx=S.gastos.splice(gi,1)[0]; inv.push(function(){ S.gastos.splice(Math.min(gi,S.gastos.length),0,gx); }); feitos.push(L('Apaguei ','Apaguei ')+money(gx.v)+' · '+gx.cat); }
       else if(t==='abrir'){ extra.abrir=String(a.tela||''); }
       else if(t==='apoio_crise'){ extra.crise=1; }
-      else if(t==='editar_remedio'){ var nmE=String(a.nome||'').toLowerCase(), dsE=S.doses.filter(function(x){ return x.n.toLowerCase()===nmE; }); if(!dsE.length) return; if(a.dose!=null) dsE.forEach(function(x){ x.d=String(a.dose).slice(0,40); }); if(Array.isArray(a.horarios)&&a.horarios.length){ var keep=dsE[0]; S.doses=S.doses.filter(function(x){ return x.n.toLowerCase()!==nmE; }); a.horarios.filter(function(h){ return /^\d\d?:\d\d$/.test(h); }).forEach(function(h){ S.doses.push({id:uid('d'),desde:keep.desde||hoje(),t:(h.length===4?'0'+h:h),n:keep.n,d:keep.d,para:keep.para}); }); } feitos.push(L('Remédio atualizado: ','Remédio atualizado: ')+dsE[0].n+(a.dose?' · '+a.dose:'')); }
-      else if(t==='editar_gasto'){ var ge=S.gastos.filter(function(g){ return g.id===a.id; })[0]; if(!ge) return; if(a.valor!=null){ var ev=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(ev) ge.v=Math.round(ev*100)/100; } if(a.categoria) ge.cat=a.categoria; if(a.descricao!=null) ge.desc=String(a.descricao).slice(0,60); feitos.push(L('Gasto corrigido','Gasto corrigido')); }
-      else if(t==='pagar_conta'){ var cc=S.contas.filter(function(x){ return x.id===a.id||(a.nome&&x.n.toLowerCase()===String(a.nome).toLowerCase()); })[0]; if(!cc) return; cc.paga=true; cc.pagaEm=hoje(); if(+cc.v>0&&!S.gastos.some(function(g){ return g.conta===cc.id; })) S.gastos.push({id:uid('g'),v:+cc.v,cat:'Contas',desc:L('Conta de ','Conta da ')+cc.n.toLowerCase(),dia:hoje(),conta:cc.id}); feitos.push(L('Conta de ','Conta da ')+cc.n.toLowerCase()+L(' marcada como paga',' marcada como paga')); extra.moeda=1; }
-      else if(t==='nova_conta'){ var vv=parseFloat(String(a.valor).replace(',','.'))||0; S.contas.push({id:uid('c'),n:cap(String(a.nome||'Conta').slice(0,30)),v:vv,venc:/^\d{4}-\d\d-\d\d$/.test(a.vencimento)?a.vencimento:hoje(7),paga:false,foto:foto||undefined}); if(foto) window.__fotoPend=null; feitos.push(L('Conta nova: ','Conta nova: ')+cap(String(a.nome||'conta'))+(vv?' · '+money(vv):'')); }
-      else if(t==='novo_compromisso'){ var dia=/^\d{4}-\d\d-\d\d$/.test(a.data)?a.data:hoje(1), h=/^\d\d:\d\d$/.test(a.hora)?a.hora:'09:00'; S.agenda.push({id:uid('a'),dia:dia,h:h,t:cap(String(a.titulo||'Compromisso').slice(0,50)),onde:String(a.onde||'').slice(0,50)}); feitos.push(cap(quando(dia))+L(', às ',', às ')+h+': '+cap(String(a.titulo||'compromisso'))); extra.coracao=1; }
+      else if(t==='editar_remedio'){ var nmE=String(a.nome||'').toLowerCase(), dsE=S.doses.filter(function(x){ return x.n.toLowerCase()===nmE; }); if(!dsE.length) return; var dosesA=JSON.stringify(S.doses); inv.push(function(){ S.doses=JSON.parse(dosesA); }); if(a.dose!=null) dsE.forEach(function(x){ x.d=corta(a.dose,40); }); if(Array.isArray(a.horarios)&&a.horarios.length){ var keep=dsE[0], novas=a.horarios.filter(function(h){ return /^\d\d?:\d\d$/.test(h); }).map(function(h){ return h.length===4?'0'+h:h; }).filter(function(h,i,arr){ return arr.indexOf(h)===i; });
+          if(novas.length){ S.doses=S.doses.filter(function(x){ return x.n.toLowerCase()!==nmE||novas.indexOf(x.t)>=0; }); novas.forEach(function(h){ if(!dsE.some(function(x){ return x.t===h; })) S.doses.push({id:uid('d'),desde:hoje(),t:h,n:keep.n,d:keep.d,para:keep.para}); }); } } feitos.push(L('Remédio atualizado: ','Remédio atualizado: ')+dsE[0].n+(a.dose?' · '+a.dose:'')); }
+      else if(t==='editar_gasto'){ var ge=S.gastos.filter(function(g){ return g.id===a.id; })[0]; if(!ge) return; var geA=JSON.stringify(ge); if(a.valor!=null&&String(a.valor).trim()!==''){ var ev=Math.abs(num(a.valor)); if(!ev||ev>1e6){ feitos.push(L('Valor não entendido. Nada mudou.','Valor não percebido. Nada mudou.')); extra.erro=1; return; } ge.v=Math.round(ev*100)/100; } inv.push(function(){ var o=JSON.parse(geA); for(var k in o) ge[k]=o[k]; }); if(a.categoria) ge.cat=a.categoria; if(a.descricao!=null) ge.desc=String(a.descricao).slice(0,60); feitos.push(L('Gasto corrigido','Gasto corrigido')); }
+      else if(t==='pagar_conta'){ var cc=S.contas.filter(function(x){ return x.id===a.id||(a.nome&&x.n.toLowerCase()===String(a.nome).toLowerCase()); })[0]; if(!cc) return; var ccA=JSON.stringify(cc), nG=S.gastos.length; inv.push(function(){ var o=JSON.parse(ccA); delete cc.paga; delete cc.pagaEm; for(var k in o) cc[k]=o[k]; S.gastos=S.gastos.filter(function(g){ return g.conta!==cc.id||S.gastos.indexOf(g)<nG; }); }); cc.paga=true; cc.pagaEm=hoje(); if(+cc.v>0&&!S.gastos.some(function(g){ return g.conta===cc.id; })) S.gastos.push({id:uid('g'),v:+cc.v,cat:'Contas',desc:L('Conta de ','Conta da ')+cc.n.toLowerCase(),dia:hoje(),conta:cc.id}); feitos.push(L('Conta de ','Conta da ')+cc.n.toLowerCase()+L(' marcada como paga',' marcada como paga')); extra.moeda=1; }
+      else if(t==='nova_conta'){ var vv=Math.abs(num(a.valor))||0, cid=uid('c'); inv.push(function(){ S.contas=S.contas.filter(function(x){ return x.id!==cid; }); }); S.contas.push({id:cid,n:cap(corta(a.nome||'Conta',30)),v:vv,venc:/^\d{4}-\d\d-\d\d$/.test(a.vencimento)?a.vencimento:hoje(7),paga:false,foto:foto||undefined}); if(foto) window.__fotoPend=null; feitos.push(L('Conta nova: ','Conta nova: ')+cap(String(a.nome||'conta'))+(vv?' · '+money(vv):'')); }
+      else if(t==='novo_compromisso'){ var dia=/^\d{4}-\d\d-\d\d$/.test(a.data)?a.data:hoje(1), h=/^\d\d:\d\d$/.test(a.hora)?a.hora:'09:00'; var aid=uid('a'); inv.push(function(){ S.agenda=S.agenda.filter(function(x){ return x.id!==aid; }); }); S.agenda.push({id:aid,dia:dia,h:h,t:cap(corta(a.titulo||'Compromisso',50)),onde:corta(a.onde,50)}); feitos.push(cap(quando(dia))+L(', às ',', às ')+h+': '+cap(String(a.titulo||'compromisso'))); extra.coracao=1; }
       else if(t==='novo_remedio'){ var hs=(Array.isArray(a.horarios)?a.horarios:[a.horarios||'08:00']).filter(function(x){ return /^\d\d?:\d\d$/.test(x); }).slice(0,6); if(!hs.length) hs=['08:00'];
-        hs.forEach(function(h){ S.doses.push({id:uid('d'),desde:hoje(),t:(h.length===4?'0'+h:h),n:cap(String(a.nome||'Remédio').slice(0,30)),d:String(a.dose||'').slice(0,40)}); }); S.remedios=S.remedios||{}; var nr=S.remedios[cap(String(a.nome||'Remédio').slice(0,30))]||(S.remedios[cap(String(a.nome||'Remédio').slice(0,30))]={}); if(foto){ nr.foto=foto; window.__fotoPend=null; } if(a.estoque) nr.estoque=parseInt(a.estoque,10)||nr.estoque; if(a.para) nr.obs=String(a.para).slice(0,40); feitos.push(L('Remédio novo: ','Remédio novo: ')+cap(String(a.nome||''))+' · '+hs.join(', ')); extra.tomei=1; }
-      else if(t==='repor_estoque'){ var rn=String(a.nome||'').trim(), q=Math.max(1,Math.min(500,parseInt(a.quantidade,10)||30)); var key=Object.keys(S.remedios||{}).filter(function(k){ return k.toLowerCase()===rn.toLowerCase(); })[0]||rn; if(!key) return; S.remedios=S.remedios||{}; var rr=S.remedios[key]||(S.remedios[key]={}); rr.estoque=(rr.estoque||0)+q; feitos.push(L('Estoque de ','Stock de ')+key+': '+rr.estoque+L(' comprimidos',' comprimidos')); extra.tomei=1; }
-      else if(t==='anotar_medicao'){ var tp=String(a.medida||'Pressão'), vv2=String(a.valor||'').slice(0,20); if(!vv2) return; S.medicoes=S.medicoes||[]; S.medicoes.unshift({tipo:cap(tp),v:vv2,dia:hoje(),h:hm()}); S.medicoes=S.medicoes.slice(0,30); feitos.push(cap(tp)+': '+vv2+L(' anotada',' apontada')); }
-      else if(t==='nova_meta'){ var al=Math.abs(parseFloat(String(a.alvo).replace(',','.')))||0; if(!a.nome) return; S.metas=S.metas||[]; S.metas.push({id:uid('m'),n:cap(String(a.nome).slice(0,40)),alvo:al,guardado:0}); feitos.push(L('Objetivo novo: ','Objetivo novo: ')+cap(String(a.nome))+(al?' · '+money(al):'')); extra.moeda=1; }
-      else if(t==='guardar_meta'){ var gv=Math.abs(parseFloat(String(a.valor).replace(',','.'))); if(!gv) return; var nmM=String(a.nome||'').toLowerCase(), cands=(S.metas||[]).filter(function(x){ return x.id===a.id||(nmM&&(x.n.toLowerCase().indexOf(nmM)>=0||nmM.indexOf(x.n.toLowerCase())>=0||nmM.split(' ').some(function(w){ return w.length>3&&x.n.toLowerCase().indexOf(w)>=0; }))); }); var mt=cands[cands.length-1]||(S.metas||[])[(S.metas||[]).length-1]; if(!mt) return; mt.guardado=Math.round((mt.guardado+gv)*100)/100; feitos.push(L('Guardado ','Guardado ')+money(gv)+' · '+mt.n+' ('+Math.min(100,Math.round(mt.guardado/Math.max(1,mt.alvo)*100))+'%)'); extra.moeda=1; }
-      else if(t==='novo_contato'){ var nn=cap(String(a.nome||'').trim().slice(0,30)); if(!nn) return; var cores=['#A84508','#1B4DB3','#6236C9','#0B6B3C','#A51A16']; S.contatos.push({n:nn,rel:String(a.relacao||'').slice(0,20),tel:String(a.telefone||'').slice(0,20),email:String(a.email||'').slice(0,60),cor:cores[S.contatos.length%cores.length]}); feitos.push(L('Contato salvo: ','Contacto guardado: ')+nn); extra.coracao=1; }
+        var nmR=cap(corta(a.nome||'Remédio',30)), dsA=JSON.stringify(S.doses), rmA=JSON.stringify((S.remedios||{})[nmR]||null); inv.push(function(){ S.doses=JSON.parse(dsA); var o=JSON.parse(rmA); if(o) S.remedios[nmR]=o; else delete S.remedios[nmR]; });
+        var jaTem=S.doses.filter(function(x){ return x.n.toLowerCase()===nmR.toLowerCase(); }); hs.forEach(function(h){ h=(h.length===4?'0'+h:h); if(jaTem.some(function(x){ return x.t===h; })) return; S.doses.push({id:uid('d'),desde:hoje(),t:h,n:jaTem[0]?jaTem[0].n:nmR,d:corta(a.dose,40)||(jaTem[0]&&jaTem[0].d)||''}); }); S.remedios=S.remedios||{}; var nr=S.remedios[nmR]||(S.remedios[nmR]={}); if(foto){ nr.foto=foto; window.__fotoPend=null; } if(a.estoque) nr.estoque=parseInt(a.estoque,10)||nr.estoque; if(a.para) nr.obs=String(a.para).slice(0,40); feitos.push(L('Remédio novo: ','Remédio novo: ')+cap(String(a.nome||''))+' · '+hs.join(', ')); extra.tomei=1; }
+      else if(t==='repor_estoque'){ var rn=String(a.nome||'').trim(), q=Math.max(1,Math.min(500,parseInt(a.quantidade,10)||30)); var key=Object.keys(S.remedios||{}).filter(function(k){ return k.toLowerCase()===rn.toLowerCase(); })[0]||rn; if(!key) return; S.remedios=S.remedios||{}; var rr=S.remedios[key]||(S.remedios[key]={}); var esA=rr.estoque; inv.push(function(){ rr.estoque=esA; }); rr.estoque=(rr.estoque||0)+q; feitos.push(L('Estoque de ','Stock de ')+key+': '+rr.estoque+L(' comprimidos',' comprimidos')); extra.tomei=1; }
+      else if(t==='anotar_medicao'){ var tp=String(a.medida||'Pressão'), vv2=String(a.valor||'').slice(0,20); if(!vv2) return; S.medicoes=S.medicoes||[]; var mdA=S.medicoes.slice(); inv.push(function(){ S.medicoes=mdA; }); S.medicoes.unshift({tipo:cap(tp),v:vv2,dia:hoje(),h:hm()}); S.medicoes=S.medicoes.slice(0,30); feitos.push(cap(tp)+': '+vv2+L(' anotada',' apontada')); }
+      else if(t==='nova_meta'){ var al=Math.abs(num(a.alvo))||0; if(!a.nome) return; S.metas=S.metas||[]; var mid=uid('m'); inv.push(function(){ S.metas=S.metas.filter(function(x){ return x.id!==mid; }); }); S.metas.push({id:mid,n:cap(corta(a.nome,40)),alvo:al,guardado:0}); feitos.push(L('Objetivo novo: ','Objetivo novo: ')+cap(String(a.nome))+(al?' · '+money(al):'')); extra.moeda=1; }
+      else if(t==='guardar_meta'){ var gv=Math.abs(num(a.valor)); if(!gv) return; var nmM=String(a.nome||'').toLowerCase(), cands=(S.metas||[]).filter(function(x){ return x.id===a.id||(nmM&&(x.n.toLowerCase().indexOf(nmM)>=0||nmM.indexOf(x.n.toLowerCase())>=0||nmM.split(' ').some(function(w){ return w.length>3&&x.n.toLowerCase().indexOf(w)>=0; }))); }); var mt=cands[cands.length-1]||(S.metas||[])[(S.metas||[]).length-1]; if(!mt) return; var gdA=mt.guardado; inv.push(function(){ mt.guardado=gdA; }); mt.guardado=Math.round((mt.guardado+gv)*100)/100; feitos.push(L('Guardado ','Guardado ')+money(gv)+' · '+mt.n+' ('+Math.min(100,Math.round(mt.guardado/Math.max(1,mt.alvo)*100))+'%)'); extra.moeda=1; }
+      else if(t==='novo_contato'){ var nn=cap(corta(String(a.nome||'').trim(),30)); if(!nn) return; inv.push(function(){ S.contatos=S.contatos.filter(function(x){ return x.n!==nn; }); }); var cores=['#A84508','#1B4DB3','#6236C9','#0B6B3C','#A51A16']; S.contatos.push({n:nn,rel:corta(a.relacao,20),tel:corta(a.telefone,20),email:corta(a.email,60),cor:cores[S.contatos.length%cores.length]}); feitos.push(L('Contato salvo: ','Contacto guardado: ')+nn); extra.coracao=1; }
       else if(t==='veredito'){ var nv=['golpe','cuidado','seguro'].indexOf(a.nivel)>=0?a.nivel:'cuidado';
         extra.veredito={nivel:nv,motivo:String(a.motivo||'').slice(0,220),passos:(Array.isArray(a.passos)?a.passos:[]).slice(0,3).map(function(p){ return String(p).slice(0,70); }),quote:String(a.mensagem||'').slice(0,200)};
         S.historico.unshift({dia:hoje(),h:hm(),nivel:nv,motivo:extra.veredito.motivo}); S.historico=S.historico.slice(0,12); }
       }catch(e){} });
     if(feitos.length||extra.veredito){ save(); changed(); }
-    return {feitos:feitos,snap:feitos.length?snap:null,extra:extra}; }
-  function desfazer(snap){ try{ S=JSON.parse(snap); save(); changed(); return true; }catch(e){ return false; } }
+    /* desfazer só o que esta ação mudou (não apaga o que foi feito depois) */
+    var und=null; if(feitos.length&&!extra.erro){ und=inv.length?function(){ for(var i=inv.length-1;i>=0;i--){ try{ inv[i](); }catch(e){} } }:snap; }
+    return {feitos:feitos,snap:und,extra:extra}; }
+  function desfazer(snap){ try{ if(typeof snap==='function') snap(); else S=completa(JSON.parse(snap)); save(); changed(); return true; }catch(e){ return false; } }
+  /* desmarcar uma dose: devolve o comprimido ao estoque e tira do histórico */
+  function desmarca(id,devolve){ var d=S.doses.filter(function(x){ return x.id===id; })[0]; delete S.tomadas[id]; var hh=(S.hist||{})[hoje()]; if(hh){ var i=hh.indexOf(id); if(i>=0) hh.splice(i,1); } if(d&&devolve!==false){ var rm=(S.remedios||{})[d.n]; if(rm&&rm.estoque!=null) rm.estoque++; } }
+  function desmarcar(id){ if(!S.tomadas[id]) return false; desmarca(id,true); delete S.adiadas[id]; save(); changed(); return true; }
 
   /* ---------------- cérebro (IA) ---------------- */
   var SAMPLE=null, IA={estado:'carregando'};
@@ -2676,16 +2723,29 @@ var Motor = (function(){
     // camada 1 (no aparelho, grátis): resolve na hora o que for ação clara, conversa em andamento ou emergência
     var CL=window.CerebroLocal, dialogo=CL&&CL.temPendente(), loc=null;
     if(CL&&!o.img&&o.modo!=='analisar'){ try{ loc=CL.responder(texto,o,Motor); }catch(e){ loc=null; } }
-    if(loc&&(loc.prioridade||dialogo||CL.temPendente()||loc.acoes.length||loc.humor==='perigo'||!(SAMPLE||CEREBRO_API))){ IA.ultima='local'; return loc; }
+    var nuvem=SAMPLE||(CEREBRO_API&&mais());
+    if(loc&&(loc.prioridade||dialogo||CL.temPendente()||loc.acoes.length||loc.humor==='perigo'||!nuvem)){ IA.ultima='local'; if(!nuvem&&CEREBRO_API&&!mais()&&!loc.prioridade&&!loc.acoes.length) loc.semMais=1; return loc; }
+    /* antes da 1ª vez que algo vai para a IA na nuvem: a pessoa precisa dizer que pode (diretriz 5.1.2 da Apple) */
+    if(nuvem&&CFG.iaOk!==true){ var lc=loc||local(texto,o); if(CFG.iaOk!==false) lc.pedirIA=1; return lc; }
+    var web=null; if(CEREBRO_API&&mais()&&!o.img&&o.modo!=='analisar'&&precisaWeb(texto)){ web=await buscaWeb(texto,o.signal); if(web) texto=texto+'\n\n[Pesquisa na internet feita agora: '+web.resposta+' | Fontes: '+(web.fontes||[]).map(function(f){ return f.titulo; }).join('; ')+']\nResponda com base nessa pesquisa, em poucas palavras, e diga que achou na internet.'; }
     if(SAMPLE){ try{ var res=await SAMPLE.json(prompt(texto,o.hist,o.modo),{modelTier:(o.img||o.modo==='analisar')?'default':'quick',cache:false,images:o.img||undefined,signal:o.signal});
-        return normal(res); }
+        var nr=normal(res); if(web) nr.fontes=web.fontes; return nr; }
       catch(e){ var c=e&&e.code; if(c==='cancelled') throw e; if(['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].indexOf(c)>=0){ SAMPLE=null; IA.estado='simples'; changed(); } IA.ultimoErro=c; } }
-    if(CEREBRO_API){ try{ var im=null; if(o.img){ var b64=await new Promise(function(ok,no){ var fr=new FileReader(); fr.onload=function(){ ok(String(fr.result).split(',')[1]); }; fr.onerror=no; fr.readAsDataURL(o.img); }); im={tipo:o.img.type||'image/jpeg',base64:b64}; }
-        var rr=await fetch(o.img?urlVer():CEREBRO_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:prompt(texto,o.hist,o.modo),imagem:im,rapido:!o.img&&o.modo!=='analisar'}),signal:o.signal});
-        var jj=await rr.json(); var tx=String(jj.texto||''); var a=tx.indexOf('{'), z=tx.lastIndexOf('}'); if(a>=0&&z>a) return normal(JSON.parse(tx.slice(a,z+1))); }
+    if(CEREBRO_API&&mais()){ try{ var im=null; if(o.img){ var b64=await new Promise(function(ok,no){ var fr=new FileReader(); fr.onload=function(){ ok(String(fr.result).split(',')[1]); }; fr.onerror=no; fr.readAsDataURL(o.img); }); im={tipo:o.img.type||'image/jpeg',base64:b64}; }
+        var rr=await fetch(o.img?urlVer():CEREBRO_API,{method:'POST',headers:cab(),body:JSON.stringify({prompt:prompt(texto,o.hist,o.modo),imagem:im,rapido:!o.img&&o.modo!=='analisar'}),signal:o.signal});
+        var jj=await rr.json(); var tx=String(jj.texto||''); var a=tx.indexOf('{'), z=tx.lastIndexOf('}'); if(a>=0&&z>a){ var nr2=normal(JSON.parse(tx.slice(a,z+1))); if(web) nr2.fontes=web.fontes; return nr2; } }
       catch(e){ if(e&&e.name==='AbortError') throw {code:'cancelled'}; } }
-    return local(texto,o); }
+    var lf=local(texto,o); if(web){ lf.fala=web.resposta.slice(0,320); lf.fontes=web.fontes; } return lf; }
   var CEREBRO_API=window.ESCUDO_CEREBRO_API||null;
+  /* Escudo Amigo Mais: no app da loja, a IA na nuvem é da assinatura. Na versão web de teste fica tudo ligado. */
+  function mais(){ return !window.ESCUDO_LOJA||window.ESCUDO_MAIS===true; }
+  var DISP=(function(){ try{ var k=localStorage.getItem('ea-disp'); if(!k){ k=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now().toString(36)+Math.random().toString(36).slice(2)); localStorage.setItem('ea-disp',k); } return k; }catch(e){ return 'anon'; } })();
+  function cab(){ return {'content-type':'application/json','x-escudo-id':DISP,'x-escudo-app':window.ESCUDO_APP_TOKEN||''}; }
+  function base(){ return CEREBRO_API?CEREBRO_API.replace(/\/cerebro\/?$/,''):null; }
+  /* perguntas que precisam da internet (notícia, preço de hoje, horário, quem é…) */
+  function precisaWeb(t){ var n=String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    return /(noticia|aconteceu|hoje no|resultado d[oa] jogo|quem ganhou|quem e |quem foi|o que e |o que significa|quanto (custa|esta|ta) |cotacao|dolar|euro hoje|telefone d[oa] |endereco d[oa] |horario d[oa] |que horas (abre|fecha)|esta aberto|feriado|previsao|vai chover|como esta o tempo|pesquis|procura na internet|procure na internet)/.test(n); }
+  async function buscaWeb(t,signal){ try{ var r=await fetch(base()+'/busca',{method:'POST',headers:cab(),body:JSON.stringify({pergunta:String(t).slice(0,200),pais:CFG.pais==='pt'?'pt':'br'}),signal:signal}); if(!r.ok) return null; var j=await r.json(); return j&&j.resposta?j:null; }catch(e){ if(e&&e.name==='AbortError') throw e; return null; } }
   /* ler a caixa/rótulo/receita: 1) IA com visão  2) servidor grátis /ver  3) leitura de texto no próprio aparelho (Tesseract, grátis) */
   var PROMPT_ROT='Esta foto é a caixa, o rótulo, a cartela ou a receita de um remédio. Leia com cuidado e responda SÓ com JSON: {"nome":"nome do remédio (comercial ou princípio ativo)","dose":"ex.: 50 mg","quantidade":30 (comprimidos na caixa, ou null),"forma":"comprimido|cápsula|gotas|xarope|injeção|pomada","para":"para que serve em até 4 palavras, só se tiver certeza; senão vazio","horarios":["HH:MM"] (só se estiver escrito na receita; senão []),"certeza":"alta|media|baixa","lido":"o texto principal que você leu"}. Não invente. Se não der para ler, nome vazio.';
   function urlVer(){ return CEREBRO_API?CEREBRO_API.replace(/\/cerebro\/?$/,'/ver'):null; }
@@ -2695,7 +2755,7 @@ var Motor = (function(){
   function carregaOCR(){ if(window.Tesseract) return Promise.resolve(window.Tesseract); return new Promise(function(ok,no){ var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js'; s.onload=function(){ ok(window.Tesseract); }; s.onerror=no; document.head.appendChild(s); }); }
   async function lerRotulo(file,progresso){
     if(SAMPLE){ try{ var j=await SAMPLE.json(PROMPT_ROT,{modelTier:'default',images:file,cache:false}); if(j&&j.nome) return limpaRot(j,'ia'); }catch(e){} }
-    var uv=urlVer(); if(uv){ try{ var r=await fetch(uv,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt:PROMPT_ROT,imagem:{tipo:file.type||'image/jpeg',base64:await b64(file)}})}); var jj=await r.json(); var tx=String(jj.texto||''), a=tx.indexOf('{'), z=tx.lastIndexOf('}'); if(a>=0&&z>a){ var j2=JSON.parse(tx.slice(a,z+1)); if(j2.nome) return limpaRot(j2,'servidor'); } }catch(e){} }
+    var uv=(mais()&&CFG.iaOk===true)?urlVer():null; if(uv){ try{ var r=await fetch(uv,{method:'POST',headers:cab(),body:JSON.stringify({prompt:PROMPT_ROT,imagem:{tipo:file.type||'image/jpeg',base64:await b64(file)}})}); var jj=await r.json(); var tx=String(jj.texto||''), a=tx.indexOf('{'), z=tx.lastIndexOf('}'); if(a>=0&&z>a){ var j2=JSON.parse(tx.slice(a,z+1)); if(j2.nome) return limpaRot(j2,'servidor'); } }catch(e){} }
     try{ var T=await carregaOCR(); var res=await T.recognize(file,'por',{logger:function(x){ if(progresso&&x&&x.status==='recognizing text') progresso(x.progress); }}); var loc=window.CerebroLocal?CerebroLocal.lerRotulo(res.data.text):{nome:''}; loc.fonte='aparelho'; return loc; }
     catch(e){ return {nome:'',dose:'',quantidade:null,certeza:'baixa',fonte:'nada'}; } }
   /* resumo de consulta: IA quando houver, senão o cérebro local */
@@ -2759,7 +2819,7 @@ var Motor = (function(){
   function chaveVoz(t){ return 'https://voz.escudo/'+(CFG.pais||'br')+'/'+(CFG.voz||'f')+'/'+(CFG.ritmo||'n')+'/'+encodeURIComponent(t); }
   function vozViva(t){ var k=chaveVoz(t); if(CACHE[k]) return Promise.resolve(CACHE[k]);
     var doCache=(window.caches?caches.open(CNOME).then(function(c){ return c.match(k).then(function(r){ return r?r.blob():null; }); }).catch(function(){ return null; }):Promise.resolve(null));
-    return doCache.then(function(b){ if(b) return b; return fetch(VOZ_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({texto:t,pais:CFG.pais||'br',voz:CFG.voz,ritmo:CFG.ritmo})})
+    return doCache.then(function(b){ if(b) return b; return fetch(VOZ_API,{method:'POST',headers:cab(),body:JSON.stringify({texto:t,pais:CFG.pais||'br',voz:CFG.voz,ritmo:CFG.ritmo})})
       .then(function(r){ if(!r.ok) throw 0; return r.blob(); }).then(function(b2){ try{ if(window.caches) caches.open(CNOME).then(function(c){ c.put(k,new Response(b2,{headers:{'content-type':b2.type||'audio/mpeg'}})); }); }catch(e){} return b2; }); })
       .then(function(b){ var u=URL.createObjectURL(b); CACHE[k]=u; return u; }); }
   var fala_id=0;
@@ -2768,7 +2828,7 @@ var Motor = (function(){
     // camada 2: fala gravada (voz feminina do Brasil, por enquanto)
     if(chave&&REC[chave]&&CFG.pais!=='pt'&&CFG.voz!=='masculina'){ try{ var a=new Audio(REC[chave]); a.playbackRate=CFG.ritmo==='devagar'?.94:1; cur=a; a.onended=fim; a.onerror=fim; a.play().catch(fim); return; }catch(e){} }
     // camada 1: voz natural ao vivo, frase por frase (a 1ª toca enquanto as outras chegam)
-    if(VOZ_API){ var fs=frases(texto), ps=fs.map(function(f){ return vozViva(f); }), i=0;
+    if(VOZ_API&&mais()&&CFG.iaOk===true){ var fs=frases(texto), ps=fs.map(function(f){ return vozViva(f); }), i=0;
       (function proxima(){ if(meu!==fala_id) return; if(i>=ps.length){ fim(); return; } ps[i].then(function(u){ if(meu!==fala_id) return; var a2=new Audio(u); cur=a2; i++; a2.onended=function(){ setTimeout(proxima,120); }; a2.onerror=function(){ proxima(); }; a2.play().catch(function(){ aparelho(fs.slice(i-1).join(' '),rate,fim); }); })
         .catch(function(){ aparelho(fs.slice(i).join(' '),rate,fim); }); })(); return; }
     aparelho(texto,rate,fim); }
@@ -2787,7 +2847,7 @@ var Motor = (function(){
   return {CFG:CFG,saveCfg:saveCfg,L:L,money:money,hoje:hoje,hm:hm,mins:mins,quando:quando,cap:cap,DSEM:DSEM,
     get S(){ return S; },save:save,reset:reset,initStore:initStore,onChange:onChange,changed:changed,
     doses:doses,doseAgora:doseAgora,doseEsquecida:doseEsquecida,proximaDose:proximaDose,gastoMes:gastoMes,porCategoria:porCategoria,contasAbertas:contasAbertas,agenda:agenda,
-    aplicar:aplicar,resumirConsulta:resumirConsulta,fam1:fam1,remInfo:remInfo,adesao:adesao,desfazer:desfazer,pensar:pensar,local:local,IA:IA,
+    aplicar:aplicar,mais:mais,cab:cab,desmarcar:desmarcar,apagarTudo:apagarTudo,alarmes:alarmes,num:num,corta:corta,completa:completa,resumirConsulta:resumirConsulta,fam1:fam1,remInfo:remInfo,adesao:adesao,desfazer:desfazer,pensar:pensar,local:local,IA:IA,
     lerRotulo:lerRotulo,falar:falar,parar:parar,nomeVoz:nomeVoz,preencher:preencher,frases:frases,set onTalk(f){ onTalk=f; },temGravada:function(k){ return !!REC[k]&&CFG.pais!=='pt'&&CFG.voz!=='masculina'; }};
 })();
 
@@ -2873,7 +2933,7 @@ var Motor = (function(){
   SCR.inicio=function(){
     var due=M.doseAgora(), esq=M.doseEsquecida(), prox=M.proximaDose(), conta=M.contasAbertas()[0], ag=M.agenda()[0], alerta=S().historico[0];
     var head=(S().demo?'<button class="demobar" data-a="confirmar" data-q="demo">'+L('Modo demonstração · dados de exemplo. Toque para sair.','Modo demonstração · dados de exemplo. Toque para sair.')+'</button>':'')+'<div class="top"><div class="brand"></div><button class="round" data-a="avisos" aria-label="Avisos" style="position:relative">'+I.bell+(nAvisos()?'<span class="badge-n">'+nAvisos()+'</span>':'')+'</button><button class="round" data-a="cfg" aria-label="Ajustes">'+I.gear+'</button></div>';
-    var news=due?'<button class="news" data-a="go" data-to="alarme"><span class="dot"></span><span class="grow">'+L('Agora: hora da ','Agora: hora da ')+esc(due.n)+'</span><span class="chev">'+I.chev+'</span></button>'
+    var news=due?'<button class="news" data-a="go" data-to="alarme"><span class="dot"></span><span class="grow">'+L('Agora: hora de tomar ','Agora: hora de tomar ')+esc(due.n)+'</span><span class="chev">'+I.chev+'</span></button>'
       :esq?'<button class="news grey" data-a="go" data-to="remedios"><span class="dot"></span><span class="grow">'+esc(esq.n)+L(' das ',' das ')+esq.t+L(' não foi marcada',' não foi marcada')+'</span><span class="chev">'+I.chev+'</span></button>':'';
     var spot=function(k,label,stx,act,to,state,hot){ return '<button class="spot sp-'+k+(hot?' hot':'')+'" data-a="'+act+'" data-to="'+(to||'')+'"><span class="sp-stage"><span class="sp-glow"></span>'+pt(k,state||'calmo')+(hot?'<span class="sp-badge">1</span>':'')+'</span><span class="tt">'+label+'</span><span class="st">'+esc(stx)+'</span></button>'; };
     var remTx=due?'Agora: '+due.n:esq?L('Esqueceu: ','Esqueceu: ')+esq.n:prox?L('Próximo às ','Próximo às ')+prox.t:!S().doses.length?L('Nenhum remédio ainda','Nenhum remédio ainda'):L('Tudo tomado','Tudo tomado');
@@ -2905,7 +2965,7 @@ var Motor = (function(){
     return '<div class="scr">'+head+'<h2 class="tt h1" style="margin-top:2px">'+esc(greet())+'</h2>'+alertBox+body+'</div>'+dock();
   };
   function resumo(){ var due=M.doseAgora(), ag=M.agenda().filter(function(a){ return a.dia===M.hoje(); })[0], c=M.contasAbertas()[0], p=[];
-    if(due) p.push(L('tá na hora da ','está na hora da ')+due.n); else { var pr=M.proximaDose(); if(pr) p.push(L('a próxima é a ','a próxima é a ')+pr.n+L(' às ',' às ')+pr.t); }
+    if(due) p.push(L('tá na hora de tomar ','está na hora de tomar ')+due.n); else { var pr=M.proximaDose(); if(pr) p.push(L('a próxima é a ','a próxima é a ')+pr.n+L(' às ',' às ')+pr.t); }
     if(ag) p.push(ag.t.charAt(0).toLowerCase()+ag.t.slice(1)+L(' às ',' às ')+ag.h);
     var s=greet()+'! '; if(!p.length) return s+L('Tá tudo tranquilo por aqui.','Está tudo tranquilo por aqui.'); return s+L('Hoje ','Hoje ')+p.join(L(' e ',' e '))+'.'; }
   /* ---------- apresentação ---------- */
@@ -2967,7 +3027,7 @@ var Motor = (function(){
       (TUT[s.k]?'<div class="stagewrap tw"><div class="aslot"><div class="alab" id="alab">'+ix(TUT[s.k].al.label)+'</div></div><div class="stage">'+stage+'</div><div class="demo" id="demo">'+demoHTML(s.k)+'</div></div><div class="itx tut"><h1 class="tt">'+ix(s.t)+'</h1><ol class="como">'+TUT[s.k].como.map(function(c,j){ return '<li data-j="'+j+'"><b style="color:'+s.bc+'">'+(j+1)+'</b><span>'+ix(c)+'</span></li>'; }).join('')+'</ol></div>':'<div class="stagewrap">'+stage+'</div><div class="itx"><h1 class="tt">'+ix(s.t)+'</h1>'+(s.li?'<ul class="ili">'+s.li.map(function(x){ return '<li><i style="background:'+(light?'var(--esc)':'rgba(255,255,255,.95)')+';color:'+(light?'#fff':s.bg)+'">'+I.check+'</i>'+ix(x)+'</li>'; }).join('')+'</ul>':'<p>'+ix(s.p)+'</p>')+'</div>')+btn+'</div>';
   };
   /* ---------- primeiro uso: cadastro e autorizações (um passo por tela) ---------- */
-  var MODO_TESTE=true;   // protótipo: apresentação + cadastro sempre ao abrir. No app final: false (só no primeiro uso)
+  var MODO_TESTE=!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());   // versão web de teste: apresentação sempre. No app da loja: só no primeiro uso
   var CAD=['nome','familia','remedios','p_notif','p_mic','p_contatos','p_ligacoes','palavra','pronto'];
   var PERM={p_notif:{k:'remedio',bg:'#FFD23F',fg:'#3D2A00',t:['Posso te avisar na hora?','Posso avisá-la na hora?'],p:['Pra lembrar do remédio, das contas e das consultas, mesmo com o celular parado.','Para lembrar o remédio, as contas e as consultas, mesmo com o telemóvel parado.'],id:'notif'},
     p_mic:{k:'familia',bg:'#FF8A3D',fg:'#14171C',t:['Posso usar o microfone?','Posso usar o microfone?'],p:['Pra você falar comigo em vez de digitar. Eu só escuto quando você toca em Fale comigo.','Para falar comigo em vez de escrever. Só oiço quando toca em Fale comigo.'],id:'mic'},
@@ -2995,9 +3055,9 @@ var Motor = (function(){
   function cadSalvar(i){ var k=CAD[i], S0=S(), ch=false;
     if(k==='familia'){ var pn=(($('#ct_n')||{}).value||'').trim(); if(pn) M.aplicar([{tipo:'novo_contato',nome:pn,telefone:(($('#ct_t')||{}).value||'').trim(),email:(($('#ct_e')||{}).value||'').trim()}]); }
     if(k==='remedios'){ var pr=(($('#rem_n')||{}).value||'').trim(); if(pr) M.aplicar([{tipo:'novo_remedio',nome:pr,horarios:[(($('#rem_h')||{}).value||'08:00')]}]); }
-    if(k==='nome'){ var v=($('#cad_nome')||{}).value; v=(v||'').trim(); if(v&&v!==S0.nome){ S0.nome=v.slice(0,30); ch=true; } }
-    if(k==='familia'){ $$('[data-c]').forEach(function(inp){ var c=S0.contatos[+inp.dataset.c]; if(c&&c[inp.dataset.f]!==inp.value.trim()){ c[inp.dataset.f]=inp.value.trim().slice(0,30); ch=true; } }); S0.contatos=S0.contatos.filter(function(c){ return c.n; }); }
-    if(k==='palavra'){ var p=($('#cad_pal')||{}).value; p=(p||'').trim(); if(p&&p!==S0.palavra){ S0.palavra=p.slice(0,30); ch=true; } }
+    if(k==='nome'){ var v=($('#cad_nome')||{}).value; v=(v||'').trim(); if(v&&v!==S0.nome){ S0.nome=M.corta(v,30); ch=true; } }
+    if(k==='familia'){ $$('[data-c]').forEach(function(inp){ var c=S0.contatos[+inp.dataset.c]; if(c&&c[inp.dataset.f]!==inp.value.trim()){ c[inp.dataset.f]=M.corta(inp.value.trim(),30); ch=true; } }); S0.contatos=S0.contatos.filter(function(c){ return c.n; }); }
+    if(k==='palavra'){ var p=($('#cad_pal')||{}).value; p=(p||'').trim(); if(p&&p!==S0.palavra){ S0.palavra=M.corta(p,30); ch=true; } }
     if(ch) M.save(); }
   function cadIr(i){ if(st.cadSo&&st.scr==='cadastro'&&i>CAD.indexOf('palavra')){ st.cadSo=0; st.scr='inicio'; st.arg=null; render(true); toast(L('Palavra secreta guardada.','Palavra secreta guardada.')); return; } if(i>=CAD.length){ cadFim(); return; } st.scr='cadastro'; st.arg=i; render(true); }
   function cadFim(){ M.parar(); try{ localStorage.setItem('ea-cadastro','1'); }catch(x){} st.hist=[]; st.scr='inicio'; st.arg=null; st.greeted=0; render(true); }
@@ -3022,7 +3082,7 @@ var Motor = (function(){
   /* ---------- enviar para a família: WhatsApp, e-mail ou copiar ---------- */
   function compartilhar(texto,assunto){ var mails=S().contatos.filter(function(c){ return c.email; }).map(function(c){ return c.email; }).join(',');
     var c1=S().contatos.filter(function(c){ return c.tel; })[0], n1=c1?String(c1.tel).replace(/\D/g,''):''; if(n1&&CFG.pais!=='pt'&&n1.length>=10&&n1.indexOf('55')!==0) n1='55'+n1; if(n1&&CFG.pais==='pt'&&n1.length===9) n1='351'+n1;
-    var wa='https://wa.me/'+n1+'?text='+encodeURIComponent(texto), ml='mailto:'+encodeURIComponent(mails)+'?subject='+encodeURIComponent(assunto||'Escudo Amigo')+'&body='+encodeURIComponent(texto);
+    var wa='https://wa.me/'+n1+'?text='+encURI(texto), ml='mailto:'+encURI(mails)+'?subject='+encURI(assunto||'Escudo Amigo')+'&body='+encURI(texto);
     openLayer('<span class="tt h2">'+L('Mandar para a família','Enviar à família')+'</span><div class="partxt">'+esc(texto).replace(/\n/g,'<br>')+'</div>'+
       '<a class="btn b-fin" href="'+wa+'" target="_blank" rel="noopener">'+I.send+'WhatsApp</a>'+
       '<a class="btn b-esc" href="'+ml+'">'+I.bell+L('E-mail','E-mail')+(mails?'':' ('+L('sem e-mail salvo','sem e-mail guardado')+')')+'</a>'+
@@ -3078,9 +3138,9 @@ var Motor = (function(){
   function avatar(a,cls){ return a.foto?'<img class="'+(cls||'')+'" src="'+a.foto+'" alt="">':'<span class="'+(cls||'')+' ini" style="background:'+(a.cor||'#A84508')+'">'+esc((a.n||'?')[0])+'</span>'; }
   SCR.amigos=function(){ var as=amigos(), fixo=barraItens().indexOf('amigos')>=0;
     return '<div class="scr">'+top(L('Meus amigos','Meus amigos'))+
-      '<p class="muted" style="font-size:19px">'+L('Quem cuida de você. Toque na foto e eu ligo.','Quem cuida de si. Toque na foto e eu ligo.')+'</p>'+
+      '<p class="muted" style="font-size:19px">'+L('Quem cuida de você. Toque na foto para ligar.','Quem cuida de si. Toque na foto para ligar.')+'</p>'+
       (as.length?'<div class="amigos">'+as.map(function(a,j){ var tl=telLink(a.tel);
-          return '<div class="amigo"><a class="am-foto" '+(tl?'href="'+tl+'" ':'')+'data-a="ligamigo" data-j="'+j+'">'+avatar(a,'am-img')+'<span class="am-info"><b>'+esc(a.n)+'</b><small>'+esc(a.f||'')+'</small>'+(a.tel?'<span class="am-tel">'+I.phone+esc(a.tel)+'</span>':'')+'</span></a><button class="round sm am-ed" data-a="amigoed" data-j="'+j+'" aria-label="Mudar '+esc(a.n)+'">'+I2.pen+'</button></div>'; }).join('')+'</div>'
+          return '<div class="amigo"><a class="am-foto" role="button" tabindex="0" data-a="ligamigo" data-j="'+j+'">'+avatar(a,'am-img')+'<span class="am-info"><b>'+esc(a.n)+'</b><small>'+esc(a.f||'')+'</small>'+(a.tel?'<span class="am-tel">'+I.phone+esc(a.tel)+'</span>':'')+'</span></a><button class="round sm am-ed" data-a="amigoed" data-j="'+j+'" aria-label="Mudar '+esc(a.n)+'">'+I2.pen+'</button></div>'; }).join('')+'</div>'
         :'<div class="card vazio2">'+pt('familia','feliz','','1').replace('class="ptw "','class="ptw" style="width:70px;height:80px;flex:none"')+'<p>'+L('Ainda ninguém. Coloque o seu médico, a farmácia e quem cuida de você, com foto.','Ainda ninguém. Coloque o seu médico, a farmácia e quem cuida de si, com foto.')+'</p></div>')+
       '<button class="btn b-fam" data-a="amigoed" data-j="-1">+ '+L('Adicionar amigo','Adicionar amigo')+'</button>'+
       (fixo?'<p class="muted" style="font-size:17px;text-align:center">'+I2.pin.replace('<svg','<svg style="width:18px;height:18px;vertical-align:-3px"')+' '+L('Fixado na barra de baixo','Fixado na barra de baixo')+'</p>':'<button class="btn b-soft" data-a="fixar" data-k="amigos">'+I2.pin+L('Deixar sempre na barra de baixo','Deixar sempre na barra de baixo')+'</button>')+
@@ -3140,7 +3200,7 @@ var Motor = (function(){
       '<h2 class="tt h2">'+L('Hoje','Hoje')+'</h2>'+
       ds.map(function(d){ var now=d.s==='agora', fg=d.s==='esquecido';
         return '<div class="dose" style="'+(now?'background:var(--rem-l);box-shadow:inset 0 0 0 3px var(--rem)':fg?'background:var(--soft);box-shadow:inset 0 0 0 3px #B9C0CA':'')+'"><span class="tm">'+d.t+'</span><span class="tx"><b>'+esc(d.n)+'</b><span class="muted" style="font-size:18px">'+esc(d.d)+'</span>'+
-        (d.s==='tomado'?'<button class="ok okbtn" data-a="destomei" data-id="'+d.id+'" aria-label="'+L('Desmarcar','Desmarcar')+'">'+I.check+L('Tomado às ','Tomado às ')+d.at+'</button>':d.s==='depois'?'<span style="font-size:18px;font-weight:800;color:var(--muted)">'+L('Mais tarde','Mais tarde')+'</span>':fg?'<span class="atras">⚠ '+L('Atrasado · era ','Atrasado · era ')+d.t+'</span>':now?'<span class="agora">● '+L('Agora','Agora')+'</span>':'')+'</span>'+
+        (d.s==='tomado'?'<button class="ok okbtn" data-a="destomei" data-id="'+d.id+'" aria-label="'+L('Desmarcar','Desmarcar')+'">'+I.check+L('Tomado às ','Tomado às ')+d.at+'</button>':d.s==='depois'?'<span style="font-size:18px;font-weight:800;color:var(--muted)">'+L('Mais tarde','Mais tarde')+'</span>':fg?'<span class="atras">⚠ '+L('Atrasado · era ','Atrasado · era ')+d.t+'</span>':now?(function(){ var df=Math.round((Date.now()-d.v)/6e4); return df<0?'<span class="agora">'+L('Daqui a pouco','Daqui a pouco')+'</span>':df>15?'<span class="atras">⚠ '+L('Atrasado · era ','Atrasado · era ')+d.t+'</span>':'<span class="agora">● '+L('Agora','Agora')+'</span>'; })():'')+'</span>'+
         (d.s!=='tomado'?'<button class="btn '+(now?'b-rem':'b-soft')+' sm" data-a="tomei" data-id="'+d.id+'">Tomei</button>':'')+'</div>'; }).join('')+
       cardAmigos()+
       (ds.length?'<div class="card sem7"><b>'+L('Últimos 7 dias','Últimos 7 dias')+'</b><div class="dias7">'+ad.map(function(x){ var dd=new Date(x.dia+'T12:00:00'), antes=x.dia<(S().criado||'0000');
@@ -3157,7 +3217,7 @@ var Motor = (function(){
       '<h2 class="tt h2">'+L('Pressão e glicose','Tensão e glicose')+'</h2><div class="dose"><span class="tx"><b>'+(med?esc(med.tipo)+': '+esc(med.v):L('Nada anotado ainda','Nada apontado ainda'))+'</b>'+(med?'<span class="muted" style="font-size:18px">'+M.cap(quando(med.dia))+L(' às ',' às ')+med.h+'</span>':'')+'</span><button class="btn b-soft sm" data-a="voz" data-t="'+esc(L('Quero anotar minha pressão','Quero apontar a minha tensão'))+'">'+L('Anotar','Apontar')+'</button></div>'+
       '</div>'+dock();
   };
-  SCR.alarme=function(){ var d=M.doseAgora()||M.doseEsquecida()||M.proximaDose()||M.doses()[0]; if(!d) return SCR.remedios();
+  SCR.alarme=function(){ var al0=M.alarmes()[0], d=(al0&&M.doses().filter(function(x){ return x.id===al0.id; })[0])||M.doseAgora()||M.doseEsquecida()||M.proximaDose()||M.doses()[0]; if(!d) return SCR.remedios();
     var juntos=M.doses().filter(function(x){ return x.t===d.t&&x.s!=='tomado'; }); if(!juntos.length) juntos=[d];
     return '<div class="scr full alarm calmo"><div class="top" style="width:100%"><button class="round" data-a="back" aria-label="Fechar" style="background:rgba(255,255,255,.55)">'+I.x+'</button><span class="grow" style="font-size:20px;font-weight:800;color:#5E4100">'+L('Hora do remédio','Hora do remédio')+'</span><span style="width:56px"></span></div><span class="tt big alhora">'+d.t+'</span>'+
       '<div class="stage"><div class="disc"></div>'+pt('remedio','atencao','al')+'</div>'+
@@ -3176,7 +3236,7 @@ var Motor = (function(){
     return A; }
   function nAvisos(){ return avisos().filter(function(a){ return a.st!=='calmo'; }).length; }
   SCR.avisos=function(f){ f=f||'todos'; var list=avisos().filter(function(a){ return f==='todos'||a.k===f; });
-    var chip=function(k,l,bg,fg){ return '<button class="chip" data-a="filtro" data-f="'+k+'" style="background:'+(f===k?'var(--ink)':bg)+';color:'+(f===k?'#fff':fg)+'">'+l+'</button>'; };
+    var chip=function(k,l,bg,fg){ return '<button class="chip'+(f===k?' on':'')+'" aria-pressed="'+(f===k)+'" data-a="filtro" data-f="'+k+'" style="background:'+(f===k?'var(--ink)':bg)+';color:'+(f===k?'#fff':fg)+'">'+l+'</button>'; };
     return '<div class="scr">'+top('Avisos')+'<button class="btn b-soft semana" data-a="semana">'+I.send+L('Mandar resumo da semana pra família','Enviar resumo da semana à família')+'</button>'+'<div class="chips">'+chip('todos','Todos','var(--soft)','var(--ink)')+chip('remedio','Remédio','var(--rem-l)','var(--rem-d)')+chip('escudo','Escudo','var(--esc-l)','var(--esc-d)')+chip('financas','Finanças','var(--fin-l)','var(--fin-d)')+chip('familia','Dia a dia','var(--fam-l)','var(--fam-d)')+'</div>'+
       (list.length?'<div style="display:flex;flex-direction:column;gap:2px;margin:0 -6px">'+list.map(function(a){ var bg=a.st==='perigo'?'#FFE3E1':a.st==='esquecido'?'var(--soft)':a.st==='atencao'?'#FFF1D9':KC[a.k][1];
         return '<button class="av'+(a.hot?' hot':'')+'" data-a="go" data-to="'+a.go+'"><span class="ava" style="background:'+bg+'">'+pt(a.k,a.st)+'</span><span class="tx"><span class="hd">'+a.h+'<span style="'+(a.hot?'color:#B45309;font-weight:800':'')+'">'+esc(a.w)+'</span></span><span class="msg">'+esc(a.m)+'</span></span></button>'; }).join('')+'</div>'
@@ -3185,7 +3245,7 @@ var Motor = (function(){
   /* ---------- finanças ---------- */
   SCR.financas=function(){ var g=M.gastoMes(), cats=M.porCategoria(), mx=cats.length?cats[0][1]:1, mes=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'][new Date().getMonth()];
     return '<div class="scr">'+top('Finanças')+
-      '<div class="card" style="background:linear-gradient(180deg,#27B26C,#1A9558);color:#fff;box-shadow:0 14px 28px -12px rgba(31,164,99,.7)"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:19px;font-weight:800;color:#DDF7E8">'+L('Gastei em ','Gastei em ')+mes+'</span><span class="tt" style="font-size:36px;text-transform:none">'+money(g)+'</span><span style="font-size:18px;font-weight:700;color:#DDF7E8">'+L('Meta do mês: ','Meta do mês: ')+money(S().limite)+'</span></div>'+pt('financas','calmo','fin').replace('class="ptw fin"','class="ptw fin" style="width:104px;height:100px;flex:none"')+'</div><div class="bar"><i style="width:'+Math.min(100,g/S().limite*100)+'%"></i></div></div>'+
+      '<div class="card" style="background:linear-gradient(180deg,#27B26C,#1A9558);color:#fff;box-shadow:0 14px 28px -12px rgba(31,164,99,.7)"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:19px;font-weight:800;color:#DDF7E8">'+L('Gastei em ','Gastei em ')+mes+'</span><span class="tt" style="font-size:36px;text-transform:none">'+money(g)+'</span>'+(S().limite?'<span style="font-size:18px;font-weight:700;color:#DDF7E8">'+L('Meta do mês: ','Meta do mês: ')+money(S().limite)+'</span>':'<button data-a="metaed" style="color:#fff;font:inherit;font-size:18px;font-weight:800;text-decoration:underline;text-align:left;padding:0;background:none;border:0;min-height:44px">'+L('Sem meta · Definir','Sem meta · Definir')+'</button>')+'</div>'+pt('financas','calmo','fin').replace('class="ptw fin"','class="ptw fin" style="width:104px;height:100px;flex:none"')+'</div>'+(S().limite?'<div class="bar"><i style="width:'+Math.min(100,g/S().limite*100)+'%"></i></div>':'')+'</div>'+
       '<button class="btn b-fin" data-a="voz" data-t="'+esc(L('Quero anotar um gasto','Quero apontar um gasto'))+'">'+I.mic+L('Anotar um gasto','Apontar um gasto')+'</button>'+
       '<div class="row2 finbtns"><label class="btn b-soft filebtn">'+I.cam+L('Foto da conta','Foto da conta')+'<input type="file" accept="image/*" capture="environment" data-file="conta" hidden></label><button class="btn b-soft" data-a="go" data-to="planilha">'+I.clip+L('Planilha','Folha')+'</button></div>'+
       '<h2 class="tt h2">'+L('Meus objetivos','Os meus objetivos')+'</h2>'+(S().metas||[]).map(function(mt){ var pc=Math.min(100,Math.round(mt.guardado/Math.max(1,mt.alvo)*100)); return '<div class="meta"><div class="mh"><b>'+esc(mt.n)+'</b><span>'+pc+'%</span></div><div class="mbar"><i style="width:'+pc+'%"></i></div><div class="mh"><small>'+L('Guardei ','Guardei ')+money(mt.guardado)+L(' de ',' de ')+money(mt.alvo)+'</small><button class="btn b-fin sm" data-a="voz" data-t="'+esc(L('Guardei dinheiro para ','Guardei dinheiro para ')+mt.n)+'">'+L('Guardei','Guardei')+'</button></div></div>'; }).join('')+
@@ -3261,11 +3321,15 @@ var Motor = (function(){
       '<button class="opt t-esc" data-a="voz" data-t="'+esc(L('Quero te contar uma coisa estranha que aconteceu','Quero contar uma coisa estranha que aconteceu'))+'">'+I.talk+L('Contar o que houve','Contar o que houve')+'</button><button class="opt t-esc" data-a="go" data-to="ligacao">'+I.phone+L('Estão me ligando','Estão a ligar-me')+'</button></div>'+
     '<div class="card" style="background:var(--soft)"><b style="font-size:20px">Direto do WhatsApp</b><div class="steps"><span><i>1</i>'+L('Segure a mensagem','Mantenha o dedo na mensagem')+'</span><span><i>2</i>'+L('Toque em Compartilhar','Toque em Partilhar')+'</span><span><i>3</i>'+L('Escolha Escudo Amigo','Escolha Escudo Amigo')+'</span></div></div>');
     diz(T('enviar','Mostre-me o que chegou. Eu vejo antes de responder.'),'enviar',P('#layer .ptw')); }
+  /* confirmar antes de ligar: evita chamada sem querer por toque duplo */
+  function sheetLigar(nome,num,verm){ openLayer('<span class="tt h2"'+(verm?' style="color:var(--red-d)"':'')+'>'+L('Ligar para ','Ligar a ')+esc(nome)+'?</span>'+(num?'<p class="lignum">'+esc(num)+'</p>':'')+
+      '<div class="soslist"><button class="btn '+(verm?'b-red':'b-esc')+' sosb" data-a="ligarja" data-n="'+esc(num||nome)+'" data-q="'+esc(nome)+'" disabled style="min-height:76px;font-size:24px">'+I.phone+L('Sim, ligar agora','Sim, ligar agora')+'</button><button class="btn b-soft" data-a="close">'+L('Não, voltar','Não, voltar')+'</button></div>');
+    setTimeout(function(){ $$('.sosb').forEach(function(x){ x.disabled=false; }); },700); }
   function sheetSos(){ var c=S().contatos;
     openLayer('<span class="tt h2" style="color:var(--red-d)">'+L('Socorro','Socorro')+'</span><p style="font-size:20px;font-weight:700">'+L('Calma, eu tô aqui. Quem você quer chamar?','Calma, estou aqui. Quem quer chamar?')+'</p><div class="soslist">'+
       c.slice(0,2).map(function(p){ return '<button class="btn b-esc sosb" data-a="ligar" data-n="'+esc(p.n)+'" disabled>'+I.phone+L('Ligar para ','Ligar a ')+esc(p.n)+'</button>'; }).join('')+
       (c.length?'<button class="btn b-soft sosb" data-a="sosavisa" disabled>'+I.send+L('Mandar mensagem pra família','Mandar mensagem à família')+'</button>':'')+
-      '<div class="sosgap"></div><button class="btn b-red sosb" data-a="ligar" data-n="'+L('192','112')+'" disabled>'+I.phone+L('SAMU · 192','Emergência · 112')+'</button>'+(CFG.pais==='pt'?'':'<button class="btn b-red sosb" data-a="ligar" data-n="190" disabled>'+I.phone+'Polícia · 190</button>')+'</div>');
+      '<div class="sosgap"></div><button class="btn b-red sosb" data-a="sosconf" data-n="'+L('192','112')+'" data-r="'+L('SAMU','Emergência')+'" disabled>'+I.phone+L('SAMU · 192','Emergência · 112')+'</button>'+(CFG.pais==='pt'?'':'<button class="btn b-red sosb" data-a="sosconf" data-n="190" data-r="Polícia" disabled>'+I.phone+'Polícia · 190</button>')+'</div>');
     setTimeout(function(){ $$('.sosb').forEach(function(x){ x.disabled=false; }); },800);
     diz(T('sos','Calma, estou aqui consigo. Quem quer chamar?'),'sos',null); }
   if(CFG.contraste==null) CFG.contraste=false;
@@ -3283,19 +3347,46 @@ var Motor = (function(){
       '<b>Sons</b><div class="chips">'+b('sons',true,'Ligados')+b('sons',false,'Desligados')+'</div></div>'+
       '<details class="cfgbox"><summary>'+L('Mais opções de aparência','Mais opções de aparência')+'</summary><b>'+L('Tela inicial','Ecrã inicial')+'</b><div class="chips">'+b('home','equipe','Protetores')+b('home','blocos','Blocos')+b('home','lista','Lista grande')+b('home','voz','Voz primeiro')+'</div>'+
       '<b>Títulos</b><div class="chips">'+b('caps',true,'MAIÚSCULAS')+b('caps',false,'Normal')+'</div></details>'+
+      '<div class="cfgbox"><b>'+L('Inteligência artificial pela internet','Inteligência artificial pela internet')+'</b><div class="chips">'+b('iaOk',true,L('Pode usar','Pode usar'))+b('iaOk',false,L('Não usar','Não usar'))+'</div><small class="muted" style="font-size:16px">'+L('Usada só quando o app não entende sozinho ou para ler fotos. Serviço: Cloudflare (Llama).','Usada só quando a app não percebe sozinha ou para ler fotos. Serviço: Cloudflare (Llama).')+'</small>'+
+        '<button class="btn b-soft" data-a="planos">'+I2.shield+(window.ESCUDO_LOJA&&LOJA.ativo?L('Escudo Amigo Mais · ativo','Escudo Amigo Mais · ativo'):'Escudo Amigo Mais')+'</button></div>'+
       '<button class="btn b-soft" data-a="privacidade">'+I.lock+L('Privacidade e meus dados','Privacidade e os meus dados')+'</button>'+
       '<button class="btn b-soft" data-a="introver">'+L('Ver a apresentação de novo','Ver a apresentação outra vez')+'</button><button class="btn b-soft" data-a="cadver">'+L('Refazer o cadastro','Refazer o registo')+'</button>'+
-      '<button class="btn b-soft" data-a="confirmar" data-q="demo">'+(S().demo?L('Sair do modo demonstração','Sair do modo demonstração'):L('Ver com dados de exemplo','Ver com dados de exemplo'))+'</button>'); }
+      '<button class="btn b-soft" data-a="confirmar" data-q="demo">'+(S().demo?L('Sair do modo demonstração','Sair do modo demonstração'):L('Ver com dados de exemplo','Ver com dados de exemplo'))+'</button>'+
+      '<p class="muted" style="font-size:15px;text-align:center">Escudo Amigo · '+L('versão ','versão ')+(window.ESCUDO_VERSAO_LOJA||'web 3.5')+'</p>'); }
+  /* ---------- Escudo Amigo Mais (assinatura) ---------- */
+  var LOJA={info:null,ativo:null,ate:null,ocupado:false};
+  var SITE='https://miopla007.github.io/escudo-amigo/';
+  async function lojaChecar(){ if(!window.ESCUDO_LOJA) return; try{ var a=await ESCUDO_LOJA.ativo(); LOJA.ativo=!!a.ativo; LOJA.ate=a.ate||null; LOJA.teste=!!a.teste; window.ESCUDO_MAIS=LOJA.ativo; M.changed(); }catch(e){} try{ LOJA.info=await ESCUDO_LOJA.info(); }catch(e){} }
+  function precoTxt(){ var p=LOJA.info&&LOJA.info.preco; return p||L('R$ 19,90','4,99 €'); }
+  function sheetPlanos(){ var ativo=!window.ESCUDO_LOJA||LOJA.ativo, web=!window.ESCUDO_LOJA, teste=!LOJA.info||LOJA.info.teste!==false;
+    var item=function(ic,t){ return '<div class="pl"><i>'+ic+'</i><span>'+t+'</span></div>'; };
+    openLayer('<span class="tt h2">Escudo Amigo Mais</span>'+
+      (ativo&&!web?'<p class="planok">'+I.check+L('Você já tem o Escudo Amigo Mais.','Já tem o Escudo Amigo Mais.')+(LOJA.ate?' '+L('Renova em ','Renova a ')+new Date(LOJA.ate).toLocaleDateString(CFG.pais==='pt'?'pt-PT':'pt-BR')+'.':'')+'</p>':'<p style="font-size:20px;font-weight:700">'+L('Tudo o que o app já faz, e ainda:','Tudo o que a app já faz, e ainda:')+'</p>')+
+      '<div class="priv">'+item(I.mic,L('Conversa de verdade: entendo qualquer pergunta, do seu jeito.','Conversa a sério: percebo qualquer pergunta, à sua maneira.'))+item(I.shot,L('Leio fotos de caixa de remédio, de contas e de mensagens suspeitas.','Leio fotos de caixas de remédio, de contas e de mensagens suspeitas.'))+item(I2.shield,L('Pesquiso na internet pra você e mostro de onde veio.','Pesquiso na internet por si e mostro de onde veio.'))+item(I2.som,L('Voz mais natural e resumo da consulta médica.','Voz mais natural e resumo da consulta médica.'))+'</div>'+
+      '<div class="cfgbox gratis"><b>'+L('Grátis para sempre','Grátis para sempre')+'</b><span>'+L('Alarme dos remédios, botão de socorro, conferir golpe, Minha gente e Meus amigos.','Alarme dos remédios, botão de socorro, verificar burla, A minha gente e Os meus amigos.')+'</span></div>'+
+      (web?'<p class="muted" style="font-size:17px">'+L('Nesta versão de teste, tudo já está liberado.','Nesta versão de teste, está tudo desbloqueado.')+'</p>':
+       ativo?'<button class="btn b-soft" data-a="gerenciar">'+L('Gerenciar assinatura','Gerir assinatura')+'</button>':
+       '<div class="preco"><b>'+precoTxt()+L(' por mês',' por mês')+'</b>'+(teste?'<span>'+L('Os primeiros 7 dias são grátis','Os primeiros 7 dias são grátis')+'</span>':'')+'</div>'+
+       '<button class="btn b-esc" data-a="assinar" style="min-height:72px;font-size:22px"'+(LOJA.ocupado?' disabled':'')+'>'+(teste?L('Assinar com 7 dias grátis','Assinar com 7 dias grátis'):L('Assinar','Assinar'))+'</button>'+
+       '<p class="letrinha">'+(teste?L('Grátis por 7 dias para quem assina pela primeira vez. ','Grátis durante 7 dias para quem assina pela primeira vez. '):'')+L('Assinatura mensal de ','Assinatura mensal de ')+precoTxt()+L(', renovada automaticamente todo mês até você cancelar. Cancele quando quiser nos Ajustes do iPhone (seu nome › Assinaturas), pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.',', renovada automaticamente todos os meses até cancelar. Cancele quando quiser nas Definições do iPhone (o seu nome › Subscrições), pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.')+'</p>'+
+       '<button class="btn b-soft" data-a="restaurar">'+L('Já assinei · restaurar','Já assinei · restaurar')+'</button>')+
+      '<div class="leg"><a href="'+SITE+'termos.html" data-a="abrelink" data-u="'+SITE+'termos.html">'+L('Termos de uso','Termos de utilização')+'</a><a href="'+SITE+'privacidade.html" data-a="abrelink" data-u="'+SITE+'privacidade.html">'+L('Privacidade','Privacidade')+'</a></div>'); }
+  async function assinar(){ if(!window.ESCUDO_LOJA||LOJA.ocupado) return; LOJA.ocupado=true; var bt=$('[data-a=assinar]'); if(bt){ bt.disabled=true; bt.textContent=L('Abrindo a App Store…','A abrir a App Store…'); }
+    var r=await ESCUDO_LOJA.comprar(); LOJA.ocupado=false; await lojaChecar();
+    if(LOJA.ativo){ closeLayer(true); Sfx.play('coracao'); toast(L('Pronto! O Escudo Amigo Mais está ligado.','Pronto! O Escudo Amigo Mais está ligado.')); render(false); }
+    else { sheetPlanos(); if(!r.cancelou) toast(L('Não deu certo agora. Tente de novo daqui a pouco.','Não resultou agora. Tente outra vez daqui a pouco.')); } }
+  async function restaurar(){ if(!window.ESCUDO_LOJA) return; toast(L('Procurando sua assinatura…','A procurar a sua assinatura…')); var a=await ESCUDO_LOJA.restaurar(); LOJA.ativo=!!(a&&a.ativo); LOJA.ate=a&&a.ate; window.ESCUDO_MAIS=LOJA.ativo; M.changed();
+    toast(LOJA.ativo?L('Achei! O Escudo Amigo Mais está ligado.','Encontrei! O Escudo Amigo Mais está ligado.'):L('Não achei assinatura nesta conta Apple.','Não encontrei subscrição nesta conta Apple.')); sheetPlanos(); }
   function sheetPrivacidade(){ openLayer('<span class="tt h2">'+L('Privacidade e seus dados','Privacidade e os seus dados')+'</span>'+
-      '<div class="priv">'+[[I.lock,L('Seus dados ficam guardados só neste celular. Não tem conta nem nuvem. Ninguém mais vê.','Os seus dados ficam guardados só neste telemóvel. Não há conta nem nuvem. Mais ninguém vê.')],
+      '<div class="priv">'+[[I.lock,L('Seus dados ficam guardados só neste celular. Não tem conta nem cadastro em site. Ninguém mais vê.','Os seus dados ficam guardados só neste telemóvel. Não há conta nem registo em site. Mais ninguém vê.')],
         [I.phone,L('A família só recebe o que você mandar: um aviso ou o resumo da semana.','A família só recebe o que enviar: um aviso ou o resumo da semana.')],
         [I.mic,L('O microfone só escuta quando você toca em Fale comigo ou em Gravar consulta.','O microfone só ouve quando toca em Fale comigo ou em Gravar consulta.')],
-        [I.shot,L('Fotos e mensagens que você manda para conferir são usadas só para responder você.','Fotos e mensagens que envia para verificar são usadas só para lhe responder.')],
+        [I.shot,L('Se você deixar usar a inteligência artificial, o que você pergunta ou fotografa vai para a Cloudflare só para gerar a resposta e não fica guardado. Pode desligar em Ajustes.','Se deixar usar a inteligência artificial, o que pergunta ou fotografa vai para a Cloudflare só para gerar a resposta e não fica guardado. Pode desligar em Ajustes.')],
         [I2.shield,L('Nunca pedimos senha, código ou dados do banco.','Nunca pedimos palavra-passe, código ou dados do banco.')]].map(function(x){ return '<div class="pl"><i>'+x[0]+'</i><span>'+x[1]+'</span></div>'; }).join('')+'</div>'+
       '<button class="btn b-soft" data-a="compartilhar_dados">'+I.send+L('Mandar uma cópia dos meus dados','Enviar uma cópia dos meus dados')+'</button>'+
       '<button class="btn b-red" data-a="confirmar" data-q="apagar">'+I.x+L('Apagar todos os meus dados','Apagar todos os meus dados')+'</button>'); }
   function sheetConfirmar(q){ var txt=q==='apagar'?[L('Apagar tudo?','Apagar tudo?'),L('Remédios, contas, agenda, família e conversas vão ser apagados deste celular e da sua conta. Não dá para desfazer.','Remédios, contas, agenda, família e conversas vão ser apagados deste telemóvel e da sua conta. Não dá para desfazer.'),L('Sim, apagar tudo','Sim, apagar tudo'),'b-red']
-      :S().demo?[L('Sair da demonstração?','Sair da demonstração?'),L('Os dados de exemplo somem e o app fica vazio para você cadastrar os seus.','Os dados de exemplo desaparecem e a app fica vazia para registar os seus.'),L('Sim, sair','Sim, sair'),'b-esc']
+      :S().demo?[L('Sair da demonstração?','Sair da demonstração?'),L('Os dados de exemplo somem e os seus dados voltam como estavam.','Os dados de exemplo desaparecem e os seus dados voltam como estavam.'),L('Sim, sair','Sim, sair'),'b-esc']
       :[L('Ver com dados de exemplo?','Ver com dados de exemplo?'),L('Seus dados de agora serão trocados por um exemplo (a Dona Lúcia). Use só para mostrar o app.','Os seus dados atuais serão trocados por um exemplo (a D. Lúcia). Use só para mostrar a app.'),L('Sim, mostrar exemplo','Sim, mostrar exemplo'),'b-esc'];
     openLayer('<span class="tt h2">'+txt[0]+'</span><p style="font-size:20px;font-weight:700">'+txt[1]+'</p><button class="btn '+txt[3]+'" data-a="confirmado" data-q="'+q+'">'+txt[2]+'</button><button class="btn b-soft" data-a="close">'+L('Não, voltar','Não, voltar')+'</button>'); }
   /* ---------- conversa (o cérebro) ---------- */
@@ -3308,13 +3399,13 @@ var Motor = (function(){
   function vozOn(){ return CFG.vozResp!==false; }
   function segVoz(){ var on=vozOn(); return '<div class="seg" role="group" aria-label="'+L('Como eu respondo','Como respondo')+'"><button type="button" data-a="vozmodo" data-v="1" class="'+(on?'on':'')+'" aria-pressed="'+on+'">'+I2.som+L('Com voz','Com voz')+'</button><button type="button" data-a="vozmodo" data-v="0" class="'+(on?'':'on')+'" aria-pressed="'+!on+'">'+I2.mudo+L('Só texto','Só texto')+'</button></div>'; }
   function sheetVoz(pre){ openLayer('<div class="vhead">'+segVoz()+'<button type="button" class="round sm" data-a="close" aria-label="Fechar">'+I.x+'</button></div>'+
-    '<div class="conv" id="conv"></div><div class="vbars on" id="vb">'+'<i></i>'.repeat(7)+'</div><p class="muted" id="vst" style="text-align:center;font-size:20px;font-weight:800">'+L('Pode falar, tô ouvindo…','Pode falar, estou a ouvir…')+'</p>'+
+    '<div class="conv" id="conv"></div><div class="vbars on" id="vb">'+'<i></i>'.repeat(7)+'</div><p class="muted" id="vst" style="text-align:center;font-size:20px;font-weight:800">'+L('Toque em Falar ou escreva aqui embaixo.','Toque em Falar ou escreva aqui em baixo.')+'</p>'+
     '<div class="say" id="say">'+sugestoes().map(function(s){ return '<button data-a="dizer" data-t="'+esc(s)+'">'+esc(s)+'</button>'; }).join('')+'</div>'+
     '<div class="recbar" id="recbar" hidden><div class="wave"><canvas id="wv" aria-hidden="true"></canvas><span class="rdot"></span><span class="rtm" id="rtm">0:00</span></div>'+
       '<div class="recacts"><button type="button" class="btn b-soft rx" data-a="ouvirx">'+I.x+L('Cancelar','Cancelar')+'</button><button type="button" class="btn b-fin rok" data-a="ouvirok">'+I.send+L('Enviar','Enviar')+'</button></div></div>'+
     '<form id="vf" class="vf"><textarea id="vi" rows="1" aria-label="'+L('Escreva aqui','Escreva aqui')+'" placeholder="'+L('Escreva aqui…','Escreva aqui…')+'" autocomplete="off" enterkeyhint="send"></textarea>'+
       '<button type="button" class="btn b-esc vact" id="vact" data-a="ouvir">'+I.mic+L('Falar','Falar')+'</button></form>','voice');
-    if(!conv.length) conv.push({k:'familia',st:'feliz',t:L('Oi! Pode falar, tô te ouvindo.','Olá! Pode falar, estou a ouvir.')});
+    if(!conv.length) conv.push({k:'familia',st:'feliz',t:L('Oi! Toque em Falar e me conte, ou escreva.','Olá! Toque em Falar e conte-me, ou escreva.')});
     var vi=$('#vi'), vact=$('#vact'), sh=$('#layer .sheet');
     function modoEnviar(){ var tem=!!vi.value.trim(); if(tem===!!vact.dataset.tem) return; vact.dataset.tem=tem?'1':''; if(tem){ vact.removeAttribute('data-a'); vact.type='submit'; vact.className='btn b-fin vact'; vact.innerHTML=I.send+L('Enviar','Enviar'); } else { vact.type='button'; vact.setAttribute('data-a','ouvir'); vact.className='btn b-esc vact'; vact.innerHTML=I.mic+L('Falar','Falar'); } }
     function cresce(){ vi.style.height='auto'; vi.style.height=Math.min(vi.scrollHeight,150)+'px'; }
@@ -3332,8 +3423,11 @@ var Motor = (function(){
     return '<div class="they"><span class="ava" style="background:'+KC[m.k][1]+'">'+pt(m.k,m.st||'calmo','','')+'</span><div class="bb" style="background:'+KC[m.k][1]+'"><span class="who">'+NOMEP[m.k]+'</span>'+esc(m.t)+
       (m.feitos&&m.feitos.length?'<div class="feitos">'+m.feitos.map(function(f){ return '<span>'+I.check+esc(f)+'</span>'; }).join('')+(m.snap&&!m.desfeito?'<button class="undo" data-a="desfazer" data-ci="'+i+'">'+I.undo+'Desfazer</button>':'')+(m.desfeito?'<em>Desfeito.</em>':'')+'</div>':'')+
       (m.ver?'<button class="btn sm b-red" data-a="verres" style="min-height:52px">'+L('Ver o resultado','Ver o resultado')+'</button>':'')+
+      (m.consent&&!m.resp?'<div class="iacons"><p>'+L('O que você perguntar ou fotografar vai para o serviço de IA da Cloudflare (modelo Llama, da Meta), junto com um resumo do que está no app (remédios, compromissos). É usado só para responder e não fica guardado lá. Você pode desligar quando quiser em Ajustes.','O que perguntar ou fotografar vai para o serviço de IA da Cloudflare (modelo Llama, da Meta), com um resumo do que está na app (remédios, compromissos). É usado só para responder e não fica guardado lá. Pode desligar quando quiser em Ajustes.')+'</p><button class="btn sm b-esc" data-a="iasim" data-ci="'+i+'">'+I.check+L('Pode usar','Pode usar')+'</button><button class="btn sm b-soft" data-a="ianao" data-ci="'+i+'">'+L('Agora não','Agora não')+'</button></div>':'')+
+      (m.fontes&&m.fontes.length?'<div class="fontes"><small>'+L('Achei na internet:','Encontrei na internet:')+'</small>'+m.fontes.slice(0,3).map(function(f){ return f.url?'<a href="'+esc(f.url)+'" target="_blank" rel="noopener">'+esc(String(f.titulo||f.url).slice(0,60))+'</a>':''; }).join('')+'</div>':'')+
       (m.btn&&m.btn.length?'<div class="row2">'+m.btn.map(function(b,j){ return '<button class="btn sm '+(j===0?btnCor(m.k):'b-soft')+'" data-a="bot" data-ci="'+i+'" data-bi="'+j+'" style="min-height:54px">'+esc(b.texto)+'</button>'; }).join('')+'</div>':'')+'</div></div>'; }).join(''); mount(c); c.scrollTop=c.scrollHeight; }
   function btnCor(k){ return {escudo:'b-esc',remedio:'b-rem',financas:'b-fin',familia:'b-fam'}[k]||'b-esc'; }
+  var askN=0;
   async function ask(t,opt){ opt=opt||{}; if(busy) return; if(OUV.on){ OUV.txt=''; ouvirFim(false); } busy=true; M.parar();
     if(!$('#conv')) sheetVoz(); conv.push({me:1,t:t,img:!!opt.img}); conv.push({wait:1,k:'escudo'}); renderConv();
     var vb=$('#vb'), vs=$('#vst'); if(vb) vb.classList.remove('on'); if(vs) vs.textContent=L('Pensando…','A pensar…'); Sfx.play('tic');
@@ -3342,10 +3436,12 @@ var Motor = (function(){
     catch(e){ clearTimeout(fil); conv.pop(); busy=false; renderConv(); return; }
     clearTimeout(fil); conv.pop(); var res=M.aplicar(r.acoes);
     if(res.extra.abrir){ var tl0=res.extra.abrir; setTimeout(function(){ if(tl0==='enviar') sheetEnviar(); else if(tl0==='sos') sheetSos(); else if(SCR[tl0]){ closeLayer(true); go(tl0); } },reduced?0:1400); }
-    var m={k:r.protetor,st:r.humor,t:r.fala,btn:r.botoes,feitos:res.feitos,snap:res.snap};
+    if(r.pedirIA){ conv.push({k:'escudo',st:'calmo',t:L('Pra responder isso direitinho, eu preciso usar a inteligência artificial pela internet. Posso?','Para responder bem a isto, preciso de usar a inteligência artificial pela internet. Posso?'),consent:1,q:t,img:opt.img,modo:opt.modo}); busy=false; ctl=null; renderConv(); if(vs) vs.textContent=''; if(vozOn()) diz(conv[conv.length-1].t,null,null); return; }
+    if(r.semMais){ askN=(askN||0)+1; if(askN===1||askN%4===0) r.botoes=(r.botoes||[]).slice(0,2).concat([{texto:L('Conhecer o Mais','Conhecer o Mais'),acao:{tipo:'abrir',tela:'planos'}}]); }
+    var m={k:r.protetor,st:r.humor,t:r.fala,btn:r.botoes,feitos:res.feitos,snap:res.snap,fontes:r.fontes};
     if(res.extra.veredito){ st.lastRes=res.extra.veredito; st.lastRes.fala=r.fala; m.ver=1; m.st=res.extra.veredito.nivel==='golpe'?'perigo':res.extra.veredito.nivel==='cuidado'?'atencao':'feliz'; }
     conv.push(m); busy=false; ctl=null;
-    if(!$('#conv')) return; renderConv(); if(vs) vs.textContent=L('Pode falar, tô ouvindo…','Pode falar, estou a ouvir…'); if(vb) vb.classList.add('on');
+    if(!$('#conv')) return; renderConv(); if(vs) vs.textContent=L('Toque em Falar para responder.','Toque em Falar para responder.'); if(vb) vb.classList.remove('on');
     var who=P('#conv .they:last-child .ptw'); if(who){ if(res.extra.tomei) who.react('tomei'); else if(res.extra.moeda) who.react('moeda'); else if(res.extra.coracao) who.react('coracao'); else if(m.st==='perigo'){ var vg=res.extra.veredito&&res.extra.veredito.nivel==='golpe'; Sfx.aviso(vg?'golpe':'cuidado'); if(vg) alarmeTela(true,4500); } else if(!res.extra.crise) Sfx.play('plim'); }
     if(vozOn()) diz(r.fala,null,who); if(!vozOn()||!st.voiceOk||!window.speechSynthesis) reouvir();
     var say=$('#say'); if(say) say.innerHTML=sugestoes().map(function(s){ return '<button data-a="dizer" data-t="'+esc(s)+'">'+esc(s)+'</button>'; }).join('');
@@ -3398,8 +3494,9 @@ var Motor = (function(){
   /* ---------- aviso curto ---------- */
   function desfazerToast(t,fn){ var el=document.createElement('div'); el.setAttribute('role','status'); el.className='toast undo'; el.innerHTML='<span>'+esc(t)+'</span><button type="button">'+I.undo+L('Desfazer','Desfazer')+'</button>'; $('#app').appendChild(el);
     el.querySelector('button').addEventListener('click',function(e){ e.stopPropagation(); fn(); el.remove(); Sfx.play('tic'); }); setTimeout(function(){ el.remove(); },8000); }
+  function encURI(t){ t=String(t==null?'':t); try{ return encodeURIComponent(t); }catch(e){ return encodeURIComponent(t.toWellFormed?t.toWellFormed():t.replace(/[\uD800-\uDFFF]/g,'')); } }
   function toast(t){ var el=document.createElement('div'); el.setAttribute('role','status'); el.className='toast'; if(st.scr==='cadastro'){ el.style.bottom='auto'; el.style.top='calc(70px + env(safe-area-inset-top,0px))'; } el.textContent=t; $('#app').appendChild(el);
-    if(HAS) gsap.fromTo(el,{y:20,opacity:0},{y:0,opacity:1,duration:.3}); setTimeout(function(){ if(HAS) gsap.to(el,{opacity:0,duration:.3,onComplete:function(){ el.remove(); }}); else el.remove(); },5200); }
+    if(HAS) gsap.fromTo(el,{y:20,opacity:0},{y:0,opacity:1,duration:.3}); setTimeout(function(){ if(HAS) gsap.to(el,{opacity:0,duration:.3,onComplete:function(){ el.remove(); }}); else el.remove(); },3800); }
   function ligar(n){ var pp=P('#view [data-pt=familia]'); if(pp) pp.react('coracao'); else Sfx.play('coracao'); toast(L('Ligando para ','A ligar a ')+n+'…');
     var nn=String(n||'').toLowerCase(), quem=amigos().concat(S().contatos.map(function(c){ return {n:c.n,tel:c.tel}; })).filter(function(x){ var A=String(x.n||'').toLowerCase(); return x.tel&&A&&(A.indexOf(nn)>=0||nn.indexOf(A)>=0); })[0];
     var tl=/^\+?\d[\d\s-]{1,}$/.test(String(n).trim())?'tel:'+String(n).replace(/[^\d+]/g,''):(quem&&telLink(quem.tel));
@@ -3409,7 +3506,7 @@ var Motor = (function(){
     var texto=msg||L('Oi! Sou eu, pelo Escudo Amigo. Me liga quando puder?','Olá! Sou eu, pelo Escudo Amigo. Liga-me quando puder?');
     if(!c){ toast(L('Ainda não tem ninguém da família cadastrado. Vamos colocar agora.','Ainda não há ninguém da família registado. Vamos pôr agora.')); setTimeout(function(){ closeLayer(true); go('contatos'); },1200); return; }
     var num=String(c.tel||'').replace(/\D/g,''); if(num&&CFG.pais!=='pt'&&num.length>=10&&num.indexOf('55')!==0) num='55'+num; if(num&&CFG.pais==='pt'&&num.length===9) num='351'+num;
-    Sfx.play('ding'); toast(L('Abrindo o WhatsApp para ','A abrir o WhatsApp para ')+c.n+'…'); abreLink('https://wa.me/'+num+'?text='+encodeURIComponent(texto)); }
+    Sfx.play('ding'); toast(L('Abrindo o WhatsApp para ','A abrir o WhatsApp para ')+c.n+'…'); abreLink('https://wa.me/'+num+'?text='+encURI(texto)); }
   /* ---------- render ---------- */
   /* telas cheias: nada cortado nem por cima — o conteúdo rola numa área própria e o botão fica sempre no fim */
   function cadWrap(){ var sc=$('#view .scr.cad'); if(!sc||$('.cadscroll',sc)) return; var kids=[].slice.call(sc.children), n=kids.length; while(n>1&&kids[n-1].classList.contains('btn')) n--; if(n===kids.length) return;
@@ -3492,7 +3589,7 @@ var Motor = (function(){
   function alarmeTela(on,ms){ var app=$('#app'); if(!app) return; clearTimeout(alarmeTela.t); app.classList.toggle('alto',!!on); if(on&&ms) alarmeTela.t=setTimeout(function(){ app.classList.remove('alto'); },ms); }
   var tmr=null;
   function onShow(s,arg){ applyDock(); clearInterval(tmr); if(s!=='alarme'&&alarmeRemedio.t){ clearTimeout(alarmeRemedio.t); alarmeRemedio.t=0; if(navigator.vibrate) try{ navigator.vibrate(0); }catch(e){} } alarmeTela(false); if(!(s==='consulta'&&CONS.on)) gravandoTela(false);
-    if(s==='alarme'){ alarmeRemedio(); setTimeout(function(){ var el=$('.alarm'); if(el) el.classList.remove('calmo'); var p=P('.al'); if(p) p.react('alarme_mudo'); },reduced?100:1000); var d=M.doseAgora()||M.doseEsquecida()||M.proximaDose(); if(d) setTimeout(function(){ if(st.scr==='alarme') diz(CFG.pais!=='pt'&&M.temGravada('alarme')?T('alarme'):L(S().nome+', tá na hora da '+d.n+'. '+(d.d.split('·')[1]||'').trim()+', com um copo d\'água.',S().nome+', está na hora da '+d.n+'. Com um copo de água.'),'alarme',P('.al')); },reduced?200:2400); }
+    if(s==='alarme'){ alarmeRemedio(); setTimeout(function(){ var el=$('.alarm'); if(el) el.classList.remove('calmo'); var p=P('.al'); if(p) p.react('alarme_mudo'); },reduced?100:1000); var alS=M.alarmes()[0], d=(alS&&M.doses().filter(function(x){ return x.id===alS.id; })[0])||M.doseAgora()||M.doseEsquecida()||M.proximaDose(); if(d) setTimeout(function(){ if(st.scr==='alarme') diz(CFG.pais!=='pt'&&M.temGravada('alarme')?T('alarme'):L(S().nome+', tá na hora de tomar '+d.n+'. '+(d.d.split('·')[1]||'').trim()+', com um copo d\'água.',S().nome+', está na hora de tomar '+d.n+'. Com um copo de água.'),'alarme',P('.al')); },reduced?200:2400); }
     if(s==='res'){ var v=arg==='ia'?st.lastRes:null, lv=v?v.nivel:arg; setTimeout(function(){ var el=$('.res'); if(!el) return; var p=P('.rs');
         el.style.background=el.dataset.bg; el.style.color=el.dataset.fg; var hl=$('.res .halo'); if(hl) hl.style.background=el.dataset.halo; var bk=$('.res .top .round'); if(bk) bk.style.color=el.dataset.fg; el.classList.remove('pre'); if(p) p.set(el.dataset.st,true); var key=v&&v.fala?null:(arg==='golpe'||arg==='cuidado'||arg==='seguro'?arg:null); var txt=v&&v.fala?v.fala:T(key,F(key)||'Pode ficar descansada. Parece seguro.');
         if(lv==='golpe'){ Sfx.aviso('golpe'); alarmeTela(true); } else if(lv==='cuidado') Sfx.aviso('cuidado'); else Sfx.play('plim'); diz(txt,key,p); if(HAS&&!reduced){ gsap.fromTo('.res .hero .tt',{scale:.8,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(2)'}); gsap.fromTo('.res .why,.res .quote,.res .todo>span,.res .acts .btn',{opacity:0,y:14},{opacity:1,y:0,duration:.4,stagger:.18,delay:.35,ease:'power2.out'}); } },reduced?150:1100); }
@@ -3515,6 +3612,13 @@ var Motor = (function(){
     else if(a==='enviar') sheetEnviar();
     else if(a==='voz') sheetVoz(b.dataset.t);
     else if(a==='sos') sheetSos();
+    else if(a==='iasim'||a==='ianao'){ var mc=conv[+b.dataset.ci]; CFG.iaOk=(a==='iasim'); M.saveCfg(); if(mc){ mc.resp=1; renderConv(); if(a==='iasim') toast(L('Combinado. Pode desligar em Ajustes.','Combinado. Pode desligar em Ajustes.')); setTimeout(function(){ ask(mc.q,{img:mc.img,modo:mc.modo}); },300); } }
+    else if(a==='planos') sheetPlanos();
+    else if(a==='assinar') assinar();
+    else if(a==='restaurar') restaurar();
+    else if(a==='gerenciar'){ if(window.ESCUDO_LOJA) ESCUDO_LOJA.gerenciar(); }
+    else if(a==='abrelink'){ e.preventDefault(); abreLink(b.dataset.u); }
+    else if(a==='abrealarme'){ var alB=M.alarmes()[0]; if(alB) relogio.ult[alB.k]=1; tiraBanner(); closeLayer(true); go('alarme'); }
     else if(a==='cfg') sheetCfg();
     else if(a==='avisos') go('avisos');
     else if(a==='close'){ M.parar(); closeLayer(); setTimeout(function(){ if(!layer.innerHTML&&['inicio','remedios','financas','diaadia','avisos'].indexOf(st.scr)>=0) render(false); },reduced?0:320); }
@@ -3525,17 +3629,19 @@ var Motor = (function(){
     else if(a==='tomei'){ var id=b.dataset.id, r=M.aplicar([{tipo:'marcar_dose',id:id}]); var host=b.closest('.alert,.dose,.alarm'), p=host&&host.querySelector('.ptw'); p=p&&p._p||P('#view .ptw[data-pt=remedio]');
       if(p) p.react('tomei'); else Sfx.play('ding'); var snapT=r.snap; diz(T('tomei','Pronto! Já apontei. Muito bem!'),'tomei',p); setTimeout(function(){ if(b.dataset.home||(st.scr==='alarme'&&!M.doseAgora())) go('inicio'); else render(false); desfazerToast((r.feitos[0]||L('Anotado','Apontado'))+'.',function(){ M.desfazer(snapT); render(false); }); },1200); }
     else if(a==='tomeitodos'){ var ids=String(b.dataset.ids||'').split(',').filter(Boolean), rt=M.aplicar(ids.map(function(x){ return {tipo:'marcar_dose',id:x}; })); Sfx.play('ding'); diz(T('tomei','Pronto! Já apontei. Muito bem!'),'tomei',null); setTimeout(function(){ go('inicio'); desfazerToast(L('Marquei ','Marquei ')+ids.length+L(' remédios',' remédios')+'.',function(){ M.desfazer(rt.snap); render(false); }); },900); }
-    else if(a==='destomei'){ var S4=S(); if(S4.tomadas&&S4.tomadas[b.dataset.id]){ delete S4.tomadas[b.dataset.id]; M.save(); toast(L('Desmarquei. Fica como não tomado.','Desmarquei. Fica como não tomado.')); render(false); } }
+    else if(a==='destomei'){ if(M.desmarcar(b.dataset.id)){ toast(L('Desmarquei. Fica como não tomado.','Desmarquei. Fica como não tomado.')); render(false); } }
     else if(a==='sosavisa'){ var envia=function(loc){ avisar(M.fam1(),L('Preciso de ajuda agora. Me liga, por favor.','Preciso de ajuda agora. Ligue-me, por favor.')+(loc?' '+L('Estou aqui: ','Estou aqui: ')+loc:'')); };
       try{ navigator.geolocation.getCurrentPosition(function(p){ envia('https://maps.google.com/?q='+p.coords.latitude.toFixed(5)+','+p.coords.longitude.toFixed(5)); },function(){ envia(''); },{timeout:5000,maximumAge:60000}); }catch(e){ envia(''); } }
     else if(a==='avisarrem'){ var dz=M.doses().filter(function(x){ return x.id===b.dataset.id; })[0]; avisar(M.fam1(),L('Oi! Era a hora do meu remédio ('+(dz?dz.n+' das '+dz.t:'')+') e preciso de uma ajuda. Pode me ligar?','Olá! Era a hora do meu remédio ('+(dz?dz.n+' das '+dz.t:'')+') e preciso de ajuda. Pode ligar-me?')); }
     else if(a==='remed') sheetRemEdit(b.dataset.n);
     else if(a==='remedsalva'){ var nm=sheetRemEdit.n, hsE=$$('#re_h .hbtn.on').map(function(x){ return x.dataset.h; }), ouE=($('#re_o')||{}).value; if(ouE&&hsE.indexOf(ouE)<0) hsE.push(ouE); if(!hsE.length){ toast(L('Escolha pelo menos um horário.','Escolha pelo menos um horário.')); return; }
       var rfE=M.aplicar([{tipo:'editar_remedio',nome:nm,dose:($('#re_d').value||'').trim(),horarios:hsE}]); var qE=parseInt($('#re_q').value,10); var S5=S(); S5.remedios=S5.remedios||{}; var rr5=S5.remedios[nm]||(S5.remedios[nm]={}); if(qE>=0) rr5.estoque=qE; M.save(); closeLayer(true); render(false); toast(rfE.feitos[0]||L('Salvo.','Guardado.')); }
-    else if(a==='remedapaga'){ var nm2=sheetRemEdit.n, S6=S(), antes=S6.doses.slice(); S6.doses=S6.doses.filter(function(x){ return x.n!==nm2; }); M.save(); closeLayer(true); render(false); desfazerToast(L('Tirei ','Tirei ')+nm2+L(' da lista.',' da lista.'),function(){ S().doses=antes; M.save(); render(false); }); }
+    else if(a==='remedapaga'){ var nm2=sheetRemEdit.n, S6=S(), tiradas=S6.doses.filter(function(x){ return x.n===nm2; }), rmT=(S6.remedios||{})[nm2]; S6.doses=S6.doses.filter(function(x){ return x.n!==nm2; }); if(S6.remedios) delete S6.remedios[nm2]; M.save(); closeLayer(true); render(false); desfazerToast(L('Tirei ','Tirei ')+nm2+L(' da lista.',' da lista.'),function(){ var S7=S(); tiradas.forEach(function(x){ if(!S7.doses.some(function(y){ return y.id===x.id; })) S7.doses.push(x); }); if(rmT){ S7.remedios=S7.remedios||{}; S7.remedios[nm2]=rmT; } M.save(); render(false); }); }
     else if(a==='adiar'){ M.aplicar([{tipo:'adiar_dose',id:b.dataset.id,minutos:10}]); toast(L('Combinado. Lembro de novo em 10 minutos.','Combinado. Lembro outra vez daqui a 10 minutos.')); diz(T('adiar','Está bem. Daqui a dez minutos chamo outra vez.'),'adiar',null); setTimeout(function(){ go('inicio'); },1200); }
     else if(a==='paguei'){ var r2=M.aplicar([{tipo:'pagar_conta',id:b.dataset.id}]); var pf=P('.fin'); if(pf) pf.react('moeda'); toast(r2.feitos[0]||'Pronto.'); render(false); }
     else if(a==='ligar') ligar(b.dataset.n||L('a família','a família'));
+    else if(a==='sosconf') sheetLigar(b.dataset.r+' · '+b.dataset.n,b.dataset.n,true);
+    else if(a==='ligarja'){ closeLayer(true); ligar(b.dataset.n); }
     else if(a==='avisar') avisar(b.dataset.n||M.fam1(),st.scr.indexOf('res')===0?st.avisoGolpe:null);
     else if(a==='palavra'){ var pw=S().palavra; if(!pw){ st.cadSo=1; cadIr(CAD.indexOf('palavra')); } else { openLayer('<span class="tt h2">'+L('Palavra secreta da família','Palavra secreta da família')+'</span><div class="pwbig">'+esc(pw)+'</div><p style="font-size:20px;font-weight:700">'+L('Pergunte essa palavra. Quem é da família sabe. Quem não souber, é golpe: desligue.','Pergunte esta palavra. Quem é da família sabe. Quem não souber, é burla: desligue.')+'</p>'); diz(L('A palavra secreta é: '+pw+'. Pergunte. Quem não souber, é golpe.','A palavra secreta é: '+pw+'. Pergunte. Quem não souber, é burla.'),null,null); } }
     else if(a==='toast') toast(b.dataset.t||'Pronto.');
@@ -3543,7 +3649,7 @@ var Motor = (function(){
     else if(a==='ouvir'){ ouvirStart(); }
     else if(a==='ouvirok'){ if(!OUV.txt&&!OUV.bloq){ vst(L('Ainda não ouvi nada. Pode falar.','Ainda não ouvi nada. Pode falar.')); return; } ouvirFim(true); }
     else if(a==='vozmodo'){ CFG.vozResp=b.dataset.v==='1'; M.saveCfg(); $$('.seg button').forEach(function(x){ x.classList.toggle('on',x.dataset.v===(CFG.vozResp?'1':'0')); x.setAttribute('aria-pressed',x.dataset.v===(CFG.vozResp?'1':'0')); }); if(!CFG.vozResp){ M.parar(); toast(L('Só texto. Eu respondo escrevendo.','Só texto. Eu respondo a escrever.')); } else { Sfx.play('plim'); diz(L('Pronto, agora eu respondo falando também.','Pronto, agora respondo a falar também.'),null,null); } }
-    else if(a==='ligamigo'){ var am=amigos()[+b.dataset.j]; if(am){ Sfx.play('coracao'); toast(L('Ligando para ','A ligar a ')+am.n+'…'); if(!am.tel){ e.preventDefault(); toast(L('Falta o telefone. Toque no lápis pra pôr.','Falta o número. Toque no lápis para pôr.')); } } return; }
+    else if(a==='ligamigo'){ e.preventDefault(); var am=amigos()[+b.dataset.j]; if(am){ if(!am.tel){ toast(L('Falta o telefone. Toque no lápis pra pôr.','Falta o número. Toque no lápis para pôr.')); return; } Sfx.play('tic'); sheetLigar(am.n,am.tel,false); } return; }
     else if(a==='amigoed') sheetAmigo(+b.dataset.j);
     else if(a==='palsug'){ var ideias=['jabuticaba','girassol','pipoca','beija-flor','marmelada','pé de moleque','bem-te-vi','cocada','canjica','sabiá']; var pi2=$('#cad_pal'); if(pi2){ pi2.value=ideias[Math.floor(Math.random()*ideias.length)]; } }
     else if(a==='remnovo') sheetRemNovo();
@@ -3562,12 +3668,12 @@ var Motor = (function(){
       var hs2=$$('#rn_h .hbtn.on').map(function(x){ return x.dataset.h; }), ou=($('#rn_o')||{}).value; if(ou) hs2.push(ou); if(!hs2.length){ toast(L('Toque nas horas que você toma.','Toque nas horas a que toma.')); diz(L('Que horas você toma? Toca na hora.','A que horas toma? Toque na hora.'),null,null); return; }
       var q2=parseInt(($('#rn_q').value||''),10); window.__fotoPend=remConfirma.thumb||null;
       var rf=M.aplicar([{tipo:'novo_remedio',nome:rn,dose:($('#rn_d').value||'').trim(),horarios:hs2,estoque:q2>0?q2:undefined,para:(remConfirma.r||{}).para||''}]);
-      closeLayer(true); Sfx.play('ding'); render(false); toast(rf.feitos[0]||'Pronto'); diz(L('Prontinho! '+M.cap(rn)+' cadastrada. Eu te chamo na hora certinha.','Pronto! '+M.cap(rn)+' registada. Eu chamo na hora certa.'),null,P('#view [data-pt=remedio]')); }
+      closeLayer(true); Sfx.play('ding'); render(false); toast(L('Salvo: ','Guardado: ')+M.cap(rn)); diz(L('Pronto! Anotei '+M.cap(rn)+'. Eu te chamo na hora.','Pronto! Apontei '+M.cap(rn)+'. Eu chamo na hora.'),null,P('#view [data-pt=remedio]')); }
     else if(a==='amfun'){ var fi=$('#am_f'); if(fi) fi.value=b.dataset.f; $$('#amfs .chip').forEach(function(x){ x.classList.toggle('on',x===b); }); }
     else if(a==='amigodagente'){ var cg=S().contatos[+b.dataset.k]; if(cg){ $('#am_n').value=cg.n; $('#am_t').value=cg.tel||''; if(cg.rel) $('#am_f').value=cg.rel; } }
-    else if(a==='amigosalva'){ var an=($('#am_n').value||'').trim(); if(!an){ toast(L('Escreva o nome.','Escreva o nome.')); return; } var reg={n:M.cap(an.slice(0,30)),f:($('#am_f').value||'').trim().slice(0,30),tel:($('#am_t').value||'').trim().slice(0,20),foto:sheetAmigo.foto||'',cor:['#A84508','#1B4DB3','#6236C9','#0B6B3C','#A51A16'][amigos().length%5]};
+    else if(a==='amigosalva'){ var an=($('#am_n').value||'').trim(); if(!an){ toast(L('Escreva o nome.','Escreva o nome.')); return; } var reg={n:M.cap(M.corta(an,30)),f:M.corta(($('#am_f').value||'').trim(),30),tel:($('#am_t').value||'').trim().slice(0,20),foto:sheetAmigo.foto||'',cor:['#A84508','#1B4DB3','#6236C9','#0B6B3C','#A51A16'][amigos().length%5]};
       if(sheetAmigo.j>=0){ reg.cor=amigos()[sheetAmigo.j].cor||reg.cor; amigos()[sheetAmigo.j]=reg; } else amigos().push(reg); M.save(); Sfx.play('coracao'); closeLayer(true); render(false); toast(reg.n+L(' está nos seus amigos.',' está nos seus amigos.')); }
-    else if(a==='amigorm'){ if(sheetAmigo.j>=0){ amigos().splice(sheetAmigo.j,1); M.save(); } closeLayer(true); render(false); }
+    else if(a==='amigorm'){ var jA=sheetAmigo.j, tirA=null; if(jA>=0){ tirA=amigos().splice(jA,1)[0]; M.save(); } closeLayer(true); render(false); if(tirA) desfazerToast(L('Tirei ','Tirei ')+tirA.n+L(' dos amigos.',' dos amigos.'),function(){ amigos().splice(Math.min(jA,amigos().length),0,tirA); M.save(); render(false); }); }
     else if(a==='fixar'){ var it=barraItens().slice(); if(it.indexOf(b.dataset.k)<0){ it.pop(); it.unshift(b.dataset.k); } CFG.barraItens=it; CFG.barra=true; M.saveCfg(); applyDock(); Sfx.play('ding'); render(false); toast(L('Pronto! Agora fica sempre na barra de baixo.','Pronto! Agora fica sempre na barra de baixo.')); }
     else if(a==='barraitem'){ var it2=barraItens().slice(), k2=b.dataset.k, ix2=it2.indexOf(k2); if(ix2>=0){ if(it2.length>1) it2.splice(ix2,1); } else { var saiu=null; if(it2.length>=3) saiu=it2.pop(); it2.unshift(k2); if(saiu){ var antes2=barraItens().slice(); setTimeout(function(){ desfazerToast(ATALHOS[saiu][1]+L(' saiu da barra.',' saiu da barra.'),function(){ CFG.barraItens=antes2; M.saveCfg(); applyDock(); render(false); if($('#layer .bgrid')) sheetBarra(); }); },300); } } CFG.barraItens=it2; CFG.barra=true; M.saveCfg(); applyDock(); Sfx.play(ix2>=0?'tic':'ding'); sheetBarra(); if(HAS) gsap.set('#layer .sheet',{y:0}); render(false); }
     else if(a==='barra'){ sheetBarra(); }
@@ -3577,12 +3683,15 @@ var Motor = (function(){
     else if(a==='bot'){ var m=conv[+b.dataset.ci], bt=m&&m.btn&&m.btn[+b.dataset.bi]; if(!bt) return;
       if(bt.diga) ask(bt.diga);
       else if(bt.acao){ var ac=bt.acao; if(ac.tipo==='fazer'){ var rf=M.aplicar(ac.acoes||[]); toast(rf.feitos.join(' · ')||'Pronto.'); Sfx.play('ding'); b.disabled=true; } else if(ac.tipo==='compartilhar') compartilhar(ac.mensagem||'',ac.assunto||'Escudo Amigo'); else if(ac.tipo==='ligar') ligar(ac.pessoa||M.fam1()); else if(ac.tipo==='avisar'){ avisar(ac.pessoa||M.fam1(),ac.mensagem); conv.push({k:'familia',st:'feliz',t:L('Pronto, deixei a mensagem pronta pra ','Pronto, deixei a mensagem pronta para a ')+(ac.pessoa||M.fam1())+'.'}); renderConv(); }
-        else if(ac.tipo==='abrir'){ var tl=ac.tela; if(tl==='enviar') sheetEnviar(); else if(tl==='sos') sheetSos(); else if(SCR[tl]) go(tl); } } }
+        else if(ac.tipo==='abrir'){ var tl=ac.tela; if(tl==='enviar') sheetEnviar(); else if(tl==='sos') sheetSos(); else if(tl==='planos') sheetPlanos(); else if(SCR[tl]) go(tl); } } }
     else if(a==='desfazer'){ var mm=conv[+b.dataset.ci]; if(mm&&mm.snap&&M.desfazer(mm.snap)){ mm.desfeito=1; renderConv(); toast(L('Desfeito.','Desfeito.')); } }
     else if(a==='testavoz'){ diz(resumo(),null,null); }
     else if(a==='privacidade') sheetPrivacidade();
     else if(a==='confirmar') sheetConfirmar(b.dataset.q);
-    else if(a==='confirmado'){ var q=b.dataset.q, demo=q==='demo'&&!S().demo; M.reset(demo); conv=[]; closeLayer(true); st.hist=[]; if(demo){ st.scr='inicio'; render(true); toast(L('Modo demonstração: dados de exemplo.','Modo demonstração: dados de exemplo.')); } else { cadIr(0); toast(q==='apagar'?L('Tudo apagado.','Tudo apagado.'):L('Pronto. Vamos cadastrar os seus dados.','Pronto. Vamos registar os seus dados.')); } }
+    else if(a==='confirmado'){ var q=b.dataset.q, demo=q==='demo'&&!S().demo; if(q==='apagar') M.apagarTudo(); else M.reset(demo); conv=[]; closeLayer(true); st.hist=[]; var temDados=S().nome||S().doses.length||S().contatos.length;
+      if(demo){ st.scr='inicio'; render(true); toast(L('Modo demonstração: dados de exemplo.','Modo demonstração: dados de exemplo.')); }
+      else if(q!=='apagar'&&temDados){ st.scr='inicio'; render(true); toast(L('Pronto. Seus dados voltaram.','Pronto. Os seus dados voltaram.')); }
+      else { cadIr(0); toast(q==='apagar'?L('Tudo apagado.','Tudo apagado.'):L('Pronto. Vamos cadastrar os seus dados.','Pronto. Vamos registar os seus dados.')); } }
     else if(a==='compartilhar_dados'){ var sd=S(); compartilhar(L('Meus dados no Escudo Amigo','Os meus dados no Escudo Amigo')+'\n'+L('Remédios: ','Remédios: ')+sd.doses.map(function(d){ return d.n+' '+d.t; }).join(', ')+'\n'+L('Família: ','Família: ')+sd.contatos.map(function(c){ return c.n+' '+(c.tel||''); }).join(', ')+'\n'+L('Agenda: ','Agenda: ')+sd.agenda.map(function(x){ return x.dia+' '+x.h+' '+x.t; }).join(' | ')+'\n'+L('Gastos do mês: ','Gastos do mês: ')+money(M.gastoMes()),L('Meus dados','Os meus dados')); }
     else if(a==='mood'){ var c=b.closest('.card').querySelector('.ptw'); if(c&&c._p) c._p.set(b.dataset.m); }
     else if(a==='react'){ var c2=b.closest('.card').querySelector('.ptw'); if(c2&&c2._p) c2._p.react(b.dataset.r); }
@@ -3599,7 +3708,7 @@ var Motor = (function(){
     else if(a==='consrem'){ var nr=(S().notas[st.nota||0]||{}).resumo.remedios[+b.dataset.j]; if(nr){ var existe=M.doses().some(function(x){ return x.n.toLowerCase()===String(nr.nome).toLowerCase(); }); var rf2=M.aplicar([existe?{tipo:'editar_remedio',nome:nr.nome,dose:nr.dose||'',horarios:nr.horarios&&nr.horarios.length?nr.horarios:null}:{tipo:'novo_remedio',nome:nr.nome,dose:nr.dose||'',horarios:nr.horarios&&nr.horarios.length?nr.horarios:['08:00']}]); toast(rf2.feitos[0]||'Pronto'); Sfx.play('ding'); b.disabled=true; b.textContent='✓'; } }
     else if(a==='consret'){ var rr=(S().notas[st.nota||0]||{}).resumo.retorno; if(rr){ var rf3=M.aplicar([{tipo:'novo_compromisso',titulo:L('Retorno no médico','Retorno ao médico'),data:rr.data,hora:rr.hora||'09:00'}]); toast(rf3.feitos[0]||'Pronto'); Sfx.play('coracao'); b.disabled=true; b.textContent='✓'; } }
     else if(a==='contadd'){ var cn=(($('#ct_n')||{}).value||'').trim(), ctel=(($('#ct_t')||{}).value||'').trim(), cmail=(($('#ct_e')||{}).value||'').trim(); if(!cn){ toast(L('Escreva o nome.','Escreva o nome.')); return; } M.aplicar([{tipo:'novo_contato',nome:cn,telefone:ctel,email:cmail}]); Sfx.play('coracao'); render(false); }
-    else if(a==='contrm'){ S().contatos.splice(+b.dataset.j,1); M.save(); render(false); }
+    else if(a==='contrm'){ var jC=+b.dataset.j, tirC=S().contatos.splice(jC,1)[0]; M.save(); render(false); if(tirC) desfazerToast(L('Tirei ','Tirei ')+tirC.n+'.',function(){ S().contatos.splice(Math.min(jC,S().contatos.length),0,tirC); M.save(); render(false); }); }
     else if(a==='cad'){ var ci=+b.dataset.i; cadSalvar(ci); if(b.dataset.nao){ var S1=S(); S1.permissoes=S1.permissoes||{}; if(S1.permissoes[b.dataset.nao]!=='ok'){ S1.permissoes[b.dataset.nao]='nao'; M.save(); } } cadIr(ci+1); }
     else if(a==='cadfim'){ cadSalvar(+st.arg||0); cadFim(); }
     else if(a==='cadadd'){ cadSalvar(+st.arg); var cores=['#A84508','#1B4DB3','#6236C9','#0B6B3C','#A51A16']; S().contatos.push({n:'',rel:'',tel:'',cor:cores[S().contatos.length%cores.length]}); render(false); var ins=$$('[data-c][data-f=n]'); if(ins.length) ins[ins.length-1].focus(); }
@@ -3618,8 +3727,24 @@ var Motor = (function(){
     else if(inp.dataset.file==='remler') lerImagem(f,function(file){ remLer(file); });
     else if(inp.dataset.file==='remedio') lerImagem(f,function(file){ miniatura(file).then(function(t){ window.__fotoPend=t; }); sheetVoz(); ask(L('Tirei foto da caixa de um remédio novo.','Tirei uma foto à caixa de um remédio novo.'),{img:file,modo:'remedio'}); }); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ if(layer.innerHTML){ M.parar(); closeLayer(); } else if(st.scr!=='inicio') back(); } });
-  setInterval(function(){ try{ var d=M.doseAgora(); if(!d) return; var k=M.hoje()+d.id; if(relogio.ult===k) return; relogio.ult=k; if(st.scr==='alarme'||st.scr==='intro'||st.scr==='cadastro'||(st.scr==='consulta'&&CONS.on)||(OUV&&OUV.on)) return; closeLayer(true); go('alarme'); }catch(e){} },20000);
-  function relogio(){}
+  /* relógio dos alarmes: toca na hora certa, nunca se perde, não apaga o que a pessoa está escrevendo */
+  var relogio={ult:{},dia:M.hoje(),ban:null};
+  function digitando(){ return !!(layer.innerHTML&&Array.prototype.some.call(layer.querySelectorAll('input:not([type=file]),textarea'),function(x){ return x.value&&x.value.trim(); })); }
+  function bannerAlarme(al){ if(relogio.ban&&document.body.contains(relogio.ban)) return; var el=document.createElement('button'); el.type='button'; el.className='albanner'; el.setAttribute('role','alert'); el.dataset.a='abrealarme'; el.innerHTML=I.pill+'<span>'+L('Hora do remédio: ','Hora do remédio: ')+'<b>'+esc(al.n)+'</b></span><em>'+L('Abrir','Abrir')+'</em>'; $('#app').appendChild(el); relogio.ban=el; try{ Sfx.aviso('remedio'); }catch(e){} }
+  function tiraBanner(){ if(relogio.ban){ relogio.ban.remove(); relogio.ban=null; } }
+  function checaAlarme(){ try{
+    if(relogio.dia!==M.hoje()){ relogio.dia=M.hoje(); relogio.ult={}; if(!layer.innerHTML&&['inicio','remedios','financas','planilha','diaadia'].indexOf(st.scr)>=0) render(false); }
+    var al=M.alarmes().filter(function(x){ return !relogio.ult[x.k]; })[0]; if(!al){ tiraBanner(); return; }
+    if(st.scr==='alarme'||st.scr==='intro'||st.scr==='cadastro'||(st.scr==='consulta'&&CONS.on)||(OUV&&OUV.on)) return;
+    if(digitando()||st.scr==='res'){ bannerAlarme(al); return; }
+    relogio.ult[al.k]=1; tiraBanner(); closeLayer(true); go('alarme'); }catch(e){} }
+  setInterval(checaAlarme,15000);
+  /* app nativo: alarmes também com o app fechado (notificação local), abrir pela notificação, assinatura */
+  window.ESCUDO_ABRIR=function(tela){ try{ if(tela==='alarme'&&!M.alarmes().length&&!M.doseAgora()) tela='remedios'; closeLayer(true); go(tela); }catch(e){} };
+  var agT=null, agUlt=''; function agendaNativo(){ var nat=window.ESCUDO_NATIVO; if(!nat||!nat.agendarRemedios) return; var dz=S().doses.map(function(d){ return {id:d.id,t:d.t,n:d.n,d:d.d||''}; }), k=JSON.stringify(dz); if(k===agUlt) return; clearTimeout(agT); agT=setTimeout(function(){ agUlt=k; nat.agendarRemedios(dz); },800); }
+  M.onChange(agendaNativo); setTimeout(agendaNativo,1500);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'){ checaAlarme(); lojaChecar(); } });
+  setTimeout(lojaChecar,1200);
   M.onChange(function(){ if(!layer.innerHTML&&['inicio','remedios','financas','planilha','diaadia','contatos','avisos'].indexOf(st.scr)>=0) render(false); });
   var intro=false; try{ intro=MODO_TESTE||!localStorage.getItem('ea-intro')||!localStorage.getItem('ea-cadastro'); }catch(e){ intro=true; }
   if(intro){ st.scr='intro'; st.arg=0; }

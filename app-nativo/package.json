@@ -18,7 +18,8 @@
     "@capacitor/splash-screen": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
     "@capacitor-community/contacts": "^8.0.0",
-    "@capacitor-community/speech-recognition": "^7.0.1"
+    "@capacitor-community/speech-recognition": "^7.0.1",
+    "@capgo/native-purchases": "^8.9.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.0",

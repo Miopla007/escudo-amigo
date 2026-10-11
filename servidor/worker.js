@@ -11,15 +11,24 @@
 //   AZURE_TTS_KEY + AZURE_TTS_REGION (Azure Speech, plano gratuito F0; vozes pt-BR Thalita/Francisca)
 //   GOOGLE_TTS_KEY (Google Cloud Text-to-Speech, cota gratuita mensal; voz pt-BR Neural2/Chirp HD)
 // A ordem é: ElevenLabs -> Azure -> Google. Se uma falhar ou acabar a cota, passa para a próxima.
-// Opcional: BRAVE_API_KEY (busca na web mais completa). Sem ela, a busca usa Wikipedia e DuckDuckGo (grátis).
-//   POST /busca {pergunta}  -> resposta curta + fontes      POST /tempo {cidade | lat,lon} -> previsão do tempo (Open-Meteo)
-const CORS={'access-control-allow-origin':'*','access-control-allow-methods':'POST,OPTIONS','access-control-allow-headers':'content-type'};
+// BRAVE_API_KEY (busca na web; tem crédito mensal grátis e permite uso comercial). Sem ela, a busca usa só a Wikipedia.
+// APP_TOKEN (opcional): a mesma senha cadastrada no GitHub; protege o servidor de uso por terceiros.
+//   POST /busca {pergunta}  -> resposta curta + fontes      POST /tempo {lat,lon} -> previsão do tempo (MET Norway)
+const CORS={'access-control-allow-origin':'*','access-control-allow-methods':'POST,OPTIONS','access-control-allow-headers':'content-type,x-escudo-id,x-escudo-app'};
+// limite por aparelho e por dia (protege a cota grátis e o custo). Ajuste à vontade.
+const COTA={'/cerebro':150,'/ver':25,'/ouvir':20,'/busca':40,'/fala':400,'/email':10,'/tempo':30};
+async function cota(req,path){ const max=COTA[path]; if(!max) return true; const id=(req.headers.get('x-escudo-id')||req.headers.get('cf-connecting-ip')||'anon').slice(0,64);
+  const dia=new Date().toISOString().slice(0,10), k=new Request('https://cota.escudo/'+dia+path+'/'+encodeURIComponent(id)); const c=caches.default; const h=await c.match(k); const n=h?(+(await h.text())||0):0;
+  if(n>=max) return false; await c.put(k,new Response(String(n+1),{headers:{'cache-control':'public, max-age=90000'}})); return true; }
 const J=(o,s=200)=>new Response(JSON.stringify(o),{status:s,headers:{...CORS,'content-type':'application/json'}});
 const LLM='@cf/meta/llama-3.3-70b-instruct-fp8-fast', VISAO='@cf/meta/llama-3.2-11b-vision-instruct', OUVIDO='@cf/openai/whisper-large-v3-turbo';
 export default {
   async fetch(req, env){
     if(req.method==='OPTIONS') return new Response(null,{headers:CORS});
     const url=new URL(req.url);
+    // senha opcional do app (APP_TOKEN): se estiver configurada, só o app consegue usar o servidor
+    if(env.APP_TOKEN&&url.pathname!=='/'&&req.headers.get('x-escudo-app')!==env.APP_TOKEN) return J({erro:'não autorizado'},401);
+    if(!(await cota(req,url.pathname))) return J({erro:'limite do dia',texto:''},429);
     try{
       if(url.pathname==='/cerebro'){ const {prompt}=await req.json();
         const r=await env.AI.run(LLM,{messages:[{role:'user',content:String(prompt||'').slice(0,24000)}],max_tokens:600,temperature:.4});
@@ -50,12 +59,12 @@ export default {
           resposta=(r.response||'').trim(); }
         const out=J({resposta:resposta||(fontes[0]?fontes[0].trecho:''),fontes:fontes.slice(0,3).map(f=>({titulo:f.titulo,url:f.url}))});
         await caches.default.put(ck,new Response(out.clone().body,{headers:{'content-type':'application/json','cache-control':'public, max-age=21600'}})); return out; }
-      // previsão do tempo (Open-Meteo, grátis e sem chave)
-      if(url.pathname==='/tempo'){ const {lat,lon,cidade}=await req.json(); let la=lat,lo=lon,nome=cidade||'';
-        if((la==null||lo==null)&&cidade){ const g=await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&language=pt&name='+encodeURIComponent(cidade))).json(); const p=g.results&&g.results[0]; if(p){ la=p.latitude; lo=p.longitude; nome=p.name; } }
-        if(la==null||lo==null) return J({erro:'sem local'},400);
-        const w=await (await fetch('https://api.open-meteo.com/v1/forecast?latitude='+la+'&longitude='+lo+'&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=2')).json();
-        return J({cidade:nome,agora:w.current,hoje:{max:w.daily.temperature_2m_max[0],min:w.daily.temperature_2m_min[0],chuva:w.daily.precipitation_probability_max[0]},amanha:{max:w.daily.temperature_2m_max[1],min:w.daily.temperature_2m_min[1],chuva:w.daily.precipitation_probability_max[1]}}); }
+      // previsão do tempo: MET Norway (gratuito, uso comercial permitido com crédito "Dados: MET Norway"). Precisa de lat/lon.
+      if(url.pathname==='/tempo'){ const {lat,lon}=await req.json(); if(lat==null||lon==null) return J({erro:'sem local'},400);
+        const la=(+lat).toFixed(3), lo=(+lon).toFixed(3);
+        const w=await (await fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat='+la+'&lon='+lo,{headers:{'user-agent':'EscudoAmigo/1.0 (suporte: '+(env.CONTATO||'alpoimlandia@gmail.com')+')'},cf:{cacheTtl:1800}})).json();
+        const ts=(w.properties&&w.properties.timeseries)||[]; const agora=ts[0]&&ts[0].data; const hoje=ts.slice(0,24).map(x=>x.data.instant.details.air_temperature);
+        return J({agora:agora&&{temperatura:agora.instant.details.air_temperature,simbolo:agora.next_1_hours&&agora.next_1_hours.summary.symbol_code},max24h:Math.max(...hoje),min24h:Math.min(...hoje),credito:'Dados: MET Norway'}); }
       return new Response('Escudo Amigo',{headers:CORS});
     }catch(e){ return J({erro:String(e).slice(0,200)},500); }
   }
@@ -85,7 +94,8 @@ async function falaNeural(t,o,env){
 async function pesquisar(q,pais,env){ const out=[]; const lang=pais==='pt'?'pt':'pt';
   try{ if(env.BRAVE_API_KEY){ const r=await fetch('https://api.search.brave.com/res/v1/web/search?count=5&search_lang=pt&country='+(pais==='pt'?'PT':'BR')+'&q='+encodeURIComponent(q),{headers:{'X-Subscription-Token':env.BRAVE_API_KEY,accept:'application/json'}});
       if(r.ok){ const j=await r.json(); (j.web&&j.web.results||[]).slice(0,5).forEach(x=>out.push({titulo:x.title,url:x.url,trecho:String(x.description||'').replace(/<[^>]+>/g,'')})); } } }catch(e){}
-  try{ const r=await fetch('https://api.duckduckgo.com/?format=json&no_html=1&skip_disambig=1&kl='+(pais==='pt'?'pt-pt':'br-pt')+'&q='+encodeURIComponent(q)); if(r.ok){ const j=await r.json(); if(j.AbstractText) out.push({titulo:j.Heading||q,url:j.AbstractURL,trecho:j.AbstractText}); } }catch(e){}
+  // DuckDuckGo: uso só não comercial. Fica desligado no app pago; ligue com PERMITE_DDG=1 só em testes.
+  if(env.PERMITE_DDG) try{ const r=await fetch('https://api.duckduckgo.com/?format=json&no_html=1&skip_disambig=1&kl='+(pais==='pt'?'pt-pt':'br-pt')+'&q='+encodeURIComponent(q)); if(r.ok){ const j=await r.json(); if(j.AbstractText) out.push({titulo:j.Heading||q,url:j.AbstractURL,trecho:j.AbstractText}); } }catch(e){}
   try{ const s=await (await fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=2&origin=*&srsearch='+encodeURIComponent(q))).json();
     for(const h of (s.query&&s.query.search||[])){ const t=await (await fetch('https://'+lang+'.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(h.title))).json(); if(t.extract) out.push({titulo:t.title+' (Wikipédia)',url:t.content_urls&&t.content_urls.mobile&&t.content_urls.mobile.page,trecho:t.extract}); } }catch(e){}
   return out; }

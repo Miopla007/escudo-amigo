@@ -4,6 +4,9 @@
 #   ASC_ISSUER_ID     – Issuer ID (aparece na mesma página da chave)
 #   ASC_KEY_P8        – conteúdo do arquivo AuthKey_XXXX.p8 (copie e cole o texto inteiro)
 #   APPLE_TEAM_ID     – Team ID da conta de desenvolvedor (Membership details)
+#   APP_TOKEN         – (opcional) uma senha qualquer, igual à do servidor, para só o app usar a IA
+# E esta "Variable" (aba Variables, não Secrets):
+#   SERVIDOR_URL      – endereço do servidor da Cloudflare, ex.: https://escudo-amigo.SEU-NOME.workers.dev
 # Depois: aba Actions > "iOS · TestFlight" > Run workflow > escreva a versão (1.0, 1.1, 1.2…).
 name: iOS · TestFlight
 on:
@@ -25,6 +28,9 @@ jobs:
         with: { node-version: 22 }
       - name: Instalar Capacitor e preparar o app
         working-directory: app-nativo
+        env:
+          SERVIDOR_URL: ${{ vars.SERVIDOR_URL }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
         run: |
           npm install
           npm run www
@@ -55,7 +61,11 @@ jobs:
           <plist version="1.0"><dict>
             <key>NSPrivacyTracking</key><false/>
             <key>NSPrivacyTrackingDomains</key><array/>
-            <key>NSPrivacyCollectedDataTypes</key><array/>
+            <key>NSPrivacyCollectedDataTypes</key><array>
+              <dict><key>NSPrivacyCollectedDataType</key><string>NSPrivacyCollectedDataTypeDeviceID</string>
+                <key>NSPrivacyCollectedDataTypeLinked</key><false/><key>NSPrivacyCollectedDataTypeTracking</key><false/>
+                <key>NSPrivacyCollectedDataTypePurposes</key><array><string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string></array></dict>
+            </array>
             <key>NSPrivacyAccessedAPITypes</key><array>
               <dict><key>NSPrivacyAccessedAPIType</key><string>NSPrivacyAccessedAPICategoryUserDefaults</string>
                 <key>NSPrivacyAccessedAPITypeReasons</key><array><string>CA92.1</string></array></dict>
@@ -66,6 +76,18 @@ jobs:
           PL
           gem list xcodeproj -i >/dev/null || sudo gem install xcodeproj --no-document
           ruby -e 'require "xcodeproj"; p=Xcodeproj::Project.open("App.xcodeproj"); t=p.targets.find{|x| x.name=="App"}; g=p.main_group.find_subpath("App",false); unless g.files.any?{|f| f.path=="PrivacyInfo.xcprivacy"}; f=g.new_reference("PrivacyInfo.xcprivacy"); t.resources_build_phase.add_file_reference(f); p.save; end'
+      - name: Textos de permissão em português de Portugal
+        working-directory: app-nativo/ios/App
+        run: |
+          mkdir -p App/pt-PT.lproj
+          cat > App/pt-PT.lproj/InfoPlist.strings <<'ST'
+          "NSMicrophoneUsageDescription" = "Para falar com o Escudo Amigo em vez de escrever e para gravar a sua consulta médica, quando pedir.";
+          "NSSpeechRecognitionUsageDescription" = "Para transformar a sua fala em texto e perceber o que pediu.";
+          "NSCameraUsageDescription" = "Para tirar uma fotografia à caixa do remédio, à conta ou a uma mensagem suspeita, quando tocar em Foto.";
+          "NSPhotoLibraryUsageDescription" = "Para escolher uma captura de ecrã ou fotografia que quer que o Escudo Amigo verifique.";
+          "NSContactsUsageDescription" = "Para escolher, nos seus contactos, as pessoas da família que a app deve chamar em caso de ajuda.";
+          ST
+          ruby -e 'require "xcodeproj"; p=Xcodeproj::Project.open("App.xcodeproj"); t=p.targets.find{|x| x.name=="App"}; g=p.main_group.find_subpath("App",false); unless g.children.any?{|f| f.display_name=="InfoPlist.strings"}; v=g.new_variant_group("InfoPlist.strings"); v.new_reference("pt-PT.lproj/InfoPlist.strings").name="pt-PT"; t.resources_build_phase.add_file_reference(v); end; p.root_object.known_regions|=["pt-BR","pt-PT"]; p.save'
       - name: Chave do App Store Connect
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
