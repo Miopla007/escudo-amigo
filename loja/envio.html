@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>Envio de imagens</title>
+<p id="s">Preparando imagens…</p>
+<script>
+// Página auxiliar: entrega as capturas da loja para a janela do App Store Connect que abriu esta.
+(async()=>{ const q=new URLSearchParams(location.search); const lista=(q.get('f')||'').split(',').filter(Boolean); const s=document.getElementById('s');
+  if(!window.opener){ s.textContent='Abra a partir do App Store Connect.'; return; }
+  for(const n of lista){ const r=await fetch('prints/'+n+'?v='+Date.now()); const b=await r.blob(); window.opener.postMessage({kind:'escudo-file',name:n,blob:b},'https://appstoreconnect.apple.com'); }
+  window.opener.postMessage({kind:'escudo-fim',total:lista.length},'https://appstoreconnect.apple.com'); s.textContent='Pronto: '+lista.length+' imagens enviadas. Pode fechar.'; })();
+</script>
