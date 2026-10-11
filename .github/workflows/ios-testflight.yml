@@ -34,7 +34,8 @@ jobs:
         run: |
           npm install
           npm run www
-          [ -d ios ] || npx cap add ios
+          which pod || sudo gem install cocoapods --no-document
+          [ -d ios ] || npx cap add ios --packagemanager CocoaPods
           npx cap sync ios
           npx @capacitor/assets generate --ios --iconBackgroundColor '#FFFFFF' --splashBackgroundColor '#FFFFFF' --assetPath recursos || true
       - name: Textos de permissão, versão e número do build
@@ -106,7 +107,9 @@ jobs:
         if: steps.seg.outputs.falta != ''
         working-directory: app-nativo/ios/App
         run: |
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO | tail -40
+          set -o pipefail
+          if ! xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO > build.log 2>&1; then
+            grep -E "error:|fatal" build.log | sort -u | head -15 | while read -r l; do echo "::error::$l"; done; tail -30 build.log; exit 1; fi
           echo "::error::O app compila. Para enviar ao TestFlight, cadastre os segredos:${{ steps.seg.outputs.falta }} (veja PUBLICAR.md, Parte C)."
           exit 1
       - name: Chave do App Store Connect
@@ -116,6 +119,7 @@ jobs:
       - name: Compilar (archive) com assinatura automática
         working-directory: app-nativo/ios/App
         run: |
+          set -o pipefail
           xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
             -archivePath $RUNNER_TEMP/App.xcarchive archive \
             DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} CODE_SIGN_STYLE=Automatic \
