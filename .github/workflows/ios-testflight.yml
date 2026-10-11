@@ -1,6 +1,6 @@
 # Gera o app iOS na nuvem (Mac do GitHub, grátis em repositório público) e envia para o TestFlight.
 # Antes de usar, cadastre estes "Secrets" no repositório (Settings > Secrets and variables > Actions):
-#   ASC_KEY_ID        – ID da chave da API do App Store Connect
+#   ASC_KEY_ID        – ID da chave da API do App Store Connect (crie a chave com acesso ADMIN: só ela permite a assinatura automática na nuvem)
 #   ASC_ISSUER_ID     – Issuer ID (aparece na mesma página da chave)
 #   ASC_KEY_P8        – conteúdo do arquivo AuthKey_XXXX.p8 (copie e cole o texto inteiro)
 #   APPLE_TEAM_ID     – Team ID da conta de desenvolvedor (Membership details)
@@ -15,7 +15,7 @@ on:
         default: '1.0'
 jobs:
   ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +46,26 @@ jobs:
           /usr/libexec/PlistBuddy -c "Delete :UIRequiredDeviceCapabilities" $P || true
           /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" $P || /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" $P
           /usr/libexec/PlistBuddy -c "Add :CFBundleDevelopmentRegion string pt-BR" $P || /usr/libexec/PlistBuddy -c "Set :CFBundleDevelopmentRegion pt-BR" $P
+      - name: Manifesto de privacidade (exigido pela Apple)
+        working-directory: app-nativo/ios/App
+        run: |
+          cat > App/PrivacyInfo.xcprivacy <<'PL'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>NSPrivacyTracking</key><false/>
+            <key>NSPrivacyTrackingDomains</key><array/>
+            <key>NSPrivacyCollectedDataTypes</key><array/>
+            <key>NSPrivacyAccessedAPITypes</key><array>
+              <dict><key>NSPrivacyAccessedAPIType</key><string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+                <key>NSPrivacyAccessedAPITypeReasons</key><array><string>CA92.1</string></array></dict>
+              <dict><key>NSPrivacyAccessedAPIType</key><string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+                <key>NSPrivacyAccessedAPITypeReasons</key><array><string>C617.1</string></array></dict>
+            </array>
+          </dict></plist>
+          PL
+          gem list xcodeproj -i >/dev/null || sudo gem install xcodeproj --no-document
+          ruby -e 'require "xcodeproj"; p=Xcodeproj::Project.open("App.xcodeproj"); t=p.targets.find{|x| x.name=="App"}; g=p.main_group.find_subpath("App",false); unless g.files.any?{|f| f.path=="PrivacyInfo.xcprivacy"}; f=g.new_reference("PrivacyInfo.xcprivacy"); t.resources_build_phase.add_file_reference(f); p.save; end'
       - name: Chave do App Store Connect
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
