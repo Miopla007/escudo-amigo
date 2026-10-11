@@ -20,6 +20,8 @@ const COTA={'/cerebro':150,'/ver':25,'/ouvir':20,'/busca':40,'/fala':400,'/email
 async function cota(req,path){ const max=COTA[path]; if(!max) return true; const id=(req.headers.get('x-escudo-id')||req.headers.get('cf-connecting-ip')||'anon').slice(0,64);
   const dia=new Date().toISOString().slice(0,10), k=new Request('https://cota.escudo/'+dia+path+'/'+encodeURIComponent(id)); const c=caches.default; const h=await c.match(k); const n=h?(+(await h.text())||0):0;
   if(n>=max) return false; await c.put(k,new Response(String(n+1),{headers:{'cache-control':'public, max-age=90000'}})); return true; }
+const txt=v=>v==null?'':(typeof v==='string'?v:JSON.stringify(v));   // a IA às vezes devolve objeto em vez de texto
+const WUA={headers:{'user-agent':'EscudoAmigo/1.0 (https://miopla007.github.io/escudo-amigo/suporte.html)'}};
 const J=(o,s=200)=>new Response(JSON.stringify(o),{status:s,headers:{...CORS,'content-type':'application/json'}});
 const LLM='@cf/meta/llama-3.3-70b-instruct-fp8-fast', VISAO='@cf/meta/llama-3.2-11b-vision-instruct', OUVIDO='@cf/openai/whisper-large-v3-turbo';
 export default {
@@ -32,11 +34,11 @@ export default {
     try{
       if(url.pathname==='/cerebro'){ const {prompt}=await req.json();
         const r=await env.AI.run(LLM,{messages:[{role:'user',content:String(prompt||'').slice(0,24000)}],max_tokens:600,temperature:.4});
-        return J({texto:r.response||''}); }
+        return J({texto:txt(r.response)}); }
       if(url.pathname==='/ver'){ const {prompt,imagem}=await req.json();   // imagem: {base64}
         const bytes=[...Uint8Array.from(atob(imagem.base64),c=>c.charCodeAt(0))];
         const r=await env.AI.run(VISAO,{prompt:String(prompt||'').slice(0,8000),image:bytes,max_tokens:600});
-        return J({texto:r.response||r.description||''}); }
+        return J({texto:txt(r.response||r.description)}); }
       if(url.pathname==='/ouvir'){ const buf=await req.arrayBuffer();
         const r=await env.AI.run(OUVIDO,{audio:btoa(String.fromCharCode(...new Uint8Array(buf))),language:'pt'});
         return J({texto:r.text||''}); }
@@ -56,7 +58,7 @@ export default {
         const fontes=await pesquisar(q,pais,env); let resposta='';
         if(fontes.length&&env.AI){ const ctx=fontes.map((f,i)=>'['+(i+1)+'] '+f.titulo+': '+f.trecho).join('\n').slice(0,6000);
           const r=await env.AI.run(LLM,{messages:[{role:'system',content:'Você responde a uma pessoa idosa, em português '+(pais==='pt'?'de Portugal':'do Brasil')+', com no máximo 3 frases curtas e simples, só com base nas fontes. Se as fontes não respondem, diga que não achou com certeza. Nunca invente. Não dê conselho médico ou financeiro definitivo: sugira confirmar com o médico ou o banco.'},{role:'user',content:'Pergunta: '+q+'\n\nFontes:\n'+ctx}],max_tokens:220,temperature:.2});
-          resposta=(r.response||'').trim(); }
+          resposta=txt(r.response).trim(); }
         const out=J({resposta:resposta||(fontes[0]?fontes[0].trecho:''),fontes:fontes.slice(0,3).map(f=>({titulo:f.titulo,url:f.url}))});
         await caches.default.put(ck,new Response(out.clone().body,{headers:{'content-type':'application/json','cache-control':'public, max-age=21600'}})); return out; }
       // previsão do tempo: MET Norway (gratuito, uso comercial permitido com crédito "Dados: MET Norway"). Precisa de lat/lon.
@@ -97,6 +99,6 @@ async function pesquisar(q,pais,env){ const out=[]; const lang=pais==='pt'?'pt':
       if(r.ok){ const j=await r.json(); (j.web&&j.web.results||[]).slice(0,5).forEach(x=>out.push({titulo:x.title,url:x.url,trecho:String(x.description||'').replace(/<[^>]+>/g,'')})); } } }catch(e){}
   // DuckDuckGo: uso só não comercial. Fica desligado no app pago; ligue com PERMITE_DDG=1 só em testes.
   if(env.PERMITE_DDG) try{ const r=await fetch('https://api.duckduckgo.com/?format=json&no_html=1&skip_disambig=1&kl='+(pais==='pt'?'pt-pt':'br-pt')+'&q='+encodeURIComponent(q)); if(r.ok){ const j=await r.json(); if(j.AbstractText) out.push({titulo:j.Heading||q,url:j.AbstractURL,trecho:j.AbstractText}); } }catch(e){}
-  try{ const s=await (await fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=2&origin=*&srsearch='+encodeURIComponent(q))).json();
-    for(const h of (s.query&&s.query.search||[])){ const t=await (await fetch('https://'+lang+'.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(h.title))).json(); if(t.extract) out.push({titulo:t.title+' (Wikipédia)',url:t.content_urls&&t.content_urls.mobile&&t.content_urls.mobile.page,trecho:t.extract}); } }catch(e){}
+  try{ const s=await (await fetch('https://'+lang+'.wikipedia.org/w/api.php?action=query&list=search&format=json&srlimit=2&origin=*&srsearch='+encodeURIComponent(q),WUA)).json();
+    for(const h of (s.query&&s.query.search||[])){ const t=await (await fetch('https://'+lang+'.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(h.title),WUA)).json(); if(t.extract) out.push({titulo:t.title+' (Wikipédia)',url:t.content_urls&&t.content_urls.mobile&&t.content_urls.mobile.page,trecho:t.extract}); } }catch(e){}
   return out; }
