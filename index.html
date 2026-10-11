@@ -814,6 +814,24 @@ html.zg .sheet.voice .vbars{display:none}
 .preco{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0}.preco b{font:800 30px var(--tfont),sans-serif;color:var(--esc-d)}.preco span{font-size:20px;font-weight:700}
 .letrinha{font-size:15px;line-height:1.4;color:var(--muted);margin:0}
 .leg{display:flex;justify-content:center;gap:22px}.leg a{font-size:17px;font-weight:700;color:var(--ink);min-height:44px;display:inline-flex;align-items:center}
+
+/* 3.5 · tela de assinatura com hierarquia clara */
+.pm-head{display:flex;gap:14px;align-items:center}.pm-head>i{flex:none;width:58px;height:58px;border-radius:18px;background:var(--esc-l);color:var(--esc-d);display:grid;place-items:center}.pm-head>i svg{width:32px;height:32px}
+.pm-head p{margin:2px 0 0;font-size:18px;font-weight:600;color:var(--muted);line-height:1.3}
+.pm-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.pm-list li{display:flex;gap:12px;align-items:center}.pm-list li>i{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center}.pm-list li>i svg{width:24px;height:24px}
+.pm-list li span{font-size:19px;line-height:1.3;color:var(--muted);font-weight:600}.pm-list li b{color:var(--ink);font-weight:800}
+.pm-free{display:flex;gap:10px;align-items:flex-start;background:#E9F8EF;border-radius:18px;padding:12px 14px;color:#0A5230;font-size:17px;font-weight:600;line-height:1.35}.pm-free>i{flex:none;width:28px;height:28px;border-radius:50%;background:#0B6B3C;color:#fff;display:grid;place-items:center}.pm-free>i svg{width:18px;height:18px}.pm-free b{font-weight:800}
+.pm-price{position:relative;border:2px solid var(--esc);border-radius:22px;padding:22px 16px 14px;text-align:center;background:#fff;margin-top:8px}
+.pm-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#0B6B3C;color:#fff;font:800 15px 'Atkinson Hyperlegible Next',sans-serif;letter-spacing:.06em;padding:5px 14px;border-radius:999px;white-space:nowrap}
+.pm-valor{display:flex;align-items:baseline;justify-content:center;gap:8px}.pm-valor b{font:800 38px var(--tfont),sans-serif;color:var(--ink);letter-spacing:-.01em}.pm-valor span{font-size:20px;font-weight:700;color:var(--muted)}
+.pm-price small{display:block;margin-top:4px;font-size:16px;font-weight:600;color:var(--muted)}
+.pm-cta{min-height:74px;font-size:22px}.pm-cta span{font-size:30px;line-height:0;margin-left:4px}
+.b-line{background:#fff;color:var(--esc-d);box-shadow:inset 0 0 0 2px var(--esc);--sh:transparent;min-height:60px;font-size:20px}
+.pm-agora{border:0;background:none;font:800 19px 'Atkinson Hyperlegible Next',sans-serif;color:var(--muted);text-decoration:underline;min-height:48px;align-self:center}
+.pm-nota{font-size:17px;color:var(--muted);margin:0}
+.leg a{color:var(--esc-d);text-decoration:underline}
+.letrinha{font-size:14px;color:#5B636E;font-weight:500}
 </style></head><body>
 <div class="app" id="app"><div id="view"></div><div id="layer"></div></div>
 
@@ -3413,17 +3431,25 @@ var Motor = (function(){
   async function lojaChecar(){ if(!window.ESCUDO_LOJA) return; try{ var a=await ESCUDO_LOJA.ativo(); LOJA.ativo=!!a.ativo; LOJA.ate=a.ate||null; LOJA.teste=!!a.teste; window.ESCUDO_MAIS=LOJA.ativo; M.changed(); }catch(e){} try{ LOJA.info=await ESCUDO_LOJA.info(); }catch(e){} }
   function precoTxt(){ var p=LOJA.info&&LOJA.info.preco; return p||L('R$ 19,90','4,99 €'); }
   function sheetPlanos(){ var ativo=!window.ESCUDO_LOJA||LOJA.ativo, web=!window.ESCUDO_LOJA, teste=!LOJA.info||LOJA.info.teste!==false;
-    var item=function(ic,t){ return '<div class="pl"><i>'+ic+'</i><span>'+t+'</span></div>'; };
-    openLayer('<span class="tt h2">Escudo Amigo Mais</span>'+
-      (ativo&&!web?'<p class="planok">'+I.check+L('Você já tem o Escudo Amigo Mais.','Já tem o Escudo Amigo Mais.')+(LOJA.ate?' '+L('Renova em ','Renova a ')+new Date(LOJA.ate).toLocaleDateString(CFG.pais==='pt'?'pt-PT':'pt-BR')+'.':'')+'</p>':'<p style="font-size:20px;font-weight:700">'+L('Tudo o que o app já faz, e ainda:','Tudo o que a app já faz, e ainda:')+'</p>')+
-      '<div class="priv">'+item(I.mic,L('Conversa de verdade: entendo qualquer pergunta, do seu jeito.','Conversa a sério: percebo qualquer pergunta, à sua maneira.'))+item(I.shot,L('Leio fotos de caixa de remédio, de contas e de mensagens suspeitas.','Leio fotos de caixas de remédio, de contas e de mensagens suspeitas.'))+item(I2.shield,L('Pesquiso na internet pra você e mostro de onde veio.','Pesquiso na internet por si e mostro de onde veio.'))+item(I2.som,L('Voz mais natural e resumo da consulta médica.','Voz mais natural e resumo da consulta médica.'))+'</div>'+
-      '<div class="cfgbox gratis"><b>'+L('Grátis para sempre','Grátis para sempre')+'</b><span>'+L('Alarme dos remédios, botão de socorro, conferir golpe, Minha gente e Meus amigos.','Alarme dos remédios, botão de socorro, verificar burla, A minha gente e Os meus amigos.')+'</span></div>'+
-      (web?'<p class="muted" style="font-size:17px">'+L('Nesta versão de teste, tudo já está liberado.','Nesta versão de teste, está tudo desbloqueado.')+'</p>':
-       ativo?'<button class="btn b-soft" data-a="gerenciar">'+L('Gerenciar assinatura','Gerir assinatura')+'</button>':
-       '<div class="preco"><b>'+precoTxt()+L(' por mês',' por mês')+'</b>'+(teste?'<span>'+L('Os primeiros 7 dias são grátis','Os primeiros 7 dias são grátis')+'</span>':'')+'</div>'+
-       '<button class="btn b-esc" data-a="assinar" style="min-height:72px;font-size:22px"'+(LOJA.ocupado?' disabled':'')+'>'+(teste?L('Assinar com 7 dias grátis','Assinar com 7 dias grátis'):L('Assinar','Assinar'))+'</button>'+
-       '<p class="letrinha">'+(teste?L('Grátis por 7 dias para quem assina pela primeira vez. ','Grátis durante 7 dias para quem assina pela primeira vez. '):'')+L('Assinatura mensal de ','Assinatura mensal de ')+precoTxt()+L(', renovada automaticamente todo mês até você cancelar. Cancele quando quiser nos Ajustes do iPhone (seu nome › Assinaturas), pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.',', renovada automaticamente todos os meses até cancelar. Cancele quando quiser nas Definições do iPhone (o seu nome › Subscrições), pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.')+'</p>'+
-       '<button class="btn b-soft" data-a="restaurar">'+L('Já assinei · restaurar','Já assinei · restaurar')+'</button>')+
+    var item=function(cls,ic,t1,t2){ return '<li><i class="'+cls+'">'+ic+'</i><span><b>'+t1+'</b> '+t2+'</span></li>'; };
+    var lista='<ul class="pm-list">'+
+      item('t-esc',I.mic,L('Conversa de verdade.','Conversa a sério.'),L('Entendo qualquer pergunta, do seu jeito.','Percebo qualquer pergunta, à sua maneira.'))+
+      item('t-rem',I.shot,L('Leio fotos.','Leio fotografias.'),L('Caixa de remédio, contas e mensagens suspeitas.','Caixas de remédio, contas e mensagens suspeitas.'))+
+      item('t-fin',I2.shield,L('Pesquiso na internet.','Pesquiso na internet.'),L('E mostro de onde veio.','E mostro de onde veio.'))+
+      item('t-fam',I2.som,L('Voz mais natural.','Voz mais natural.'),L('E resumo da consulta médica.','E resumo da consulta médica.'))+'</ul>';
+    var gratis='<div class="pm-free"><i>'+I.check+'</i><span><b>'+L('Grátis para sempre:','Grátis para sempre:')+'</b> '+L('alarme dos remédios, botão de socorro, conferir golpe, Minha gente e Meus amigos.','alarme dos remédios, botão de socorro, verificar burla, A minha gente e Os meus amigos.')+'</span></div>';
+    var corpo;
+    if(web) corpo='<p class="pm-nota">'+L('Nesta versão de teste, tudo já está liberado.','Nesta versão de teste, está tudo desbloqueado.')+'</p>';
+    else if(ativo) corpo='<p class="planok">'+I.check+L('Você já tem o Escudo Amigo Mais.','Já tem o Escudo Amigo Mais.')+(LOJA.ate?' '+L('Renova em ','Renova a ')+new Date(LOJA.ate).toLocaleDateString(CFG.pais==='pt'?'pt-PT':'pt-BR')+'.':'')+'</p><button class="btn b-line" data-a="gerenciar">'+L('Gerenciar assinatura','Gerir assinatura')+'</button>';
+    else corpo='<div class="pm-price">'+(teste?'<span class="pm-badge">'+L('7 DIAS GRÁTIS','7 DIAS GRÁTIS')+'</span>':'')+
+        '<div class="pm-valor"><b>'+precoTxt()+'</b><span>'+L('por mês','por mês')+'</span></div>'+
+        '<small>'+(teste?L('Você só paga depois do 7º dia. Cancele quando quiser.','Só paga depois do 7.º dia. Cancele quando quiser.'):L('Cancele quando quiser.','Cancele quando quiser.'))+'</small></div>'+
+      '<button class="btn b-esc pm-cta" data-a="assinar"'+(LOJA.ocupado?' disabled':'')+'>'+(teste?L('Começar meus 7 dias grátis','Começar os meus 7 dias grátis'):L('Assinar agora','Subscrever agora'))+' <span aria-hidden="true">›</span></button>'+
+      '<button class="btn b-line" data-a="restaurar">'+L('Já assinei · restaurar','Já subscrevi · restaurar')+'</button>'+
+      '<button class="pm-agora" data-a="close">'+L('Agora não','Agora não')+'</button>'+
+      '<p class="letrinha">'+(teste?L('Grátis por 7 dias para quem assina pela primeira vez. ','Grátis durante 7 dias para quem subscreve pela primeira vez. '):'')+L('Depois, ','Depois, ')+precoTxt()+L(' por mês, renovado automaticamente até você cancelar. Cancele nos Ajustes do iPhone (seu nome › Assinaturas) pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.',' por mês, renovado automaticamente até cancelar. Cancele nas Definições do iPhone (o seu nome › Subscrições) pelo menos 24 horas antes da renovação. A cobrança é feita na sua conta Apple.')+'</p>';
+    openLayer('<div class="pm-head"><i>'+I2.shield+'</i><div><span class="tt h2">Escudo Amigo Mais</span><p>'+L('Mais proteção para você e mais tranquilidade para a família.','Mais proteção para si e mais tranquilidade para a família.')+'</p></div></div>'+
+      lista+gratis+corpo+
       '<div class="leg"><a href="'+SITE+'termos.html" data-a="abrelink" data-u="'+SITE+'termos.html">'+L('Termos de uso','Termos de utilização')+'</a><a href="'+SITE+'privacidade.html" data-a="abrelink" data-u="'+SITE+'privacidade.html">'+L('Privacidade','Privacidade')+'</a></div>'); }
   async function assinar(){ if(!window.ESCUDO_LOJA||LOJA.ocupado) return; LOJA.ocupado=true; var bt=$('[data-a=assinar]'); if(bt){ bt.disabled=true; bt.textContent=L('Abrindo a App Store…','A abrir a App Store…'); }
     var r=await ESCUDO_LOJA.comprar(); LOJA.ocupado=false; await lojaChecar();
