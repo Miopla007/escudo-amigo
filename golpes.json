@@ -1,6 +1,6 @@
 {
- "versao": "2026-10-10",
- "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) — revisado toda semana",
+ "versao": "2026-10-11",
+ "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
  "golpes": [
   {
    "id": "falso_banco",
@@ -21,12 +21,16 @@
     [
      "(sua )?conta (foi |sera |esta )?(bloqueada|suspensa|invadida)",
      3
+    ],
+    [
+     "(dizendo|disseram|diz|dizem|a dizer|que) que (sao|e|era|eram|seria|seriam) d[oa] (banco|caixa|seguranca do banco)|ligaram do banco|ligacao do banco|(gerente|funcionari[oa]|atendente) do banco|se passando por (gerente|banco)",
+     3
     ]
    ],
    "explica": "Banco não liga pedindo senha, código, Pix ou transferência para 'conta segura'.",
    "passos": [
     "Desligue agora",
-    "Ligue você mesma para o número atrás do cartão",
+    "Ligue para o número que está atrás do cartão",
     "Não passe senha nem código"
    ]
   },
@@ -35,15 +39,19 @@
    "nome": "Falso parente com número novo",
    "sinais": [
     [
-     "troquei de (numero|celular)|numero novo|esse e meu (novo )?numero|perdi (o|meu) celular",
+     "troquei de (numero|celular)|numero novo|mudei de numero|(esse|este) e o meu (novo )?numero|perdi (o|meu) celular|celular (avariou|estragou|partiu|caiu|quebrou|ficou sem)",
      4
     ],
     [
-     "(mae|pai|vo|vovo|tia|tio),? (me )?(faz|manda|empresta|transfere)",
+     "(mae|pai|vo|vovo|avo|avozinha|tia|tio),? (me )?(faz|manda|empresta|transfere|podes|pode)",
      3
     ],
     [
      "(pix|transferencia|deposito).{0,30}(urgente|agora|hoje|rapido)",
+     3
+    ],
+    [
+     "(pedindo|pediu|pede|a pedir|pedia) (um |uma )?(pix|dinheiro|transferencia|deposito)",
      3
     ]
    ],
@@ -79,11 +87,11 @@
    "nome": "Link para atualizar dados",
    "sinais": [
     [
-     "bit\\.ly|tinyurl|encurtador|clique (aqui|no link)|acesse o link|https?://",
+     "bit\\.ly|tinyurl|encurtador|clique (aqui|no link)|acesse o link|https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)",
      3
     ],
     [
-     "atualiz(e|ar) (seus )?(dados|cadastro)|regulariz(e|ar)|token (expir|venc)",
+     "atualiz\\w* (os |seus |sua |o |a |as )?(dados|cadastro)|regulariz(e|ar)|token (expir|venc)|confirm\\w* (os |seus |sua |o |a )?(dados|cadastro)",
      3
     ],
     [
@@ -152,7 +160,8 @@
     "Não passe dados",
     "Confira só pelo app Meu INSS ou pelo 135",
     "Peça ajuda a alguém da família"
-   ]
+   ],
+   "pais": "br"
   },
   {
    "id": "falso_advogado",
@@ -163,7 +172,7 @@
      3
     ],
     [
-     "(custas|taxa|honorarios).{0,30}(liberar|receber|pagar)",
+     "(custas|honorarios).{0,30}(liberar|receber|pagar)|taxa.{0,30}(liberar|receber) (o |a |seu |sua )?(dinheiro|valor|indenizacao|processo|precatorio)",
      4
     ]
    ],
@@ -212,7 +221,8 @@
     "Não pague por link",
     "Confira no site oficial com o código",
     "Apague a mensagem"
-   ]
+   ],
+   "pais": "br"
   },
   {
    "id": "boleto_falso",
@@ -356,6 +366,110 @@
     "Confira só no site gov.br",
     "Não pague por link",
     "Peça ajuda a alguém"
+   ],
+   "pais": "br"
+  },
+  {
+   "id": "seg_social_reembolso",
+   "pais": "pt",
+   "nome": "Falso reembolso da Segurança Social",
+   "sinais": [
+    [
+     "seguranca social|seg.?social|caixa nacional de pensoes|centro nacional de pensoes",
+     3
+    ],
+    [
+     "reembolso|valor a receber|tem (um|uma) (reembolso|devolucao|valor)|devolucao de|pensao|reforma|subsidio",
+     2
+    ],
+    [
+     "(confirm|atualiz|valid|indiq|envi|insir|introduz|verifiq)\\w* (o |a |os |as |seu |sua |seus |suas )?(iban|nib|dados bancarios|conta bancaria|numero de conta)",
+     4
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|carregue|clique",
+     2
+    ]
+   ],
+   "explica": "A Segurança Social não manda SMS com link a pedir o IBAN. Quem pede o IBAN por mensagem quer roubar os seus dados.",
+   "passos": [
+    "Não carregue no link",
+    "Não dê o IBAN nem dados do banco",
+    "Confirme só na Segurança Social Direta ou ao balcão"
+   ]
+  },
+  {
+   "id": "ctt_taxa",
+   "pais": "pt",
+   "nome": "Falsa entrega dos CTT com taxa",
+   "sinais": [
+    [
+     "\\bctt\\b|encomenda (esta |foi |ficou )?(retida|pendente|em espera|a aguardar|parada)|taxa aduaneira|alfandega|direitos aduaneiros|portes em falta|morada incompleta",
+     3
+    ],
+    [
+     "(pag|liquid)\\w* .{0,40}(taxa|portes|\\d+[,.]\\d{2} ?(eur|euros|€))|taxa .{0,30}(eur|euros|€)|\\d+[,.]\\d{2} ?(eur|euros|€).{0,30}(taxa|portes)",
+     3
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|carregue|clique",
+     2
+    ]
+   ],
+   "explica": "É uma entrega falsa: os CTT não pedem taxa de entrega por SMS com link. Querem os dados do seu cartão.",
+   "passos": [
+    "Não carregue no link",
+    "Não pague nada nem dê o cartão",
+    "Confira a encomenda no site oficial dos CTT"
+   ]
+  },
+  {
+   "id": "financas_divida",
+   "pais": "pt",
+   "nome": "Falsa dívida às Finanças",
+   "sinais": [
+    [
+     "portal das financas|autoridade tributaria|\\bat\\b ?:|financas ?:|divida (fiscal|as financas|pendente)|execucao fiscal|penhora|\\birs\\b|\\bimi\\b|\\biuc\\b",
+     3
+    ],
+    [
+     "(regulariz|pag|liquid)\\w* .{0,40}(hoje|ate|imediatamente|24 ?h|48 ?h|evitar|penhora|coima)|coima|processo de execucao",
+     3
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|carregue|clique",
+     2
+    ]
+   ],
+   "explica": "As Finanças não mandam SMS nem email com link para pagar dívidas. Pagamentos só pelo Portal das Finanças, entrando por si.",
+   "passos": [
+    "Não carregue no link",
+    "Não pague por mensagem",
+    "Confirme no Portal das Finanças ou ao balcão"
+   ]
+  },
+  {
+   "id": "luz_corte",
+   "nome": "Falsa cobrança de luz ou gás",
+   "sinais": [
+    [
+     "\\bedp\\b|e.?redes|endesa|galp|goldenergy|iberdrola|enel|cemig|copel|neoenergia|fatura (em atraso|vencida|por pagar|pendente)|factura (em atraso|vencida|por pagar|pendente)|conta (de luz )?(em atraso|vencida)",
+     3
+    ],
+    [
+     "corte (de|da|do) (luz|energia|eletricidade|fornecimento|gas|agua)|(sera|vai ser|vai ficar) (cortad|sem luz)|suspensao do fornecimento|cortar (a|sua) (luz|energia)",
+     3
+    ],
+    [
+     "(pag|regulariz|liquid)\\w* .{0,40}(link|hoje|24 ?h|imediatamente|pix)|https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)",
+     2
+    ]
+   ],
+   "explica": "A companhia de luz não ameaça cortar a luz por mensagem com link nem pede pagamento por Pix.",
+   "passos": [
+    "Não pague pelo link",
+    "Ligue para o número que está na sua fatura",
+    "Apague a mensagem"
    ]
   }
  ],
@@ -379,6 +493,14 @@
   [
    "desconhecido|numero estranho|nao conheco",
    1
+  ],
+  [
+   "(confirm|atualiz|valid|indiq|envi|insir|introduz|verifiq)\\w* (o |a |os |as |seu |sua |seus |suas )?(iban|nib|dados bancarios|dados do cartao|conta bancaria|numero do cartao|numero de conta)",
+   4
+  ],
+  [
+   "(pediram|pediu|pede|pedindo|a pedir|pedia) (o |a |meu |minha |um |uma |me o |me a )?(codigo|senha|pin)",
+   4
   ]
  ]
 }
