@@ -1068,8 +1068,8 @@ html.zg .sheet.voice .vbars{display:none}
 "pt": "Mostre-me o que chegou. Eu vejo antes de responder."
 }
 };window.GOLPES={
- "versao": "2026-10-11",
- "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
+ "versao": "2026-10-12",
+ "fonte": "Febraban, Banco Central, INSS, TSE, Polícia Civil, Procon, TJCE/Defensoria, imprensa (Correio Braziliense, Olhar Digital, O Povo) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
  "golpes": [
   {
    "id": "falso_banco",
@@ -1093,6 +1093,10 @@ html.zg .sheet.voice .vbars{display:none}
     ],
     [
      "(dizendo|disseram|diz|dizem|a dizer|que) que (sao|e|era|eram|seria|seriam) d[oa] (banco|caixa|seguranca do banco)|ligaram do banco|ligacao do banco|(gerente|funcionari[oa]|atendente) do banco|se passando por (gerente|banco)",
+     3
+    ],
+    [
+     "febraban|federacao (brasileira )?d[eo]s? bancos|assunto urgente.{0,40}(conta|transacao|banco)",
      3
     ]
    ],
@@ -1122,6 +1126,10 @@ html.zg .sheet.voice .vbars{display:none}
     [
      "(pedindo|pediu|pede|a pedir|pedia) (um |uma )?(pix|dinheiro|transferencia|deposito)",
      3
+    ],
+    [
+     "salva (o |meu |esse |este )?(meu )?(novo )?(contato|numero)|(adiciona|grava) (o |meu )?(novo )?(numero|contato)",
+     4
     ]
    ],
    "explica": "Alguém se passa por filho ou neto com número novo e pede dinheiro com pressa.",
@@ -1202,6 +1210,10 @@ html.zg .sheet.voice .vbars{display:none}
     [
      "(taxa|deposito|pagamento) (antecipad|de liberacao|para liberar)|pague .{0,20}para liberar",
      4
+    ],
+    [
+     "taxa (de )?cadastro|adiantamento (de|da|das) parcela|(imposto|iof|taxa|seguro) (para|pra) (liberar|soltar|depositar)|exigencia d[ao] (febraban|banco central)",
+     4
     ]
    ],
    "explica": "Ninguém sério cobra taxa antes de liberar empréstimo.",
@@ -1221,6 +1233,10 @@ html.zg .sheet.voice .vbars{display:none}
     ],
     [
      "(seu )?beneficio (sera |vai ser )?(cortado|suspenso|bloqueado)|valor a receber|atrasados",
+     3
+    ],
+    [
+     "(atualiz|renov|refaz|faz|fazer|faca)\\w* (a |sua )?prova de vida|prova de vida.{0,40}(link|celular|whatsapp|pendente|vence|venc|bloque|cort)|(funcionari[oa]|central|atendente) do inss|ligaram do inss|cad ?unico.{0,30}(atualiz|bloque|cancel|link)",
      3
     ]
    ],
@@ -1243,6 +1259,10 @@ html.zg .sheet.voice .vbars{display:none}
     [
      "(custas|honorarios).{0,30}(liberar|receber|pagar)|taxa.{0,30}(liberar|receber) (o |a |seu |sua )?(dinheiro|valor|indenizacao|processo|precatorio)",
      4
+    ],
+    [
+     "decisao favoravel|valor (disponivel|liberado) (para|pra) (saque|sacar|receber)|alvara (de|para) (levantamento|liberacao)|sou (o |a )?(seu |sua )?advogad|o pix nao (caiu|foi concluido)|transacao nao (foi )?concluida",
+     3
     ]
    ],
    "explica": "Golpistas fingem ser advogados e cobram 'taxa' para liberar um dinheiro que não existe.",
@@ -1540,6 +1560,100 @@ html.zg .sheet.voice .vbars{display:none}
     "Ligue para o número que está na sua fatura",
     "Apague a mensagem"
    ]
+  },
+  {
+   "id": "bilhete_premiado",
+   "pais": "br",
+   "nome": "Bilhete premiado ou carteira achada",
+   "sinais": [
+    [
+     "bilhete (premiado|da loteria|de loteria|da mega)|loteria premiad|dividir o premio|ajud\\w* a (receber|sacar|trocar) o premio",
+     5
+    ],
+    [
+     "(ach|encontr)\\w* (uma |a )?carteira|(caiu|derrubou|deixou cair) (uma |a )?carteira|carteira (com|cheia de) dinheiro",
+     3
+    ],
+    [
+     "(sacola|saco) preta|(coloca|colocar|bota|botar|poe|por|deixa|deixar|guarda|guardar) (a |sua )?bolsa (na|no|numa|num|dentro|comigo)|alarme da loja",
+     3
+    ],
+    [
+     "(sacar|tirar) (o )?dinheiro .{0,30}(garantia|confianca|prova)|(dinheiro|valor) (de|como) garantia|(presente|presentear).{0,30}(loja do (meu )?pai|agradecimento)",
+     4
+    ]
+   ],
+   "explica": "Estranho com bilhete premiado, carteira achada ou presente que pede seu dinheiro ou bolsa é golpe antigo.",
+   "passos": [
+    "Não saque dinheiro para estranhos",
+    "Não entregue bolsa nem cartão",
+    "Entre numa loja e peça ajuda"
+   ]
+  },
+  {
+   "id": "falso_tse",
+   "pais": "br",
+   "nome": "Falsa cobrança do título de eleitor",
+   "sinais": [
+    [
+     "titulo (de )?eleitor|e.?titulo|justica eleitoral|\\btse\\b|\\btre\\b|cartorio eleitoral",
+     3
+    ],
+    [
+     "(regulariz|pendencia|cancel|irregular|bloque)\\w*.{0,40}(titulo|cpf|eleitor)|(titulo|cpf).{0,30}(cancelad|irregular|pendente|bloquead|suspens)|multa (eleitoral|por nao votar|de ausencia)|taxa de regularizacao",
+     3
+    ]
+   ],
+   "explica": "A Justiça Eleitoral não cobra taxa por mensagem nem manda link para regularizar título.",
+   "passos": [
+    "Não pague nem clique",
+    "Confira só no app e-Título",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "videochamada_rosto",
+   "nome": "Videochamada ou selfie para copiar seu rosto",
+   "sinais": [
+    [
+     "videochamada|video chamada|chamada de video|ligacao de video",
+     2
+    ],
+    [
+     "(tira|tire|tirar|manda|mande|envie|enviar) (uma )?(selfie|foto do (seu )?rosto)|reconhecimento facial|biometria facial|validacao facial|olh(e|a|ar) (para|pra) (a )?camera|mostr(e|a|ar) (o )?(seu )?rosto|foto (segurando|com) (o )?(documento|rg)",
+     4
+    ]
+   ],
+   "explica": "Seu rosto em vídeo ou selfie pode ser usado para abrir conta ou empréstimo no seu nome.",
+   "passos": [
+    "Não atenda vídeo de número estranho",
+    "Não tire selfie para desconhecido",
+    "Avise alguém da família"
+   ]
+  },
+  {
+   "id": "falsa_intimacao",
+   "nome": "Falsa intimação ou denúncia com prazo",
+   "sinais": [
+    [
+     "intimacao|notificacao (judicial|extrajudicial|oficial)|ministerio publico|denuncia contra (voce|o senhor|a senhora|seu cpf)|(numero|n) (do )?(processo|protocolo)",
+     3
+    ],
+    [
+     "apresentar (sua )?defesa|acesso ao processo|detalhes da denuncia|prazo de (24|48) ?(h|horas)|cancelamento do alvara|(sera|vai ser) (processad|intimad)",
+     3
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|baix(e|ar) o (arquivo|documento|anexo)",
+     2
+    ]
+   ],
+   "explica": "Órgão público não manda intimação por WhatsApp com link e prazo de horas para você clicar.",
+   "passos": [
+    "Não clique nem baixe nada",
+    "Ligue para o órgão pelo site oficial",
+    "Mostre para alguém da família"
+   ]
   }
  ],
  "geral": [
@@ -1574,11 +1688,11 @@ html.zg .sheet.voice .vbars{display:none}
  ]
 }
 ;window.RESPOSTAS={
-"_versao":"2026-10-11b",
+"_versao":"2026-10-12",
 "_nota":"Chave sem sufixo = Brasil. Chave com _pt = Portugal (o cérebro escolhe pela região). Lacunas: {nome}, {fam} (ex.: a Rosa / a família), {pra_fam} (pra Rosa / à Rosa), {de_fam} (da Rosa), {pessoa}, {pra_pessoa}, {de_pessoa}. Remédio: {remedio} (nome) e {o_rem} (com artigo certo: a Losartana, o AAS).",
-"oi":["Oi, {nome}! Que bom ouvir você. Do que você precisa agora?","Oi! Tô aqui. Me fala o que você quer fazer.","Olá, {nome}! Tudo bem por aí? Pode falar.","Oi, oi! Pode contar comigo. O que vai ser?","Que bom que você chamou, {nome}. Em que eu ajudo?"],
+"oi":["Oi, {nome}! Que bom ouvir você. Do que você precisa agora?","Oi! Tô aqui. Me fala o que você quer fazer.","Olá, {nome}! Tudo bem por aí? Pode falar.","Oi, oi! Pode contar comigo. O que vai ser?","Que bom que você chamou, {nome}. Em que eu ajudo?","Oi, {nome}! Que alegria você por aqui. Me conta, o que vamos fazer?"],
 "oi_pt":["Olá, {nome}! Que bom ouvir a sua voz. Do que precisa agora?","Olá! Estou aqui. Diga-me o que quer fazer.","Olá, {nome}! Está tudo bem por aí? Pode falar.","Olá! Pode contar comigo. O que vai ser?","Que bom que me chamou, {nome}. Diga lá."],
-"agradece":["Imagina, {nome}! Tô sempre aqui.","De nada! Precisando, é só chamar.","Que isso, {nome}. É um prazer cuidar de você.","Por nada! Qualquer coisa, me chama."],
+"agradece":["Imagina, {nome}! Tô sempre aqui.","De nada! Precisando, é só chamar.","Que isso, {nome}. É um prazer cuidar de você.","Por nada! Qualquer coisa, me chama.","Imagina, {nome}! Cuidar de você me deixa feliz. Precisou, chama."],
 "agradece_pt":["Ora essa, {nome}! Estou sempre aqui.","De nada! Precisando, é só chamar.","Não tem de quê, {nome}. É um gosto cuidar de si.","Por nada! Qualquer coisa, chame-me."],
 "ajuda":["Eu te lembro dos remédios, anoto seus gastos, marco consultas, ligo pra família e confiro se uma mensagem pode ser golpe. É só falar do seu jeito.","Pode me pedir quase tudo do dia a dia: remédio, conta, gasto, consulta, ligação pra família. E se chegar mensagem estranha, me mostra.","Sou quatro amigos num só: Escudo pros golpes, Remédio pros horários, Finanças pras contas e Dia a dia pra agenda e família."],
 "ajuda_pt":["Lembro os remédios, aponto os gastos, marco consultas, ligo à família e vejo se uma mensagem pode ser burla. É só falar à sua maneira.","Pode pedir-me quase tudo do dia a dia: remédios, contas, gastos, consultas, ligar à família. E se chegar uma mensagem estranha, mostre-me.","Somos quatro amigos num só: o Escudo para as burlas, o Remédio para os horários, o Finanças para as contas e o Dia a Dia para a agenda e a família."],
@@ -1588,17 +1702,17 @@ html.zg .sheet.voice .vbars{display:none}
 "cancelado_pt":["Está bem, deixamos isso.","Combinado, então não faço nada.","Sem problema. Se mudar de ideias, é só dizer."],
 "emergencia":["Calma, eu tô aqui. Liga agora pro 192 e eu aviso {fam}.","Fica calma. Primeiro, liga pro 192. Eu já aviso {fam}.","Isso é sério. Toca em ligar 192 agora. E eu chamo {fam} pra você."],
 "emergencia_pt":["Calma, estou aqui. Ligue já para o 112 e eu aviso {fam}.","Tenha calma. Primeiro, ligue para o 112. Eu aviso já {fam}.","Isto é sério. Carregue em ligar 112 agora. E eu chamo {fam}."],
-"golpe_golpe":["{nome}, para tudo. Isso tem muita cara de golpe. Não faça nada agora.","Cuidado! Isso tem muita cara de golpe, do tipo {tipo}. Não responde e não clica em nada.","Risco alto, {nome}. Parece golpe de {tipo}. Respira, não faz nada e me deixa te ajudar.","Cuidado! Isso tem muita cara de golpe. Não responde e não clica em nada."],
+"golpe_golpe":["{nome}, para tudo. Isso tem muita cara de golpe. Não faça nada agora.","Cuidado! Isso tem muita cara de golpe, do tipo {tipo}. Não responde e não clica em nada.","Risco alto, {nome}. Parece golpe de {tipo}. Respira, não faz nada e me deixa te ajudar.","Cuidado! Isso tem muita cara de golpe. Não responde e não clica em nada.","Ei, {nome}, segura aí. Isso tem muita cara de golpe de {tipo}. Não manda nada, tá bom?","Para tudo, {nome}. Tem muita cara de golpe. Fica tranquila que a gente resolve junto."],
 "golpe_golpe_pt":["{nome}, pare tudo. Isto tem muito ar de burla. Não faça nada agora.","Cuidado! Isto tem muito ar de burla, do tipo {tipo}. Não responda e não carregue em nada.","Risco alto, {nome}. Parece uma burla de {tipo}. Respire, não faça nada e deixe-me ajudar.","Cuidado! Isto tem muito ar de burla. Não responda e não carregue em nada."],
-"golpe_cuidado":["Calma, sem pressa. Isso pode ser golpe. Antes de qualquer coisa, vamos confirmar.","Hum, isso pode ser golpe, {nome}. Não faz nada com pressa, tá?","Fica atenta: pode ser golpe de {tipo}. Vamos conferir antes."],
+"golpe_cuidado":["Calma, sem pressa. Isso pode ser golpe. Antes de qualquer coisa, vamos confirmar.","Hum, isso pode ser golpe, {nome}. Não faz nada com pressa, tá?","Fica atenta: pode ser golpe de {tipo}. Vamos conferir antes.","Opa, {nome}, pode ser golpe. Vamos devagar e confirmar com quem você confia?","Calma, pode ser golpe de {tipo}. Antes de mandar qualquer coisa, a gente confere junto."],
 "golpe_cuidado_pt":["Calma, sem pressa. Isto pode ser burla. Antes de mais nada, vamos confirmar.","Hum, isto pode ser burla, {nome}. Não faça nada à pressa, está bem?","Atenção: pode ser uma burla de {tipo}. Vamos confirmar primeiro."],
-"golpe_seguro":["Parece tranquilo. Mesmo assim, nunca passe senha nem código.","Pelo que eu vi, parece seguro. Mas senha e código, nunca, tá?","Não achei sinal de golpe. Se pedirem dinheiro ou código depois, me chama."],
+"golpe_seguro":["Parece tranquilo. Mesmo assim, nunca passe senha nem código.","Pelo que eu vi, parece seguro. Mas senha e código, nunca, tá?","Não achei sinal de golpe. Se pedirem dinheiro ou código depois, me chama.","Parece tudo certo, {nome}. Só lembra: senha e código ninguém precisa saber."],
 "golpe_seguro_pt":["Parece tranquilo. Mesmo assim, nunca dê a senha nem códigos.","Pelo que vi, parece seguro. Mas senha e códigos, nunca, está bem?","Não encontrei sinais de burla. Se depois pedirem dinheiro ou códigos, chame-me."],
 "golpe_seguro_motivo":["Não pede dinheiro, senha, código nem clique em link."],
 "golpe_seguro_motivo_pt":["Não pede dinheiro, senha, códigos nem que carregue num link."],
 "golpe_geral_motivo":["Tem sinais de golpe: pressa, pedido de dinheiro ou de dados."],
 "golpe_geral_motivo_pt":["Tem sinais de burla: pressa, pedido de dinheiro ou de dados."],
-"golpe_pede_ver":["Hum, isso pode ser golpe. Me mostra a mensagem antes de fazer qualquer coisa?","Antes de responder, me mostra o que chegou. Eu olho com calma.","Faz assim: tira um print ou cola a mensagem aqui que eu confiro pra você."],
+"golpe_pede_ver":["Hum, isso pode ser golpe. Me mostra a mensagem antes de fazer qualquer coisa?","Antes de responder, me mostra o que chegou. Eu olho com calma.","Faz assim: tira um print ou cola a mensagem aqui que eu confiro pra você.","Me deixa dar uma olhadinha antes, {nome}? Cola a mensagem aqui pra mim.","Antes de clicar em qualquer coisa, me mostra o que chegou. Eu vejo com carinho."],
 "golpe_pede_ver_pt":["Hum, isto pode ser burla. Mostra-me a mensagem antes de fazer alguma coisa?","Antes de responder, mostre-me o que chegou. Eu vejo com calma.","Faça assim: tire uma captura de ecrã ou cole aqui a mensagem, que eu confirmo."],
 "golpe_foto_sem_net":["Pra ler a foto eu preciso da internet. Me conta o que está escrito?"],
 "golpe_foto_sem_net_pt":["Para ler a foto preciso da internet. Pode dizer-me o que está escrito?"],
@@ -2669,9 +2783,9 @@ var Motor = (function(){
     else S=vazio(); save(); changed(); }
   function apagarTudo(){ try{ localStorage.removeItem('ea-casa-real'); }catch(e){} S=vazio(); save(); if(STORE.ref){ clearTimeout(STORE.t); flush(); } changed(); }
   /* catálogo de golpes e frases: atualizados toda semana no repositório; o app baixa a versão nova sozinho */
-  (function atualizaBiblioteca(){ try{ if(!/github\.io$/.test(location.hostname)) return; var v=Math.floor(Date.now()/6048e5);
-    fetch('golpes.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.golpes&&(!window.GOLPES||j.versao>=window.GOLPES.versao)) window.GOLPES=j; }).catch(function(){});
-    fetch('respostas.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.oi) window.RESPOSTAS=j; }).catch(function(){}); }catch(e){} })();
+  (function atualizaBiblioteca(){ try{ var base=/github\.io$/.test(location.hostname)?'':'https://miopla007.github.io/escudo-amigo/'; var v=Math.floor(Date.now()/6048e5);
+    fetch(base+'golpes.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.golpes&&(!window.GOLPES||j.versao>=window.GOLPES.versao)) window.GOLPES=j; }).catch(function(){});
+    fetch(base+'respostas.json?s='+v).then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&j.oi&&(!window.RESPOSTAS||String(j._versao)>=String(window.RESPOSTAS._versao))) window.RESPOSTAS=j; }).catch(function(){}); }catch(e){} })();
   async function initStore(){ try{ if(!window.claude||!claude.use) return; var db=await claude.use('db'), u=await claude.use('user'); if(!db||!u) return;
       var id=await u.id(); if(!id) return; var ref=db.doc('data/users/'+id+'/casa'); var snap=await ref.get();
       if(snap.exists){ var d=snap.data(); if(d&&d.v===SV&&d.s&&!S.demo){ S=completa(JSON.parse(JSON.stringify(d.s))); try{ localStorage.setItem('ea-casa',JSON.stringify({v:SV,s:S})); }catch(e){} changed(); } }
