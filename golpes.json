@@ -1,6 +1,6 @@
 {
- "versao": "2026-10-11",
- "fonte": "Febraban, Banco Central, Polícia Civil, imprensa (Diário do Pará, A Crítica, Viva) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
+ "versao": "2026-10-12",
+ "fonte": "Febraban, Banco Central, INSS, TSE, Polícia Civil, Procon, TJCE/Defensoria, imprensa (Correio Braziliense, Olhar Digital, O Povo) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
  "golpes": [
   {
    "id": "falso_banco",
@@ -24,6 +24,10 @@
     ],
     [
      "(dizendo|disseram|diz|dizem|a dizer|que) que (sao|e|era|eram|seria|seriam) d[oa] (banco|caixa|seguranca do banco)|ligaram do banco|ligacao do banco|(gerente|funcionari[oa]|atendente) do banco|se passando por (gerente|banco)",
+     3
+    ],
+    [
+     "febraban|federacao (brasileira )?d[eo]s? bancos|assunto urgente.{0,40}(conta|transacao|banco)",
      3
     ]
    ],
@@ -53,6 +57,10 @@
     [
      "(pedindo|pediu|pede|a pedir|pedia) (um |uma )?(pix|dinheiro|transferencia|deposito)",
      3
+    ],
+    [
+     "salva (o |meu |esse |este )?(meu )?(novo )?(contato|numero)|(adiciona|grava) (o |meu )?(novo )?(numero|contato)",
+     4
     ]
    ],
    "explica": "Alguém se passa por filho ou neto com número novo e pede dinheiro com pressa.",
@@ -133,6 +141,10 @@
     [
      "(taxa|deposito|pagamento) (antecipad|de liberacao|para liberar)|pague .{0,20}para liberar",
      4
+    ],
+    [
+     "taxa (de )?cadastro|adiantamento (de|da|das) parcela|(imposto|iof|taxa|seguro) (para|pra) (liberar|soltar|depositar)|exigencia d[ao] (febraban|banco central)",
+     4
     ]
    ],
    "explica": "Ninguém sério cobra taxa antes de liberar empréstimo.",
@@ -152,6 +164,10 @@
     ],
     [
      "(seu )?beneficio (sera |vai ser )?(cortado|suspenso|bloqueado)|valor a receber|atrasados",
+     3
+    ],
+    [
+     "(atualiz|renov|refaz|faz|fazer|faca)\\w* (a |sua )?prova de vida|prova de vida.{0,40}(link|celular|whatsapp|pendente|vence|venc|bloque|cort)|(funcionari[oa]|central|atendente) do inss|ligaram do inss|cad ?unico.{0,30}(atualiz|bloque|cancel|link)",
      3
     ]
    ],
@@ -174,6 +190,10 @@
     [
      "(custas|honorarios).{0,30}(liberar|receber|pagar)|taxa.{0,30}(liberar|receber) (o |a |seu |sua )?(dinheiro|valor|indenizacao|processo|precatorio)",
      4
+    ],
+    [
+     "decisao favoravel|valor (disponivel|liberado) (para|pra) (saque|sacar|receber)|alvara (de|para) (levantamento|liberacao)|sou (o |a )?(seu |sua )?advogad|o pix nao (caiu|foi concluido)|transacao nao (foi )?concluida",
+     3
     ]
    ],
    "explica": "Golpistas fingem ser advogados e cobram 'taxa' para liberar um dinheiro que não existe.",
@@ -470,6 +490,100 @@
     "Não pague pelo link",
     "Ligue para o número que está na sua fatura",
     "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "bilhete_premiado",
+   "pais": "br",
+   "nome": "Bilhete premiado ou carteira achada",
+   "sinais": [
+    [
+     "bilhete (premiado|da loteria|de loteria|da mega)|loteria premiad|dividir o premio|ajud\\w* a (receber|sacar|trocar) o premio",
+     5
+    ],
+    [
+     "(ach|encontr)\\w* (uma |a )?carteira|(caiu|derrubou|deixou cair) (uma |a )?carteira|carteira (com|cheia de) dinheiro",
+     3
+    ],
+    [
+     "(sacola|saco) preta|(coloca|colocar|bota|botar|poe|por|deixa|deixar|guarda|guardar) (a |sua )?bolsa (na|no|numa|num|dentro|comigo)|alarme da loja",
+     3
+    ],
+    [
+     "(sacar|tirar) (o )?dinheiro .{0,30}(garantia|confianca|prova)|(dinheiro|valor) (de|como) garantia|(presente|presentear).{0,30}(loja do (meu )?pai|agradecimento)",
+     4
+    ]
+   ],
+   "explica": "Estranho com bilhete premiado, carteira achada ou presente que pede seu dinheiro ou bolsa é golpe antigo.",
+   "passos": [
+    "Não saque dinheiro para estranhos",
+    "Não entregue bolsa nem cartão",
+    "Entre numa loja e peça ajuda"
+   ]
+  },
+  {
+   "id": "falso_tse",
+   "pais": "br",
+   "nome": "Falsa cobrança do título de eleitor",
+   "sinais": [
+    [
+     "titulo (de )?eleitor|e.?titulo|justica eleitoral|\\btse\\b|\\btre\\b|cartorio eleitoral",
+     3
+    ],
+    [
+     "(regulariz|pendencia|cancel|irregular|bloque)\\w*.{0,40}(titulo|cpf|eleitor)|(titulo|cpf).{0,30}(cancelad|irregular|pendente|bloquead|suspens)|multa (eleitoral|por nao votar|de ausencia)|taxa de regularizacao",
+     3
+    ]
+   ],
+   "explica": "A Justiça Eleitoral não cobra taxa por mensagem nem manda link para regularizar título.",
+   "passos": [
+    "Não pague nem clique",
+    "Confira só no app e-Título",
+    "Apague a mensagem"
+   ]
+  },
+  {
+   "id": "videochamada_rosto",
+   "nome": "Videochamada ou selfie para copiar seu rosto",
+   "sinais": [
+    [
+     "videochamada|video chamada|chamada de video|ligacao de video",
+     2
+    ],
+    [
+     "(tira|tire|tirar|manda|mande|envie|enviar) (uma )?(selfie|foto do (seu )?rosto)|reconhecimento facial|biometria facial|validacao facial|olh(e|a|ar) (para|pra) (a )?camera|mostr(e|a|ar) (o )?(seu )?rosto|foto (segurando|com) (o )?(documento|rg)",
+     4
+    ]
+   ],
+   "explica": "Seu rosto em vídeo ou selfie pode ser usado para abrir conta ou empréstimo no seu nome.",
+   "passos": [
+    "Não atenda vídeo de número estranho",
+    "Não tire selfie para desconhecido",
+    "Avise alguém da família"
+   ]
+  },
+  {
+   "id": "falsa_intimacao",
+   "nome": "Falsa intimação ou denúncia com prazo",
+   "sinais": [
+    [
+     "intimacao|notificacao (judicial|extrajudicial|oficial)|ministerio publico|denuncia contra (voce|o senhor|a senhora|seu cpf)|(numero|n) (do )?(processo|protocolo)",
+     3
+    ],
+    [
+     "apresentar (sua )?defesa|acesso ao processo|detalhes da denuncia|prazo de (24|48) ?(h|horas)|cancelamento do alvara|(sera|vai ser) (processad|intimad)",
+     3
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|baix(e|ar) o (arquivo|documento|anexo)",
+     2
+    ]
+   ],
+   "explica": "Órgão público não manda intimação por WhatsApp com link e prazo de horas para você clicar.",
+   "passos": [
+    "Não clique nem baixe nada",
+    "Ligue para o órgão pelo site oficial",
+    "Mostre para alguém da família"
    ]
   }
  ],
