@@ -1,6 +1,6 @@
 {
- "versao": "2026-10-12",
- "fonte": "Febraban, Banco Central, INSS, TSE, Polícia Civil, Procon, TJCE/Defensoria, imprensa (Correio Braziliense, Olhar Digital, O Povo) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
+ "versao": "2026-10-19",
+ "fonte": "Febraban, Banco Central, INSS, TSE, Polícia Civil, Procon, TJCE/Defensoria, imprensa (Correio Braziliense, Olhar Digital, O Povo, Jornal do Brasil) · Portugal: PSP, GNR, Banco de Portugal, CTT, Segurança Social, Portal das Finanças, E-Redes — revisado toda semana",
  "golpes": [
   {
    "id": "falso_banco",
@@ -29,6 +29,10 @@
     [
      "febraban|federacao (brasileira )?d[eo]s? bancos|assunto urgente.{0,40}(conta|transacao|banco)",
      3
+    ],
+    [
+     "(seu |todo o |o )?saldo (todo |inteiro )?(esta |pode ser |vai ser |sera )?(em risco|perdido|roubado|comprometido)|proteger (o |seu |sua )?(dinheiro|saldo|conta)|(fazer|faca|faz|fizer) (um )?pix (para|pra) (proteger|estornar|cancelar|bloquear)|compra (sendo|prestes a ser|vai ser|esta sendo) (aprovada|concluida|finalizada)",
+     4
     ]
    ],
    "explica": "Banco não liga pedindo senha, código, Pix ou transferência para 'conta segura'.",
@@ -61,6 +65,14 @@
     [
      "salva (o |meu |esse |este )?(meu )?(novo )?(contato|numero)|(adiciona|grava) (o |meu )?(novo )?(numero|contato)",
      4
+    ],
+    [
+     "(video|chamada|audio|mensagem de voz) (do|da|de) (meu |minha |seu |sua )?(neto|neta|filho|filha|sobrinho|sobrinha|genro|nora).{0,60}(pix|dinheiro|ajuda|urgente|transferencia)|deepfake|(voz|rosto) (clonad|falsificad|feit\\w* por inteligencia artificial)",
+     4
+    ],
+    [
+     "enrascada|(sofri|tive|bati|me envolvi em) (um )?acidente.{0,50}(pix|dinheiro|transferencia)|nao (conta|conte|fala|fale) (pra|pro|para|com) (o pai|a mae|o vo|a vo|meu pai|minha mae|ninguem)",
+     3
     ]
    ],
    "explica": "Alguém se passa por filho ou neto com número novo e pede dinheiro com pressa.",
@@ -169,6 +181,10 @@
     [
      "(atualiz|renov|refaz|faz|fazer|faca)\\w* (a |sua )?prova de vida|prova de vida.{0,40}(link|celular|whatsapp|pendente|vence|venc|bloque|cort)|(funcionari[oa]|central|atendente) do inss|ligaram do inss|cad ?unico.{0,30}(atualiz|bloque|cancel|link)",
      3
+    ],
+    [
+     "revisao anual|recadastramento|instituto de previdencia|previdencia (estadual|municipal)|acreprev\\w*|confirm\\w* (os |seus )?dados para (realizar |fazer )?(a )?prova de vida",
+     3
     ]
    ],
    "explica": "O INSS não liga nem manda link pedindo dados ou pagamento.",
@@ -274,6 +290,14 @@
     ],
     [
      "suporte tecnico|tecnico do banco",
+     2
+    ],
+    [
+     "compartilhamento de tela|(toque|toca|aperta|aperte|clique|clica) (no|na|em) .{0,30}(tela|compartilh)|durante a (chamada|ligacao).{0,50}(app|aplicativo) do banco",
+     4
+    ],
+    [
+     "nao (desligue|desliga) (a chamada|a ligacao|o telefone)|fica na linha|(chamada|ligacao) (de|pelo) (whatsapp|zap).{0,50}(premio|seguranca|banco)",
      2
     ]
    ],
@@ -584,6 +608,31 @@
     "Não clique nem baixe nada",
     "Ligue para o órgão pelo site oficial",
     "Mostre para alguém da família"
+   ]
+  },
+  {
+   "id": "valores_esquecidos",
+   "pais": "br",
+   "nome": "Falso dinheiro esquecido no banco (Valores a Receber)",
+   "sinais": [
+    [
+     "valores a receber|dinheiro esquecido|valor(es)? esquecido|dinheiro (parado|esquecido) (no|em) (banco|conta)|\\bsvr\\b|resgat\\w* (o |seu |sua |os |seus )?(dinheiro|valor|saldo)",
+     3
+    ],
+    [
+     "(taxa|pagamento|pague|pagar|pix).{0,40}(liberar|resgatar|sacar|receber) (o |seu |os |seus )?(dinheiro|valor|valores|saldo)|ajuda (paga )?para resgatar|(liberar|resgatar)\\w* .{0,30}(taxa|pagamento)",
+     3
+    ],
+    [
+     "https?://|bit\\.ly|tinyurl|\\b(num|no|um|pelo|neste|nesse|nesta|este|esse) link\\b|\\b[a-z0-9-]+\\.(com|net|org|info|xyz|top|site|online|pt|br|me|ly|io|app|vip|live)(/|\\b)|clique|acesse",
+     2
+    ]
+   ],
+   "explica": "O Banco Central não manda link nem cobra nada para devolver dinheiro esquecido.",
+   "passos": [
+    "Não clique nem pague nada",
+    "Consulte só no site oficial do Banco Central",
+    "Nunca passe senha"
    ]
   }
  ],
